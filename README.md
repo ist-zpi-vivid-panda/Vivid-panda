@@ -2,6 +2,26 @@
 
 Best `ZPI` in the entire universe, don't change my mind
 
+## Folder structure
+
+- api/ui/shared - UI components that are used across the entire app like buttons
+- app/ui - reusable components, less atomic components such as headers, footers
+- storage - managing anything storage or cache related
+- utilities - any utils/helpers
+- api - anything related to calling the API
+- app - project template created folder used for routing
+- public - all files available to user like the favicon
+
+## Navigation
+
+ The ```/app``` folder has `layout.tsx`, `page.tsx` and `loading.tsx` which show the static layout, the page and the loading page. Folders inside the ```/app``` beside `ui` and `lib` are routes in the URL. If you want a folder that is not a route (for example nested inside some other route) you should add parentheses to its name.
+
+
+## Hooks
+
+If you want to you use hooks the component/page should have `'use client'` on top of the file.
+
+If you are creating functions that are used in client/server components add `'use server`
 
 ## Getting Started
 
