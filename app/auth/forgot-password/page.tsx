@@ -1,13 +1,13 @@
-import ImageEditingScreen from '@/app/ui/drawing/ImageEditingScreen';
+import ForgotPassword from '@/app/ui/auth/ForgotPassword';
 import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
 export const metadata: Metadata = {
-  title: 'Canvas',
+  title: 'Forgot password',
 };
 // ------------------ end :: metadata ------------------
 
-const CanvasPage = () => <ImageEditingScreen />;
+const ForgotPasswordPage = () => <ForgotPassword />;
 
-export default CanvasPage;
+export default ForgotPasswordPage;

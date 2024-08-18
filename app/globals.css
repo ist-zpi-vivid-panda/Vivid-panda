@@ -11,7 +11,11 @@
   --background-rgb: 132, 140, 188;
   --primary-rgb: 151, 255, 222;
   --primary-active-rgb: 213, 255, 242;
-
+  --danger: 179, 38, 30;
+  --warning: 255, 190, 60;
+  --info: 188, 118, 255;
+  --disabled: 105, 105, 105;
+  --disabled-light: 211, 211, 211;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +28,11 @@
     --background-rgb: 132, 140, 188;
     --primary-rgb: 0, 100, 68;
     --primary-active-rgb: 91, 255, 203;
+    --danger: 179, 38, 30;
+    --warning: 255, 190, 60;
+    --info: 188, 118, 255;
+    --disabled: 105, 105, 105;
+    --disabled-light: 211, 211, 211;
   }
 }
 
@@ -43,10 +52,52 @@ body {
   }
 }
 
+.background {
+  background-color: rgb(var(--background-rgb));
+}
+
 .primaryBackground {
   background-color: rgb(var(--primary-rgb));
 }
 
+.primaryBorder {
+  border-color: rgb(var(--primary-rgb)) ;
+}
+
 .primaryBackgroundActive {
   background-color: rgb(var(--primary-active-rgb));
+}
+
+.danger {
+  color: rgb(var(--danger));
+}
+
+.dangerBorder {
+  border-color: rgb(var(--danger)) ;
+}
+
+.warning {
+  color: rgb(var(--warning));
+}
+
+.info {
+  color: rgb(var(--info));
+}
+
+.infoBackground {
+  background-color: rgb(var(--info));
+}
+
+.disabled {
+  color: rgb(var(--disabled));
+  background: rgb(var(--disabled-light));
+}
+
+.logoBackground {
+  background-image: url("/logo.png");
+  background-repeat: no-repeat;
+}
+
+textarea:focus, input:focus{
+  outline: none;
 }

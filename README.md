@@ -16,6 +16,10 @@ Best `ZPI` in the entire universe, don't change my mind
 
  The ```/app``` folder has `layout.tsx`, `page.tsx` and `loading.tsx` which show the static layout, the page and the loading page. Folders inside the ```/app``` beside `ui` and `lib` are routes in the URL. If you want a folder that is not a route (for example nested inside some other route) you should add parentheses to its name.
 
+## Icons
+
+https://react-icons.github.io/react-icons/
+
 
 ## Hooks
 

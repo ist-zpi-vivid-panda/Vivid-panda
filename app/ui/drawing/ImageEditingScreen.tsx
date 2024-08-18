@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 import Canvas from '@/app/ui/drawing/Canvas';

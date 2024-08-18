@@ -1,13 +1,13 @@
-import ImageEditingScreen from '@/app/ui/drawing/ImageEditingScreen';
+import Register from '@/app/ui/auth/Register';
 import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
 export const metadata: Metadata = {
-  title: 'Canvas',
+  title: 'Register',
 };
 // ------------------ end :: metadata ------------------
 
-const CanvasPage = () => <ImageEditingScreen />;
+const RegisterPage = () => <Register />;
 
-export default CanvasPage;
+export default RegisterPage;

@@ -1,13 +1,13 @@
-import ImageEditingScreen from '@/app/ui/drawing/ImageEditingScreen';
+import Login from '@/app/ui/auth/Login';
 import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
 export const metadata: Metadata = {
-  title: 'Canvas',
+  title: 'Login',
 };
 // ------------------ end :: metadata ------------------
 
-const CanvasPage = () => <ImageEditingScreen />;
+const LoginPage = () => <Login />;
 
-export default CanvasPage;
+export default LoginPage;
