@@ -27,11 +27,9 @@ const ForgotPassword = () => {
         <SubmitButton />
       </div>
 
-      <div className="underline">
-        <Link href="/auth/login">
-          <span className="text-sm font-light">Already have an account? Login</span>
-        </Link>
-      </div>
+      <Link href="/auth/login">
+        <span className="text-sm font-light">Already have an account? Login</span>
+      </Link>
     </Auth>
   );
 };

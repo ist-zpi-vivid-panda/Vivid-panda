@@ -13,9 +13,11 @@
   --primary-active-rgb: 213, 255, 242;
   --danger: 179, 38, 30;
   --warning: 255, 190, 60;
-  --info: 188, 118, 255;
+  --info: 100, 149, 237;
+  --hover: 69, 160, 7;
   --disabled: 105, 105, 105;
   --disabled-light: 211, 211, 211;
+  --text-background: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,9 +32,11 @@
     --primary-active-rgb: 91, 255, 203;
     --danger: 179, 38, 30;
     --warning: 255, 190, 60;
-    --info: 188, 118, 255;
+    --info: 100, 149, 237;
+    --hover: 69, 160, 7;
     --disabled: 105, 105, 105;
     --disabled-light: 211, 211, 211;
+    --text-background: var(--background-rgb);
   }
 }
 
@@ -52,8 +56,8 @@ body {
   }
 }
 
-.background {
-  background-color: rgb(var(--background-rgb));
+.textBackground {
+  background-color: rgb(var(--text-background));
 }
 
 .primaryBackground {
@@ -100,4 +104,20 @@ body {
 
 textarea:focus, input:focus{
   outline: none;
+}
+
+.btn-success {
+  background-color: rgb(var(--info));
+}
+
+.btn-success:hover {
+  background-color: rgb(var(--hover));
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }

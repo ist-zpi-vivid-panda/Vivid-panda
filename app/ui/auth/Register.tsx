@@ -25,17 +25,21 @@ const Register = () => {
 
       <ControlledCustomPasswordInput control={control} errors={errors} label="Password" name="password" required />
 
-      <ControlledCustomPasswordInput control={control} errors={errors} label="Repeat password" name="password" required />
+      <ControlledCustomPasswordInput
+        control={control}
+        errors={errors}
+        label="Repeat password"
+        name="password"
+        required
+      />
 
       <div className="flex justify-end mb-20">
         <SubmitButton />
       </div>
 
-      <div className="underline">
-        <Link href="/auth/login">
-          <span className="text-sm font-light">Already have an account? Login</span>
-        </Link>
-      </div>
+      <Link href="/auth/login">
+        <span className="text-sm font-light">Already have an account? Login</span>
+      </Link>
     </Auth>
   );
 };

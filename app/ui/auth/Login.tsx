@@ -29,7 +29,7 @@ const Login = () => {
         <SubmitButton />
       </div>
 
-      <div className="flex flex-row justify-between gap-10 underline">
+      <div className="flex flex-row justify-between gap-10">
         <Link href="/auth/forgot-password">
           <span className="text-sm font-light">Forgot password</span>
         </Link>

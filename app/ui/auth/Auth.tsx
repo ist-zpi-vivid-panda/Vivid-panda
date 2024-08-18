@@ -20,10 +20,9 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
         </Link>
       </div>
 
-      <div className="flex px-20 pb-40 absolute inset-y-0 right-0 items-center flex-col">
-        <span className="text-7xl p-10">Vivid Panda</span>
-
+      <div className="flex px-20 py-10 pb-40 absolute inset-y-0 right-0 items-center flex-col">
         <form className={`${cardClassName} p-10 gap-5 shadow-2xl`} onSubmit={onSubmit}>
+          <span className="text-6xl p-10">Vivid Panda</span>
           {children}
         </form>
       </div>

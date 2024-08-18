@@ -50,7 +50,7 @@ const CustomInput = forwardRef(
     return (
       <>
         <div
-          className={`${disabled && 'disabled'} ${isFocused && 'primaryBorder'} ${error && 'dangerBorder'} border-gray-500 background overflow-hidden rounded-md p-2`}
+          className={`${disabled && 'disabled'} ${isFocused && 'primaryBorder'} ${error && 'dangerBorder'} border-gray-500 textBackground overflow-hidden rounded-md p-2`}
         >
           {isNotEmpty && label && (
             <div className="flex flex-1 flex-row gap-1">
@@ -68,7 +68,7 @@ const CustomInput = forwardRef(
 
             <input
               {...restOfProps}
-              className="flex flex-1 rounded-md background"
+              className="flex flex-1 rounded-md textBackground"
               onFocus={handleInputFocus}
               onBlur={(formData) => handleInputBlur(onBlur, formData)}
               onChange={onChange}
