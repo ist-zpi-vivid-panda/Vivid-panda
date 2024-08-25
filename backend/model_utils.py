@@ -10,5 +10,15 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def get_repr_for_db(self) -> Dict[str, Any]:
+    def get_dict_repr(self) -> Dict[str, Any]:
         pass
+
+    @abstractmethod
+    def get_accessible_by_user(self) -> Dict[str, Any]:
+        pass
+
+    def __dict__(self) -> Dict[str, Any]:
+        return self.get_dict_repr()
+
+    def __repr__(self) -> str:
+        return str(self.get_dict_repr())

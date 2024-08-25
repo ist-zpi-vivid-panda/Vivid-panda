@@ -1,28 +1,22 @@
 from flask import Blueprint, jsonify
-from marshmallow_jsonschema import JSONSchema
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 
-from schemas import LoginSchema, RegisterSchema
+from schemas import Components, LoginSchema, RegisterSchema
 
-validation = Blueprint("validation", __name__)
+validation_blueprint = Blueprint("validation", __name__)
 
-json_schema = JSONSchema()
+spec = APISpec(
+    title="Vivid-Panda API",
+    version="1.0.0",
+    openapi_version="3.0.0",
+    plugins=[MarshmallowPlugin()],
+)
 
-validation_json_schema = {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Vivid Panda API",
-        "version": "0.0.1",
-    },
-    "paths": {},
-    "components": {
-        "schemas": {
-            "LoginSchema": json_schema.dump(LoginSchema()),
-            "RegisterSchema": json_schema.dump(RegisterSchema()),
-        },
-    },
-}
+spec.components.schema("LoginSchema", schema=LoginSchema)
+spec.components.schema("RegisterSchema", schema=RegisterSchema)
 
 
-@validation.route("/", methods=["GET"])
+@validation_blueprint.route("/", methods=["GET"])
 def get_validation_json_schema():
-    return jsonify(validation_json_schema)
+    return jsonify(spec.to_dict())

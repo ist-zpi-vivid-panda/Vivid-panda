@@ -3,7 +3,7 @@ from typing import Any, Mapping
 from pymongo.collection import Collection
 
 from app import database
-from blueprints.auth.models import AccountDataProvider, UserModel
+from blueprints.user.models import AccountDataProvider, UserModel
 from service_utils import BaseCRUDService
 
 try:

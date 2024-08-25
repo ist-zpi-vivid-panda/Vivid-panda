@@ -28,7 +28,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'prettier/prettier': 'error',
     '@tanstack/query/exhaustive-deps': 'error',
-    '@typescript-eslint/no-explicit-any': ['error'],
+    '@typescript-eslint/no-explicit-any': ['warn'],
     'import/order': [
       'error',
       {

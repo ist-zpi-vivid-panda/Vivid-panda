@@ -1,21 +1,35 @@
 'use client';
 
+import { LoginProps, loginUser } from '@/app/lib/api/authApi';
+import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
+import useUserData from '@/app/lib/storage/useUserData';
+import { SCHEMA_NAMES } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomInput, ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
 import SubmitButton from '@/app/ui/shared/SubmitButton';
-import { useConfiguredForm } from '@/forms/useConfiguredForm';
+import { router } from 'next/client';
 import Link from 'next/link';
+import { FieldValues } from 'react-hook-form';
 
 const Login = () => {
+  const { login } = useUserData();
+
   const {
     control,
-    reset,
     handleSubmit,
     setError,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
-  } = useConfiguredForm();
+  } = useConfiguredForm({ schemaName: SCHEMA_NAMES.LOGIN_SCHEMA });
 
-  const onSubmit = () => {};
+  const onSubmit = async (values: FieldValues) => {
+    // check has internet connection
+
+    const loginProps: LoginProps = { email: values.email, password: values.password };
+
+    if (await loginUser(login, loginProps)) {
+      await router.replace({ pathname: '/auth/login' });
+    }
+  };
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)} onBack={() => console.log('back arrow')}>

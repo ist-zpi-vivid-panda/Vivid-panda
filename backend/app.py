@@ -1,9 +1,9 @@
 from flask import Flask
-from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
 
+from custom_cors import register_cors
 from database import Connection
 from env_vars import (
     APP_SECRET,
@@ -23,8 +23,6 @@ database = Connection(MONGO_DB_NAME)
 def create_app() -> Flask:
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER)
 
-    CORS(app)
-
     app.secret_key = APP_SECRET
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
@@ -32,21 +30,22 @@ def create_app() -> Flask:
 
     marshmallow.init_app(app)
     jwt.init_app(app)
+    register_cors(app)
 
-    from blueprints.core.routes import core
+    from jwt_config import config_jwt
 
-    app.register_blueprint(core, url_prefix="/")
+    config_jwt(jwt)
 
-    from blueprints.auth.routes import auth
+    from blueprints.core.routes import core_blueprint
+    from blueprints.files.routes import files_blueprint
+    from blueprints.auth.routes import auth_blueprint
+    from blueprints.validation.routes import validation_blueprint
+    from blueprints.user.routes import users_blueprint
 
-    app.register_blueprint(auth, url_prefix="/auth")
-
-    from blueprints.validation.routes import validation
-
-    app.register_blueprint(validation, url_prefix="/validation")
-
-    from blueprints.files.routes import files
-
-    app.register_blueprint(files, url_prefix="/files")
+    app.register_blueprint(core_blueprint, url_prefix="/core")
+    app.register_blueprint(auth_blueprint, url_prefix="/auth")
+    app.register_blueprint(validation_blueprint, url_prefix="/validation")
+    app.register_blueprint(files_blueprint, url_prefix="/files")
+    app.register_blueprint(users_blueprint, url_prefix="/users")
 
     return app

@@ -40,8 +40,8 @@ class BaseCRUDService(ABC):
     def map_from_db(self, data) -> T:
         pass
 
-    def get_all_list(self) -> List[T]:
-        return list(map(self.map_from_db, list(self.get_collection().find())))
+    def get_all_list(self) -> List[Dict[str, Any]]:
+        return [self.map_from_db(doc).get_accessible_by_user() for doc in self.get_collection().find()]
 
     def get_by_id(self, _id: str) -> T | None:
         return self.get_one_by({"_id": ObjectId(_id)})
@@ -50,7 +50,7 @@ class BaseCRUDService(ABC):
         if self.get_by_identifier(data) is not None:
             return None
 
-        return self.get_collection().insert_one(data.get_repr_for_db()).inserted_id
+        return self.get_collection().insert_one(data.get_dict_repr()).inserted_id
 
     def update(self, data: T) -> str | None:
         old_data = self.get_by_identifier(data)
@@ -60,7 +60,7 @@ class BaseCRUDService(ABC):
         data.set_id(old_data.uid)
 
         # update method is not as straight-forward
-        return self.get_collection().insert_one(data.get_repr_for_db()).inserted_id
+        return self.get_collection().insert_one(data.get_dict_repr()).inserted_id
 
     def get_one_by(self, identifier: Dict[str, Any]) -> T | None:
         data = self.get_collection().find_one(identifier)
@@ -77,7 +77,7 @@ class BaseCRUDService(ABC):
         total_items = collection.count_documents({})
 
         paginated = Pagination(
-            collection=[] if data is None else list(map(self.map_from_db, list(data))),
+            collection=[] if data is None else [self.map_from_db(doc).get_accessible_by_user() for doc in data],
             page=page,
             total_pages=(total_items + per_page - 1) // per_page,
             total_items=total_items,

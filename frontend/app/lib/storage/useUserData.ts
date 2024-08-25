@@ -1,24 +1,19 @@
-import { clearAllQueries } from '@/storage/queryClientConfig';
+import { clearAllQueries } from '@/app/lib/storage/getQueryClient';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
 export type UserInfo = {
-  userId?: string;
-  userName?: string;
-  email?: string;
   language?: string;
-  authToken?: string;
-  profilePicture?: string;
+  accessToken?: string;
+  refreshToken?: string;
 };
 
 const USER_DATA_STORAGE_NAME = 'user-data-storage-vivid-panda';
 
 const EMPTY_USER_INFO: UserInfo = {
-  userId: undefined,
-  email: undefined,
   language: undefined,
-  userName: undefined,
-  profilePicture: undefined,
+  accessToken: undefined,
+  refreshToken: undefined,
 };
 
 const useUserData = create<UserInfo>()(

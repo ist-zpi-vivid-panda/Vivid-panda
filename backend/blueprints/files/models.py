@@ -24,5 +24,19 @@ class FileInfoModel(BaseModel):
     def set_id(self, _id: str) -> None:
         self.file_id = _id
 
-    def get_repr_for_db(self) -> Dict[str, Any]:
-        pass
+    def get_dict_repr(self) -> Dict[str, Any]:
+        return {
+            "filename": self.filename,
+            "mime_type": self.mime_type,
+            "file_size": self.file_size,
+            "uploaded_at": self.uploaded_at,
+            "owner_id": self.owner_id,
+        }
+
+    def get_accessible_by_user(self) -> Dict[str, Any]:
+        return {
+            "filename": self.filename,
+            "mime_type": self.mime_type,
+            "file_size": self.file_size,
+            "uploaded_at": self.uploaded_at,
+        }

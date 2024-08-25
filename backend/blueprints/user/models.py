@@ -27,10 +27,17 @@ class UserModel(BaseModel):
     def set_id(self, _id: str) -> None:
         self.uid = _id
 
-    def get_repr_for_db(self) -> Dict[str, Any]:
+    def get_dict_repr(self) -> Dict[str, Any]:
         return {
             "email": self.email,
             "username": self.username,
             "password_hash": self.password_hash,
+            "provider": self.provider.value,
+        }
+
+    def get_accessible_by_user(self) -> Dict[str, Any]:
+        return {
+            "email": self.email,
+            "username": self.username,
             "provider": self.provider.value,
         }

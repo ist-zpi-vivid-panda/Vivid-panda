@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, render_template
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-core = Blueprint("core", __name__, template_folder="templates")
+core_blueprint = Blueprint("core", __name__, template_folder="templates")
 
 
 def register_routes(app):

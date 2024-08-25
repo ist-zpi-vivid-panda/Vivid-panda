@@ -20,3 +20,9 @@ class RegisterSchema(Schema):
 class FileUploadSchema(Schema):
     file = fields.Raw(type="file")
     owner_id = fields.Str(required=True)
+
+
+class Components(Schema):
+    login = fields.Nested(LoginSchema)
+    register = fields.Nested(RegisterSchema)
+    # fileUpload = fields.Nested(FileUploadSchema)
