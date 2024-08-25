@@ -27,6 +27,7 @@ def create_app() -> Flask:
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = JWT_ACCESS_TOKEN_EXPIRES
+    app.url_map.strict_slashes = False
 
     marshmallow.init_app(app)
     jwt.init_app(app)

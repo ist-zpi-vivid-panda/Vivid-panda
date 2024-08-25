@@ -7,11 +7,12 @@ import { SCHEMA_NAMES } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomInput, ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
 import SubmitButton from '@/app/ui/shared/SubmitButton';
-import { router } from 'next/client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
 
 const Login = () => {
+  const router = useRouter();
   const { login } = useUserData();
 
   const {
@@ -27,7 +28,7 @@ const Login = () => {
     const loginProps: LoginProps = { email: values.email, password: values.password };
 
     if (await loginUser(login, loginProps)) {
-      await router.replace({ pathname: '/auth/login' });
+      await router.replace('/auth/login');
     }
   };
 
