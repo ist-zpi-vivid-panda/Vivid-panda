@@ -136,7 +136,7 @@ const getStringAfterLastSlash = (string) => {
 const getStringBeforeFirstSlash = (string) => string.split('/')[0];
  */
 
-export const setFieldErrors = (setError) => (errorMessages) =>
+export const setFieldErrors = (setError: (arg0: string, arg1: { type: string; message: any; }) => void) => (errorMessages: { [x: string]: any; }) =>
   Object.keys(errorMessages).forEach((field) => {
     setError(field, {
       type: 'manual',

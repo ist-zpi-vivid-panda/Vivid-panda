@@ -33,6 +33,6 @@ export const getQueryClient = () => {
 
 export const clearAllQueries = () => getQueryClient().clear();
 
-export const invalidate = async (queryKey) => getQueryClient().invalidateQueries({ queryKey });
+export const invalidate = async (queryKey: any) => getQueryClient().invalidateQueries({ queryKey });
 
 export const invalidateAllQueries = async () => getQueryClient().invalidateQueries();

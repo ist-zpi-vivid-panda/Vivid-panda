@@ -27,13 +27,16 @@ const Register = () => {
 
     const registerProps: RegisterProps = { email: values.email, password: values.password, username: values.username };
 
-    if (await registerUser(login, registerProps)) {
-      await router.replace('/auth/register');
+    const loginResult = await registerUser(registerProps);
+
+    if (loginResult) {
+      login(loginResult);
+      router.replace('/auth/login');
     }
   };
 
   return (
-    <Auth onSubmit={handleSubmit(onSubmit)} onBack={() => console.log('back arrow')}>
+    <Auth onSubmit={handleSubmit(onSubmit)}>
       <span className="text-2xl m-auto">Register</span>
 
       <ControlledCustomInput control={control} errors={errors} label="Email" type="email" name="email" required />

@@ -14,7 +14,7 @@ export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpo
 export const apiCallNoAutoConfig = async (method: HttpMethod, fullUri: string, token?: string, data?: never) => {
   const { logout } = useUserData.getState();
 
-  const isFormData = data instanceof FormData;
+  const isFormData = (data as any) instanceof FormData;
 
   const headers = {
     'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export const apiCallNoAutoConfig = async (method: HttpMethod, fullUri: string, t
 
     if (response.status === 403) {
       // shady actions!
-      logout();
+      logout?.();
     }
     throw new Error(responseText);
   }
@@ -56,14 +56,14 @@ export const apiCall = async (method: HttpMethod, resourcePath: string, data?: a
 
 export const getCall = async (requestUri: string) => apiCall(GET, requestUri);
 
-export const postCall = async (requestUri: string, data: never) => apiCall(POST, requestUri, data);
+export const postCall = async (requestUri: string, data: any) => apiCall(POST, requestUri, data);
 
 export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestUri);
 
-export const putCall = async (requestUri: string, data: never) => apiCall(PUT, requestUri, data);
+export const putCall = async (requestUri: string, data: any) => apiCall(PUT, requestUri, data);
 
 // onSuccess invalidates all queryKeys that start with value of queryKey (even ones with id)
-export const useInvalidationMutation = (mutationFn, invalidationFn) =>
+export const useInvalidationMutation = (mutationFn: { (data: any): Promise<any>; (data: any): Promise<any>; ({ data, update }: { data: any; update: any; }): Promise<any>; }, invalidationFn: () => unknown) =>
   useMutation({
     mutationFn,
     onSuccess: async () => invalidationFn(),
@@ -75,11 +75,11 @@ export const useGetQuery = (queryKey: string[], requestUri: string) =>
 export const prefetchGetQuery = (queryKey: string[], requestUri: string) =>
   getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => getCall(requestUri) });
 
-export const usePostMutation = (invalidationFn, requestUri) =>
-  useInvalidationMutation((data) => postCall(requestUri, data), invalidationFn);
+export const usePostMutation = (invalidationFn: any, requestUri: string) =>
+  useInvalidationMutation((data: any) => postCall(requestUri, data), invalidationFn);
 
-export const useDeleteMutation = (invalidationFn, requestUriFn) =>
-  useInvalidationMutation((data) => deleteCall(requestUriFn(data)), invalidationFn);
+export const useDeleteMutation = (invalidationFn: any, requestUriFn: (arg0: any) => string) =>
+  useInvalidationMutation((data: any) => deleteCall(requestUriFn(data)), invalidationFn);
 
-export const useUpdateMutation = (invalidationFn, requestUriFn) =>
+export const useUpdateMutation = (invalidationFn: any, requestUriFn: (arg0: any, arg1: any) => string) =>
   useInvalidationMutation(({ data, update }) => putCall(requestUriFn(data, update), data), invalidationFn);

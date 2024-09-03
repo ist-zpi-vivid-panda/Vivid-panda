@@ -26,7 +26,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
     '@tanstack/query/exhaustive-deps': 'error',
     '@typescript-eslint/no-explicit-any': ['warn'],
     'import/order': [

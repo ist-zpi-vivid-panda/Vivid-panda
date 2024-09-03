@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState, DragEvent } from 'react';
 
 import PressableSpan from '@/app/ui/shared/PressableSpan';
 
@@ -29,7 +29,7 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
     return reader;
   }, [onImageUpload]);
 
-  const handleDragEvent = (newDragActive: boolean) => (e: DragEvent<HTMLInputElement>) => {
+  const handleDragEvent = (newDragActive: boolean) => (e: DragEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(newDragActive);
@@ -40,7 +40,7 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
     inputRef.current!.click();
   };
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: DragEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);

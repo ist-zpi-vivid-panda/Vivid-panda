@@ -1,12 +1,22 @@
-import { forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react';
+import {
+  FocusEvent,
+  FocusEventHandler,
+  forwardRef,
+  InputHTMLAttributes,
+  JSX,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { FaAsterisk, FaEyeSlash, FaEye } from 'react-icons/fa6';
 
 type CustomInputProps = {
   label?: string;
   placeholder?: string;
-  onChange: () => void;
+  onChange?: (value: HTMLInputElement) => void;
   onBlur?: () => void;
   value?: string;
   required?: boolean;
@@ -35,7 +45,10 @@ const CustomInput = forwardRef(
 
     const handleInputFocus = () => setIsFocused(true);
 
-    const handleInputBlur = (blurCallback, formData) => {
+    const handleInputBlur = (
+      blurCallback: (() => void) & FocusEventHandler<HTMLInputElement>,
+      formData: FocusEvent<HTMLInputElement, Element>
+    ) => {
       try {
         setIsFocused(false);
         blurCallback(formData);
@@ -73,7 +86,7 @@ const CustomInput = forwardRef(
               onBlur={(formData) => handleInputBlur(onBlur, formData)}
               onChange={onChange}
               value={value || ''}
-              ref={ref}
+              ref={ref as React.RefObject<HTMLInputElement>}
             />
 
             {rightIcon && <div className="absolute right-1">{rightIcon}</div>}
@@ -87,7 +100,22 @@ const CustomInput = forwardRef(
 
 CustomInput.displayName = 'CustomInput';
 
-export const ControlledCustomInput = ({ control, name, errors, label, formatFn, ...restOfProps }) => (
+type ControlledCustomInputProps = {
+  control: Control; // Define the type of control prop
+  name: string;
+  errors: any;
+  label: string;
+  formatFn?: (value: any) => any;
+} & CustomInputProps;
+
+export const ControlledCustomInput = ({
+  control,
+  name,
+  errors,
+  label,
+  formatFn,
+  ...restOfProps
+}: ControlledCustomInputProps) => (
   <Controller
     control={control}
     name={name ? name : ''}
@@ -96,7 +124,7 @@ export const ControlledCustomInput = ({ control, name, errors, label, formatFn, 
         {...restOfProps}
         error={errors[name]?.message}
         onBlur={onBlur}
-        onChange={async (value) => onChange(formatFn ? await formatFn(value) : value)}
+        onChange={(value) => onChange(formatFn ? formatFn(value) : value)}
         label={label}
         value={value?.toString()}
         ref={ref}
@@ -105,35 +133,24 @@ export const ControlledCustomInput = ({ control, name, errors, label, formatFn, 
   />
 );
 
-export const ControlledCustomPasswordInput = (props) => {
-  const textType = 'text';
-  const passwordType = 'password';
+export const ControlledCustomPasswordInput = (props: ControlledCustomInputProps) => {
+  const [isHidden, setHidden] = useState<boolean>(true);
 
-  const [type, setType] = useState<typeof textType | typeof passwordType>(passwordType);
+  const toggleHidden = useCallback(() => setHidden(isHidden), [isHidden]);
 
-  const eye = (
-    <FaEye
-      className="cursor-pointer"
-      onClick={() => {
-        setType(passwordType);
-        setIcon(eyeOff);
-      }}
-    />
+  const icon = useMemo(
+    () =>
+      isHidden ? (
+        <FaEye className="cursor-pointer" onClick={toggleHidden} />
+      ) : (
+        <FaEyeSlash className="cursor-pointer" onClick={toggleHidden} />
+      ),
+    [isHidden, toggleHidden]
   );
 
-  const eyeOff = (
-    <FaEyeSlash
-      className="cursor-pointer"
-      onClick={() => {
-        setType(textType);
-        setIcon(eye);
-      }}
-    />
-  );
+  const type = useMemo(() => (isHidden ? 'password' : 'text'), [isHidden]);
 
-  const [icon, setIcon] = useState<typeof eye | typeof eyeOff>(eyeOff);
-
-  return <ControlledCustomInput {...props} type={type} rightIcon={icon} autoComplete="on" />;
+  return <ControlledCustomInput type={type} rightIcon={icon} autoComplete="on" {...props} />;
 };
 
 export default ControlledCustomInput;

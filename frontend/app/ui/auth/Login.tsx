@@ -27,13 +27,16 @@ const Login = () => {
 
     const loginProps: LoginProps = { email: values.email, password: values.password };
 
-    if (await loginUser(login, loginProps)) {
-      await router.replace('/auth/login');
+    const loginResult = await loginUser(loginProps);
+
+    if (loginResult) {
+      login(loginResult);
+      router.replace('/auth/login');
     }
   };
 
   return (
-    <Auth onSubmit={handleSubmit(onSubmit)} onBack={() => console.log('back arrow')}>
+    <Auth onSubmit={handleSubmit(onSubmit)}>
       <span className="text-2xl m-auto">Login</span>
 
       <ControlledCustomInput control={control} errors={errors} label="Email" type="email" name="email" required />

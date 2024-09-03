@@ -6,7 +6,15 @@ export type UserInfo = {
   language?: string;
   accessToken?: string;
   refreshToken?: string;
+  userName?: string;
+  email?: string;
+  profilePicture?: string;
 };
+
+export type UserInfoStore = {
+  logout: () => void;
+  login: (loginResult: UserInfo) => void;
+} & UserInfo;
 
 const USER_DATA_STORAGE_NAME = 'user-data-storage-vivid-panda';
 
@@ -14,9 +22,12 @@ const EMPTY_USER_INFO: UserInfo = {
   language: undefined,
   accessToken: undefined,
   refreshToken: undefined,
+  profilePicture: undefined,
+  userName: undefined,
+  email: undefined,
 };
 
-const useUserData = create<UserInfo>()(
+const useUserData = create<UserInfoStore>()(
   devtools(
     persist(
       (set) => ({

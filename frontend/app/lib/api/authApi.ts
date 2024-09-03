@@ -12,7 +12,7 @@ export type RegisterProps = {
   username?: string;
 };
 
-export const loginUser = async (loginFn: (_: UserInfo) => void, loginProps: LoginProps) => {
+export const loginUser = async (loginProps: LoginProps) => {
   const apiResult = await apiCall(POST, '/auth/login', loginProps);
 
   if (!apiResult || !apiResult.access_token || !apiResult.refresh_token) {
@@ -24,10 +24,10 @@ export const loginUser = async (loginFn: (_: UserInfo) => void, loginProps: Logi
     refreshToken: apiResult.refresh_token,
   };
 
-  loginFn(loginData);
+  return loginData;
 };
 
-export const registerUser = async (loginFn: (_: UserInfo) => void, registerProps: RegisterProps) => {
+export const registerUser = async (registerProps: RegisterProps) => {
   const apiResult = await apiCall(POST, '/auth/register', registerProps);
 
   if (!apiResult || !apiResult.accessToken || !apiResult.refreshToken) {
@@ -39,5 +39,5 @@ export const registerUser = async (loginFn: (_: UserInfo) => void, registerProps
     refreshToken: apiResult.refreshToken,
   };
 
-  loginFn(loginData);
+  return loginData;
 };
