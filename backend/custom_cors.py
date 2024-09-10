@@ -1,5 +1,5 @@
 # this is used as the CORS package is awful to set up and doesn't deliver on its promises
-from flask import make_response, Flask
+from flask import Flask, make_response
 
 from env_vars import FRONTEND_URL
 

@@ -1,6 +1,8 @@
 from flask_marshmallow import Schema
 from marshmallow import fields, validate
 
+password_regex = r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+
 
 class LoginSchema(Schema):
     email = fields.Email(required=True)
@@ -13,7 +15,7 @@ class RegisterSchema(Schema):
     password = fields.Str(
         required=True,
         # at least 8 characters, one uppercase, one lowercase, one digit
-        validate=[validate.Regexp(r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$")],
+        validate=[validate.Regexp(password_regex)],
     )
 
 
@@ -22,7 +24,18 @@ class FileUploadSchema(Schema):
     owner_id = fields.Str(required=True)
 
 
-class Components(Schema):
-    login = fields.Nested(LoginSchema)
-    register = fields.Nested(RegisterSchema)
-    # fileUpload = fields.Nested(FileUploadSchema)
+class SendEmailRequestSchema(Schema):
+    email = fields.Email(required=True)
+
+
+class ResetPasswordSchema(Schema):
+    password = fields.Str(
+        required=True,
+        # at least 8 characters, one uppercase, one lowercase, one digit
+        validate=[validate.Regexp(password_regex)],
+    )
+    password_repeated = fields.Str(
+        required=True,
+        # at least 8 characters, one uppercase, one lowercase, one digit
+        validate=[validate.Regexp(password_regex)],
+    )

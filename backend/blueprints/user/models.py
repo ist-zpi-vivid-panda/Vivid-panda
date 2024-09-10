@@ -1,6 +1,9 @@
 from enum import Enum
 from typing import Any, Dict
 
+from itsdangerous import URLSafeTimedSerializer
+
+import env_vars
 from model_utils import BaseModel
 
 
@@ -41,3 +44,8 @@ class UserModel(BaseModel):
             "username": self.username,
             "provider": self.provider.value,
         }
+
+    def generate_reset_password_token(self):
+        serializer = URLSafeTimedSerializer(env_vars.APP_SECRET)
+
+        return serializer.dumps(self.email, salt=self.password_hash)

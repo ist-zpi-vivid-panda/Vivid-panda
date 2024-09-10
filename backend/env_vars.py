@@ -21,6 +21,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 APP_SECRET = os.getenv("APP_SECRET")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES")))
+RESET_PASS_TOKEN_MAX_AGE = int(os.getenv("RESET_PASS_TOKEN_MAX_AGE"))
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")

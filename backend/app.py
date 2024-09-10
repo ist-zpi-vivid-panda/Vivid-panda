@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
 
@@ -19,6 +20,8 @@ jwt = JWTManager()
 oauth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 database = Connection(MONGO_DB_NAME)
 
+mail = Mail()
+
 
 def create_app() -> Flask:
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER)
@@ -32,16 +35,17 @@ def create_app() -> Flask:
     marshmallow.init_app(app)
     jwt.init_app(app)
     register_cors(app)
+    mail.init_app(app)
 
     from jwt_config import config_jwt
 
     config_jwt(jwt)
 
+    from blueprints.auth.routes import auth_blueprint
     from blueprints.core.routes import core_blueprint
     from blueprints.files.routes import files_blueprint
-    from blueprints.auth.routes import auth_blueprint
-    from blueprints.validation.routes import validation_blueprint
     from blueprints.user.routes import users_blueprint
+    from blueprints.validation.routes import validation_blueprint
 
     app.register_blueprint(core_blueprint, url_prefix="/core")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")

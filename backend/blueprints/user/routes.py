@@ -1,5 +1,5 @@
 from flask import Blueprint, Response, jsonify
-from flask_jwt_extended import jwt_required, current_user
+from flask_jwt_extended import current_user, jwt_required
 
 from blueprints.user.models import UserModel
 from run_services import user_service

@@ -9,10 +9,11 @@ from flask_jwt_extended import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import oauth_client
+from blueprints.auth.services import send_reset_password_email, validate_reset_password_token
 from blueprints.user.models import AccountDataProvider, UserModel
 from env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from run_services import user_service
-from schemas import LoginSchema, RegisterSchema
+from schemas import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
 from utils import get_google_provider_cfg
 
 # Short-lived tokens mean that we do not need a blocklist
@@ -85,6 +86,47 @@ def refresh():
     user = get_jwt_identity()
     access_token = create_access_token_for_user(user)
     return jsonify(access_token)
+
+
+@auth_blueprint.route("/request_reset_password", methods=["POST"])
+def request_reset_password():
+    send_email_password_schema = SendEmailRequestSchema()
+    errors = send_email_password_schema.validate(request.json)
+    if errors:
+        return jsonify({"errors": errors}), 400
+
+    email = request.json.get("email")
+
+    user = user_service.get_by_email(email)
+
+    send_reset_password_email(user)
+
+    return jsonify(success=True)
+
+
+@auth_blueprint.route("/reset_password/<token>/<int:user_id>", methods=["POST"])
+def reset_password(token: str, user_id: str):
+    if user := validate_reset_password_token(token, user_id) is None:
+        return jsonify({"error": "Token expired"}), 400
+
+    reset_password_schema = ResetPasswordSchema()
+    errors = reset_password_schema.validate(request.json)
+    if errors:
+        return jsonify({"errors": errors}), 400
+
+    password = request.json["password"]
+    password_repeated = request.json["password_repeated"]
+
+    if password == password_repeated:
+        return jsonify({"error": "Passwords are not the same"}), 400
+
+    if user is None or not check_password_hash(user.password_hash, password):
+        return jsonify({"error": "Passwords cannot be the same as previous password"}), 400
+
+    user.password_hash = generate_password_hash(password)
+    user_service.update(user)
+
+    return jsonify(success=True)
 
 
 @auth_blueprint.route("/google", methods=["GET"])

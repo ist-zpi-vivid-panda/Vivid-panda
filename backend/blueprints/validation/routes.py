@@ -1,8 +1,8 @@
-from flask import Blueprint, jsonify
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
+from flask import Blueprint, jsonify
 
-from schemas import Components, LoginSchema, RegisterSchema
+from schemas import LoginSchema, RegisterSchema
 
 validation_blueprint = Blueprint("validation", __name__)
 
