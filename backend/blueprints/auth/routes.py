@@ -99,6 +99,9 @@ def request_reset_password():
 
     user = user_service.get_by_email(email)
 
+    if user.provider != AccountDataProvider.LOCAL:
+        return jsonify({"error": "Cannot reset password for this account provider"}), 400
+
     send_reset_password_email(user)
 
     return jsonify(success=True)
