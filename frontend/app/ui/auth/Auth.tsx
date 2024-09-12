@@ -11,11 +11,12 @@ type AuthPageProps = {
   onSubmit: (props: FormEvent) => void;
   children: Children;
 };
+
 const Auth = ({ onSubmit, children }: AuthPageProps) => {
   return (
     <>
       <div className="p-10">
-        <Link href="/dashboard">
+        <Link href="/">
           <BackArrow size={40} />
         </Link>
       </div>

@@ -1,3 +1,5 @@
+import { DetailedHTMLProps, HTMLAttributes } from 'react';
+
 import { Children } from '@/app/lib/definitions';
 
 type PressableSpanProps = {
@@ -5,12 +7,17 @@ type PressableSpanProps = {
   onClick: () => void;
 };
 
-const PressableSpan = ({ children, onClick }: PressableSpanProps) => (
+const PressableSpan = ({
+  children,
+  onClick,
+  ...restOfProps
+}: PressableSpanProps & DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>) => (
   <span
+    {...restOfProps}
     role="button"
     tabIndex={0}
     onKeyDown={() => {}}
-    className="font-bold cursor-pointer pointer-events-auto" // enable pointer events because could be disabled for parent
+    className="cursor-pointer pointer-events-auto" // enable pointer events because could be disabled for parent
     onClick={onClick}
   >
     {children}
