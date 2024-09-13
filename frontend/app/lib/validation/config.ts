@@ -3,6 +3,8 @@ import { useValidationData } from '@/app/lib/api/validationApi';
 export enum SchemaNames {
   LoginSchema = 'LoginSchema',
   RegisterSchema = 'RegisterSchema',
+  SendEmailRequestSchema = 'SendEmailRequestSchema',
+  ResetPasswordSchema = 'ResetPasswordSchema',
 }
 
 export const useSchema = (schemaName: string) => {

@@ -1,11 +1,13 @@
 import Providers from '@/app/providers';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+
 import './globals.css';
+import { Children } from './lib/definitions';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const APP_TITLE = 'Vivid-Panda';
+const APP_TITLE = 'Vivid-Panda' as const;
 
 // ------------------ begin :: metadata ------------------
 export const metadata: Metadata = {
@@ -26,7 +28,7 @@ export const viewport: Viewport = {
 const RootLayout = ({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: Children;
 }>) => (
   <html lang="en">
     <body className={inter.className}>

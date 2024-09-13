@@ -9,5 +9,3 @@ export type ChildrenProp = {
 export type Children = ReactNode | ReactNode[];
 
 export type TMap<T> = { [key: string]: T };
-
-export type StringMap = TMap<string>;

@@ -1,7 +1,7 @@
 'use client';
 
 import { RegisterProps, registerUser } from '@/app/lib/api/authApi';
-import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
+import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import useUserData from '@/app/lib/storage/useUserData';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';

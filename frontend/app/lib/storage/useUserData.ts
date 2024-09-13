@@ -16,7 +16,7 @@ export type UserInfoStore = {
   login: (loginResult: UserInfo) => void;
 } & UserInfo;
 
-const USER_DATA_STORAGE_NAME = 'user-data-storage-vivid-panda';
+const USER_DATA_STORAGE_NAME = 'user-data-storage-vivid-panda' as const;
 
 const EMPTY_USER_INFO: UserInfo = {
   language: undefined,
@@ -34,6 +34,7 @@ const useUserData = create<UserInfoStore>()(
         ...EMPTY_USER_INFO,
         login: (loginData: UserInfo) => {
           console.log('LOGIN');
+
           return set({ ...loginData });
         },
         logout: () => {

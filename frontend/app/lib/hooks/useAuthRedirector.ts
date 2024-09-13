@@ -3,9 +3,10 @@ import { useEffect, useMemo } from 'react';
 import useUserData from '@/app/lib/storage/useUserData';
 import { usePathname, useRouter } from 'next/navigation';
 
-const PREAUTH_ALLOWED_PATH_PARTS = ['/auth'];
+const PREAUTH_ALLOWED_PATH_PARTS = ['/auth'] as const;
 const PREAUTH_ALLOWED_PATHS = ['/' /* dashboard */];
 
+// no return type. It is simply a guard
 const useAuthRedirector = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -18,6 +19,7 @@ const useAuthRedirector = () => {
   );
 
   useEffect(() => {
+    console.log(accessToken, isPreAuthPath);
     if (!accessToken && !isPreAuthPath) {
       router.push('/auth/login');
       return;

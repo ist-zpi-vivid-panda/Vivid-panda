@@ -1,9 +1,9 @@
-const ApiConfig_LOCALHOST = {
-  root: 'http://localhost:5000',
-};
+const ApiConfig_LOCALHOST = Object.freeze({
+  root: 'http://127.0.0.1:5000',
+});
 
-const configs = {
+const configs = Object.freeze({
   DEV: ApiConfig_LOCALHOST,
-};
+});
 
 export default configs['DEV'];

@@ -8,7 +8,7 @@ type ImageUploadProps = {
   onImageUpload: (image: string) => void;
 };
 
-const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png';
+const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   const [dragActive, setDragActive] = useState<boolean>(false);
