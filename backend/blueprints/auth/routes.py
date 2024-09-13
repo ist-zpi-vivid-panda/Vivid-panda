@@ -1,3 +1,5 @@
+from typing import Any, Tuple
+
 import requests
 from flask import Blueprint, Response, json, jsonify, redirect, request, url_for
 from flask_jwt_extended import (
@@ -11,15 +13,18 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import oauth_client
 from blueprints.auth.services import send_reset_password_email, validate_reset_password_token
 from blueprints.user.models import AccountDataProvider, UserModel
-from env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+from config.env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_DISCOVERY_URL
 from run_services import user_service
 from schemas import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
-from utils import get_google_provider_cfg
 
 # Short-lived tokens mean that we do not need a blocklist
 # and the fact that we use JWT in headers means that there is no need for a logout endpoint.
 # If the app was higher security we would simply implement a blocklist or use cookies with proper CORS policy.
 auth_blueprint = Blueprint("auth", __name__)
+
+
+def get_google_provider_cfg() -> Any:
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
 def create_access_token_for_user(user: UserModel) -> str:
@@ -34,20 +39,20 @@ def create_tokens(user: UserModel) -> Response:
 
 
 @auth_blueprint.route("/register", methods=["POST"])
-def register():
+def register() -> Tuple[Response, int] | Response:
     register_schema = RegisterSchema()
     errors = register_schema.validate(request.json)
     if errors:
         return jsonify({"errors": errors}), 400
 
-    email = request.json.get("email")
-    username = request.json.get("username", None)
+    email: str = request.json.get("email")
+    username: str = request.json.get("username", None)
     # password is sent through HTTPS thus this is safe
-    password = request.json.get("password")
+    password: str = request.json.get("password")
 
     user = UserModel(
         None,
-        email,
+        email.upper(),
         username,
         generate_password_hash(password),
         AccountDataProvider.LOCAL,
@@ -61,7 +66,7 @@ def register():
 
 
 @auth_blueprint.route("/login", methods=["POST"])
-def login():
+def login() -> Tuple[Response, int] | Response:
     login_schema = LoginSchema()
     errors = login_schema.validate(request.json)
     if errors:
@@ -82,14 +87,17 @@ def login():
 
 @auth_blueprint.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)  # only refresh tokens can access this
-def refresh():
-    user = get_jwt_identity()
+def refresh() -> Tuple[Response, int] | Response:
+    user: UserModel | None = get_jwt_identity()
+    if user is None:
+        return jsonify(success=False), 401
+
     access_token = create_access_token_for_user(user)
     return jsonify(access_token)
 
 
 @auth_blueprint.route("/request_reset_password", methods=["POST"])
-def request_reset_password():
+def request_reset_password() -> Tuple[Response, int] | Response:
     send_email_password_schema = SendEmailRequestSchema()
     errors = send_email_password_schema.validate(request.json)
     if errors:
@@ -102,13 +110,13 @@ def request_reset_password():
     if user.provider != AccountDataProvider.LOCAL:
         return jsonify({"error": "Cannot reset password for this account provider"}), 400
 
-    send_reset_password_email(user)
+    send_reset_password_email(user.upper())
 
     return jsonify(success=True)
 
 
-@auth_blueprint.route("/reset_password/<token>/<int:user_id>", methods=["POST"])
-def reset_password(token: str, user_id: str):
+@auth_blueprint.route("/reset_password/<token>/<user_id>", methods=["POST"])
+def reset_password(token: str, user_id: str) -> Tuple[Response, int] | Response:
     if user := validate_reset_password_token(token, user_id) is None:
         return jsonify({"error": "Token expired"}), 400
 
@@ -133,7 +141,7 @@ def reset_password(token: str, user_id: str):
 
 
 @auth_blueprint.route("/google", methods=["GET"])
-def auth_with_google():
+def auth_with_google() -> Tuple[Response, int] | Response:
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
@@ -147,7 +155,7 @@ def auth_with_google():
 
 
 @auth_blueprint.route("/google/callback", methods=["GET"])
-def callback_google():
+def callback_google() -> Tuple[Response, int] | Response:
     code = request.args.get("code")
 
     google_provider_cfg = get_google_provider_cfg()
@@ -179,7 +187,7 @@ def callback_google():
             400,
         )
 
-    email = userinfo["email"]
+    email = userinfo["email"].upper()
     username = userinfo["given_name"]
 
     user = user_service.get_by_email(email)

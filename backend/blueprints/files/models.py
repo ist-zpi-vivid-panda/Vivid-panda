@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Dict
 
-from model_utils import BaseModel
+from utils.model_utils import BaseModel
 
 
 class FileInfoModel(BaseModel):

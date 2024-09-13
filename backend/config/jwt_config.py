@@ -7,15 +7,15 @@ from blueprints.user.models import UserModel
 from run_services import user_service
 
 
-def config_jwt(jwt: JWTManager):
+def config_jwt(jwt: JWTManager) -> None:
     @jwt.user_identity_loader
     def user_identity_lookup(user: UserModel) -> str:
-        return user.email
+        return user.email.upper()
 
     @jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data) -> UserModel | None:
         email = jwt_data["sub"]
-        return user_service.get_by_email(email)
+        return user_service.get_by_email(email.upper())
 
     @jwt.needs_fresh_token_loader
     def token_not_fresh_callback(jwt_header, jwt_payload) -> Tuple[Response, int]:

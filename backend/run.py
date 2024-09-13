@@ -1,5 +1,5 @@
 from app import create_app
-from env_vars import APP_HOST, APP_PORT, DEBUG
+from config.env_vars import APP_HOST, APP_PORT, DEBUG
 
 # app
 app = create_app()

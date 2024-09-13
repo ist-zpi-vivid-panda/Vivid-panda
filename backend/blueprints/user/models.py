@@ -3,8 +3,8 @@ from typing import Any, Dict
 
 from itsdangerous import URLSafeTimedSerializer
 
-import env_vars
-from model_utils import BaseModel
+from config import env_vars
+from utils.model_utils import BaseModel
 
 
 class AccountDataProvider(Enum):
@@ -22,7 +22,7 @@ class UserModel(BaseModel):
         provider: AccountDataProvider,
     ) -> None:
         self.uid = uid
-        self.email = email
+        self.email = email.upper()
         self.username = username
         self.password_hash = password_hash
         self.provider = provider

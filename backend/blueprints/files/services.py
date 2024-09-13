@@ -1,10 +1,11 @@
 from typing import Any, Mapping
 
 from pymongo.collection import Collection
+from werkzeug.datastructures.file_storage import FileStorage
 
-from app import database
+from app import database, grid_fs
 from blueprints.files.models import FileInfoModel
-from service_utils import BaseCRUDService, Pagination
+from utils.service_utils import BaseCRUDService, Pagination
 
 try:
     file_info_collection = database["file_info"]
@@ -30,5 +31,16 @@ class FileInfoService(BaseCRUDService):
             owner_id=data["owner_id"],
         )
 
+    def get_id(self, file: FileInfoModel) -> str:
+        return file.file_id
+
     def get_paginated_by_owner_id(self, owner_id: str, page: int, per_page: int) -> Pagination:
         return super().get_all_by_paginated({"owner_id": owner_id}, page, per_page)
+
+    @staticmethod
+    def put_file_on_grid_fs(file: FileStorage) -> str | None:
+        return grid_fs.put(file, filename=file.filename, content_type=file.content_type)
+
+    @staticmethod
+    def delete_file_from_grid_fs(file_id: str):
+        return grid_fs.delete(file_id)

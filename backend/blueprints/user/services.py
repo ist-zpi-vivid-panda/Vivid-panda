@@ -4,7 +4,7 @@ from pymongo.collection import Collection
 
 from app import database
 from blueprints.user.models import AccountDataProvider, UserModel
-from service_utils import BaseCRUDService
+from utils.service_utils import BaseCRUDService
 
 try:
     users_collection = database["users"]
@@ -18,7 +18,7 @@ class UserService(BaseCRUDService):
         return users_collection
 
     def get_by_identifier(self, user: UserModel) -> UserModel | None:
-        return self.get_by_email(user.email)
+        return self.get_by_email(user.email.upper())
 
     def map_from_db(self, data) -> UserModel:
         return UserModel(
@@ -29,5 +29,8 @@ class UserService(BaseCRUDService):
             provider=AccountDataProvider(data["provider"]),
         )
 
+    def get_id(self, user: UserModel) -> str:
+        return user.uid
+
     def get_by_email(self, email: str) -> UserModel | None:
-        return super().get_one_by({"email": email})
+        return super().get_one_by({"email": email.upper()})
