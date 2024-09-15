@@ -11,3 +11,4 @@ pymongo~=4.8.0
 apispec~=6.6.1
 marshmallow~=3.22.0
 python-dotenv~=1.0.1
+pillow~=10.3.0

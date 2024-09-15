@@ -4,7 +4,8 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Blueprint, Response, jsonify
 
-from schemas import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
+from schemas.auth import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
+from schemas.file import FileDataSchema, FileInfoSchema
 
 validation_blueprint = Blueprint("validation", __name__)
 
@@ -15,10 +16,15 @@ spec = APISpec(
     plugins=[MarshmallowPlugin()],
 )
 
+# auth
 spec.components.schema("LoginSchema", schema=LoginSchema)
 spec.components.schema("RegisterSchema", schema=RegisterSchema)
 spec.components.schema("SendEmailRequestSchema", schema=SendEmailRequestSchema)
 spec.components.schema("ResetPasswordSchema", schema=ResetPasswordSchema)
+
+# files
+spec.components.schema("FileInfoSchema", schema=FileInfoSchema)
+spec.components.schema("FileDataSchema", schema=FileDataSchema)
 
 
 @validation_blueprint.route("/", methods=["GET"])

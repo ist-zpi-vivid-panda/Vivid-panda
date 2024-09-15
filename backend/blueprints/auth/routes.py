@@ -15,7 +15,7 @@ from blueprints.auth.services import send_reset_password_email, validate_reset_p
 from blueprints.user.models import AccountDataProvider, UserModel
 from config.env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_DISCOVERY_URL
 from run_services import user_service
-from schemas import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
+from schemas.auth import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
 
 # Short-lived tokens mean that we do not need a blocklist
 # and the fact that we use JWT in headers means that there is no need for a logout endpoint.

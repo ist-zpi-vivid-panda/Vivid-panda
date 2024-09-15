@@ -17,7 +17,7 @@ const DropdownList = ({ options, isOpen }: DropdownListProps) => {
             : 'opacity-0 scale-95 pointer-events-none duration-150 ease-in'
         }`}
       >
-        <div className="flex gap-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+        <div className="flex flex-col gap-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
           {options.map(({ ...props }, index) => (
             <DropdownItem {...props} key={index} />
           ))}

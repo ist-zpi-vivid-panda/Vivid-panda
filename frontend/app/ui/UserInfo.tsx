@@ -1,17 +1,29 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import useUserData from '@/app/lib/storage/useUserData';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { DropdownItemProps } from './shared/dropdown/DropdownItem';
 import DropdownMenu from './shared/dropdown/DropdownMenu';
 
 const UserInfo = () => {
   const { userName, email, profilePicture, logout } = useUserData();
+  const router = useRouter();
 
-  const dropdownOptions: DropdownItemProps[] = useMemo(() => [{ label: 'Logout', onSelect: logout }], [logout]);
+  const navigateToImages = useCallback(() => {
+    router.push('/files/list');
+  }, [router]);
+
+  const dropdownOptions: DropdownItemProps[] = useMemo(
+    () => [
+      { label: 'Logout', onSelect: logout },
+      { label: 'Images', onSelect: navigateToImages },
+    ],
+    [logout, navigateToImages]
+  );
 
   return (
     <div className="primaryBackground flex flex-row fixed top-0 right-0 p-3 rounded-bl-xl">

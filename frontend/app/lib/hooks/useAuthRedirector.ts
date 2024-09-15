@@ -19,7 +19,6 @@ const useAuthRedirector = () => {
   );
 
   useEffect(() => {
-    console.log(accessToken, isPreAuthPath);
     if (!accessToken && !isPreAuthPath) {
       router.push('/auth/login');
       return;

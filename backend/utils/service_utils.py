@@ -1,7 +1,8 @@
+import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Mapping, TypeVar
 
-from bson import ObjectId
+from bson.objectid import ObjectId
 from pymongo.collection import Collection
 
 from utils.any_utils import SingletonMeta
@@ -45,7 +46,7 @@ class BaseCRUDService(ABC):
         pass
 
     def get_all_list(self) -> List[Dict[str, Any]]:
-        return [self.map_from_db(doc).get_accessible_by_user() for doc in self.get_collection().find()]
+        return [self.map_from_db(doc) for doc in self.get_collection().find()]
 
     def get_by_id(self, _id: str) -> T | None:
         return self.get_one_by({"_id": ObjectId(_id)})
@@ -89,9 +90,9 @@ class BaseCRUDService(ABC):
         total_items = collection.count_documents({})
 
         paginated = Pagination(
-            collection=[] if data is None else [self.map_from_db(doc).get_accessible_by_user() for doc in data],
+            collection=[] if data is None else [self.map_from_db(doc).get_dto() for doc in data],
             page=page,
-            total_pages=(total_items + per_page - 1) // per_page,
+            total_pages=(total_items + per_page) // per_page,
             total_items=total_items,
         )
 

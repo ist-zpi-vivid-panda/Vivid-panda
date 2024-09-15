@@ -8,7 +8,6 @@ from utils.service_utils import BaseCRUDService
 
 try:
     users_collection = database["users"]
-    print("Collection 'users' created successfully")
 except Exception as e:
     print(f"Error: {e}")
 

@@ -18,4 +18,4 @@ def get_all_users() -> Tuple[Response, int] | Response:
 @jwt_required()
 def get_user() -> Tuple[Response, int] | Response:
     user: UserModel = current_user
-    return jsonify(user.get_accessible_by_user())
+    return jsonify(user.get_dto())

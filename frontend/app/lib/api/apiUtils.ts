@@ -26,13 +26,13 @@ export const apiCallNoAutoConfig = async <T>(
   const isFormData = data instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
+    // 'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : null),
   };
 
   const body = method !== GET && data ? (isFormData ? data : JSON.stringify(data)) : undefined;
 
-  console.log(method, fullUri);
+  console.log(method, fullUri, '\nHEADERS:', headers, '\nBODY:', body);
 
   const response = await fetch(fullUri, {
     method,
@@ -53,7 +53,11 @@ export const apiCallNoAutoConfig = async <T>(
     throw new Error(responseText);
   }
 
-  return await response.json();
+  const json = await response.json();
+
+  console.log('RESPONSE:', json);
+
+  return json;
 };
 
 export const apiCall = async <T>(method: HttpMethod, resourcePath: string, data?: any) => {
@@ -78,7 +82,7 @@ export const useInvalidationMutation = (
   mutationFn: {
     (data: any): Promise<any>;
     (data: any): Promise<any>;
-    ({ data, update }: { data: any; update: any }): Promise<any>;
+    (data: any): Promise<any>;
   },
   invalidationFn: () => unknown
 ) =>

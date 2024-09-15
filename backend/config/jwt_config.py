@@ -10,6 +10,7 @@ from run_services import user_service
 def config_jwt(jwt: JWTManager) -> None:
     @jwt.user_identity_loader
     def user_identity_lookup(user: UserModel) -> str:
+        print('111111')
         return user.email.upper()
 
     @jwt.user_lookup_loader

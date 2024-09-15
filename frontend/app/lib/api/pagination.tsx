@@ -30,6 +30,14 @@ const INITIAL_PAGINATION: Pagination = {
   per_page: PER_PAGE_PAGINATION,
 };
 
+const EMPTY_PAGINATION_RES: PaginationResult<unknown> = {
+  collection: [],
+  total_pages: 1,
+  total_items: 0,
+  page: 1,
+  per_page: PER_PAGE_PAGINATION,
+};
+
 export const usePaginator = <T,>({ queryKey, queryFn }: PaginatorProps<T>) =>
   useSuspenseInfiniteQuery({
     queryKey,
@@ -46,10 +54,7 @@ export const createPaginatorFetchFn =
 
     const hasError = 'error' in response;
 
-    return {
-      ...response,
-      collection: !hasError ? response : [],
-    } as PaginationResult<T>;
+    return hasError ? (EMPTY_PAGINATION_RES as PaginationResult<T>) : response;
   };
 
 export const standardPaginationEndpointGetter = (endpoint: string, pageParam: Pagination) =>
