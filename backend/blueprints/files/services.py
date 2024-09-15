@@ -1,4 +1,5 @@
-from typing import Any, Mapping, Tuple, Dict, io
+import io
+from typing import Any, Mapping, Tuple, Dict
 
 import gridfs
 from bson.objectid import ObjectId
