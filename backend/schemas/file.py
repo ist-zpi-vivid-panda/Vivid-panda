@@ -3,18 +3,19 @@ import os
 from marshmallow import Schema, ValidationError, fields
 from werkzeug.datastructures import FileStorage
 
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+from config.env_vars import MAX_CONTENT_LENGTH
+
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
 def validate_file_size(file: FileStorage):
-    if file.content_length > MAX_FILE_SIZE:
-        raise ValidationError("File size must not exceed 10MB.")
+    if file.content_length > MAX_CONTENT_LENGTH:
+        raise ValidationError(f"File size must not exceed ${MAX_CONTENT_LENGTH}B.")
 
 
 def validate_file_extension(file: FileStorage):
     _, ext = os.path.splitext(file.filename)
-    print(ext)
+
     if ext.lower() not in ALLOWED_EXTENSIONS:
         raise ValidationError(f"Invalid file extension. Only ${ALLOWED_EXTENSIONS} are allowed.")
 

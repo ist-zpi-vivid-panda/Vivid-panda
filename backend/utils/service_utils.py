@@ -55,7 +55,7 @@ class BaseCRUDService(ABC):
         if self.get_by_identifier(data) is not None:
             return None
 
-        return self.get_collection().insert_one(data.get_dict_repr()).inserted_id
+        return str(self.get_collection().insert_one(data.get_dict_repr()).inserted_id)
 
     def update(self, data: T) -> str | None:
         old_data = self.get_by_identifier(data)
@@ -65,7 +65,7 @@ class BaseCRUDService(ABC):
         data.set_id(old_data.uid)
 
         # update method is not as straight-forward
-        return self.get_collection().insert_one(data.get_dict_repr()).inserted_id
+        return str(self.get_collection().insert_one(data.get_dict_repr()).inserted_id)
 
     def delete(self, data: T) -> bool:
         old_data = self.get_by_identifier(data)
@@ -90,7 +90,7 @@ class BaseCRUDService(ABC):
         total_items = collection.count_documents({})
 
         paginated = Pagination(
-            collection=[] if data is None else [self.map_from_db(doc).get_dto() for doc in data],
+            collection=[] if data is None else [self.map_from_db(doc) for doc in data],
             page=page,
             total_pages=(total_items + per_page) // per_page,
             total_items=total_items,

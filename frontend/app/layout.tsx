@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   },
   description: 'Your universal image editing and drawing app!',
   keywords: ['drawing', 'image editing', 'editing', 'creation', 'creative', 'imagination'],
-};
+} as const;
 
 export const viewport: Viewport = {
   initialScale: 1,
   width: 'device-width',
-};
+} as const;
 // ------------------ end :: metadata ------------------
 
 const RootLayout = ({

@@ -48,13 +48,20 @@ export const usePaginator = <T,>({ queryKey, queryFn }: PaginatorProps<T>) =>
   });
 
 export const createPaginatorFetchFn =
-  <T,>(getEndpoint: (pageParam: Pagination) => string) =>
+  <DTO, VAL>(getEndpoint: (pageParam: Pagination) => string, parseFromDTO: (_: DTO) => VAL) =>
   async ({ pageParam }: PaginatorFetchProps) => {
-    const response = await getCall<PaginationResult<T>>(getEndpoint(pageParam));
+    const response = await getCall<PaginationResult<DTO>>(getEndpoint(pageParam));
 
     const hasError = 'error' in response;
 
-    return hasError ? (EMPTY_PAGINATION_RES as PaginationResult<T>) : response;
+    if (hasError) {
+      return EMPTY_PAGINATION_RES as PaginationResult<VAL>;
+    }
+
+    return {
+      ...response,
+      collection: response.collection.map((res) => parseFromDTO(res)),
+    } as PaginationResult<VAL>;
   };
 
 export const standardPaginationEndpointGetter = (endpoint: string, pageParam: Pagination) =>

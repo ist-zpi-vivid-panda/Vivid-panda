@@ -26,7 +26,7 @@ export const apiCallNoAutoConfig = async <T>(
   const isFormData = data instanceof FormData;
 
   const headers = {
-    // 'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
+    ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
     ...(token ? { Authorization: `Bearer ${token}` } : null),
   };
 
@@ -50,6 +50,8 @@ export const apiCallNoAutoConfig = async <T>(
       // shady actions!
       logout?.();
     }
+
+    console.log('HEADERS:', headers, token);
     throw new Error(responseText);
   }
 
@@ -75,8 +77,6 @@ export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestU
 
 export const putCall = async (requestUri: string, data: any) => apiCall(PUT, requestUri, data);
 
-export const invalidate = async (queryKey: string[]) => getQueryClient().invalidateQueries({ queryKey });
-
 // onSuccess invalidates all queryKeys that start with value of queryKey (even ones with id)
 export const useInvalidationMutation = (
   mutationFn: {
@@ -97,11 +97,11 @@ export const useGetQuery = <T>(queryKey: string[], requestUri: string) =>
 export const prefetchGetQuery = <T>(queryKey: string[], requestUri: string) =>
   getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
 
-export const usePostMutation = (invalidationFn: any, requestUri: string) =>
-  useInvalidationMutation((data: any) => postCall(requestUri, data), invalidationFn);
+export const usePostMutation = <T>(invalidationFn: any, requestUri: string) =>
+  useInvalidationMutation((data: T) => postCall(requestUri, data), invalidationFn);
 
-export const useDeleteMutation = (invalidationFn: any, requestUriFn: (arg0: any) => string) =>
-  useInvalidationMutation((data: any) => deleteCall(requestUriFn(data)), invalidationFn);
+export const useDeleteMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+  useInvalidationMutation((data: T) => deleteCall(requestUriFn(data)), invalidationFn);
 
-export const useUpdateMutation = (invalidationFn: any, requestUriFn: (arg0: any, arg1: any) => string) =>
-  useInvalidationMutation(({ data, update }) => putCall(requestUriFn(data, update), data), invalidationFn);
+export const useUpdateMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+  useInvalidationMutation((data: T) => putCall(requestUriFn(data), data), invalidationFn);

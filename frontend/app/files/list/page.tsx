@@ -6,13 +6,17 @@ import { Metadata } from 'next';
 // ------------------ begin :: metadata ------------------
 export const metadata: Metadata = {
   title: 'Files List',
-};
+} as const;
 // ------------------ end :: metadata ------------------
 
-const FilesListPage = () => (
-  <HydrationBoundary state={dehydrate(getQueryClient())}>
-    <FilesList />
-  </HydrationBoundary>
-);
+const FilesListPage = () => {
+  const queryClient = getQueryClient();
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <FilesList />
+    </HydrationBoundary>
+  );
+};
 
 export default FilesListPage;

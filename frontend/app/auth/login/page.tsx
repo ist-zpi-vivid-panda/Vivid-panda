@@ -7,12 +7,14 @@ import { Metadata } from 'next';
 // can't use metadata and 'use client' in one file
 export const metadata: Metadata = {
   title: 'Login',
-};
+} as const;
 // ------------------ end :: metadata ------------------
 
 const LoginPage = () => {
+  const queryClient = getQueryClient();
+
   return (
-    <HydrationBoundary state={dehydrate(getQueryClient())}>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Login />
     </HydrationBoundary>
   );

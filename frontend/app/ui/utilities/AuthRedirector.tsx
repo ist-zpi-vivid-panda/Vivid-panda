@@ -1,15 +1,16 @@
+'use client';
+
 import { useEffect, useMemo } from 'react';
 
+import { ChildrenProp } from '@/app/lib/definitions';
 import useUserData from '@/app/lib/storage/useUserData';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, redirect } from 'next/navigation';
 
 const PREAUTH_ALLOWED_PATH_PARTS = ['/auth'] as const;
 const PREAUTH_ALLOWED_PATHS = ['/' /* dashboard */];
 
-// no return type. It is simply a guard
-const useAuthRedirector = () => {
+const AuthRedirector = ({ children }: ChildrenProp) => {
   const pathname = usePathname();
-  const router = useRouter();
   const { accessToken } = useUserData();
 
   const isPreAuthPath = useMemo(
@@ -20,14 +21,15 @@ const useAuthRedirector = () => {
 
   useEffect(() => {
     if (!accessToken && !isPreAuthPath) {
-      router.push('/auth/login');
-      return;
+      redirect('/auth/login');
     }
 
     if (accessToken && isPreAuthPath) {
-      router.push('/canvas');
+      redirect('/canvas');
     }
-  }, [accessToken, isPreAuthPath, router]);
+  }, [accessToken, isPreAuthPath, pathname]);
+
+  return <>{children}</>;
 };
 
-export default useAuthRedirector;
+export default AuthRedirector;

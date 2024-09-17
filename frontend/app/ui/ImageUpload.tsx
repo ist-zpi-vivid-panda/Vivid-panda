@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useCallback, useRef, useState, DragEvent } from 'react';
+import { ChangeEvent, useRef, useState, DragEvent } from 'react';
 
 import PressableSpan from '@/app/ui/shared/PressableSpan';
 
@@ -10,7 +10,7 @@ type ImageUploadProps = {
 };
 
 const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   const [dragActive, setDragActive] = useState<boolean>(false);

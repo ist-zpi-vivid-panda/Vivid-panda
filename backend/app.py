@@ -1,11 +1,13 @@
+from crypt import methods
+
 import gridfs
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
+from flask_cors import CORS
 
-from config.custom_cors import register_cors
 from config.database import Connection
 from config.env_vars import (
     APP_SECRET,
@@ -14,6 +16,8 @@ from config.env_vars import (
     JWT_SECRET_KEY,
     MONGO_DB_NAME,
     TEMPLATE_FOLDER,
+    MAX_CONTENT_LENGTH,
+    FRONTEND_URL,
 )
 
 marshmallow = Marshmallow()
@@ -28,14 +32,25 @@ def create_app() -> Flask:
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER)
 
     app.secret_key = APP_SECRET
+
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = JWT_ACCESS_TOKEN_EXPIRES
+
+    app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
     app.url_map.strict_slashes = False
 
+    CORS(
+        app,
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        supports_credentials=True,
+        origins=FRONTEND_URL,
+        allow_headers=["Content-Type", "Authorization"],
+    )
     marshmallow.init_app(app)
     jwt.init_app(app)
-    register_cors(app)
+    # register_cors(app)
     mail.init_app(app)
 
     from config.jwt_config import config_jwt

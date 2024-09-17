@@ -118,7 +118,7 @@ const CustomInput = forwardRef(
 
 CustomInput.displayName = 'CustomInput';
 
-export const ControlledCustomInput = ({
+const ControlledCustomInput = ({
   control,
   name,
   errors,

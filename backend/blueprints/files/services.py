@@ -1,3 +1,4 @@
+import base64
 import io
 from typing import Any, Mapping, Tuple, Dict
 
@@ -38,7 +39,7 @@ class FileInfoService(BaseCRUDService):
             mime_type=data["mime_type"],
             file_size=data["file_size"],
             uploaded_at=data["uploaded_at"],
-            owner_id=data["owner_id"],
+            owner_id=str(data["owner_id"]),
             last_update_at=data["last_update_at"],
             grid_fs_id=str(data["grid_fs_id"]),
         )
@@ -49,12 +50,14 @@ class FileInfoService(BaseCRUDService):
     def get_paginated_by_owner_id(self, owner_id: str, page: int, per_page: int) -> Pagination:
         resulting_page = super().get_all_by_paginated({"owner_id": ObjectId(owner_id)}, page, per_page)
 
-        def add_thumbnail(file: Dict[str, Any], file_id: str) -> Dict[str, Any]:
-            thumbnail = FileInfoService.get_image_thumbnail(file_id)
+        def add_thumbnail(file: Dict[str, Any], grid_fs_id: str) -> Dict[str, Any]:
+            thumbnail = FileInfoService.get_image_thumbnail(grid_fs_id)
             file["thumbnail"] = thumbnail
             return file
 
-        resulting_page.collection = [add_thumbnail(file=file, file_id=file['_id']) for file in resulting_page.collection]
+        resulting_page.collection = [
+            add_thumbnail(file=file.get_dto(), grid_fs_id=file.grid_fs_id) for file in resulting_page.collection
+        ]
 
         return resulting_page
 
@@ -76,7 +79,7 @@ class FileInfoService(BaseCRUDService):
 
     @staticmethod
     def put_file_on_grid_fs(file: FileStorage) -> str | None:
-        return grid_fs.put(file, filename=file.filename, content_type=file.content_type)
+        return str(grid_fs.put(file, filename=file.filename, content_type=file.content_type))
 
     @staticmethod
     def delete_file_from_grid_fs(file_id: str):
@@ -112,4 +115,4 @@ class FileInfoService(BaseCRUDService):
         img.save(thumb_io, format="JPEG")
         thumb_io.seek(0)
 
-        return thumb_io.getvalue().decode("base64")
+        return base64.b64encode(thumb_io.getvalue()).decode()

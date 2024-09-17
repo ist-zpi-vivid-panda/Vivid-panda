@@ -21,9 +21,6 @@ def get_files(user: UserModel) -> Tuple[Response, int] | Response:
     page: int = request.args.get("page", 1, type=int)
     per_page: int = request.args.get("per_page", 10, type=int)
 
-    # if user is None:
-    #     return jsonify({"error": "Incorrect user"}), 401
-
     files = file_service.get_paginated_by_owner_id(user.uid, page, per_page)
 
     return jsonify(files.__dict__)
@@ -65,6 +62,13 @@ def post_file(user: UserModel) -> Tuple[Response, int] | Response:
         owner_id=user.uid,
         grid_fs_id=file_id_grid_fs,
     )
+
+    file_id = file_service.insert(file_info)
+
+    if file_id is None:
+        return jsonify({"error": "File info not saved"}), 400
+
+    file_info.file_id = file_id
 
     return jsonify(file_info.get_dto())
 

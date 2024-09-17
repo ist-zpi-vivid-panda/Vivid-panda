@@ -16,13 +16,13 @@ const DropdownMenu = ({ options, text }: DropdownProps) => {
   }, [isOpen]);
 
   return (
-    <button className="flex flex-row flex-wrap items-center gap-1">
+    <div className="flex flex-row flex-wrap items-center gap-1">
       <FaChevronDown onClick={toggleOpen} className={`transition-transform ${isOpen ? 'rotate-180' : 'rotate-0'}`} />
 
       <DropdownList options={options} isOpen={isOpen} />
 
       <PressableSpan onClick={toggleOpen}>{text}</PressableSpan>
-    </button>
+    </div>
   );
 };
 

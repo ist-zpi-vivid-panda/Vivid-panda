@@ -31,13 +31,20 @@ class FileInfoModel(BaseModel):
         self.file_id = _id
 
     def get_dict_repr(self) -> Dict[str, Any]:
-        return self.get_dto() | {
-            "grid_fs_id": self.grid_fs_id,
+        return {
+            "_id": ObjectId(self.file_id),
+            "filename": self.filename,
+            "mime_type": self.mime_type,
+            "file_size": self.file_size,
+            "uploaded_at": self.uploaded_at,
+            "last_update_at": self.last_update_at,
+            "owner_id": ObjectId(self.owner_id),
+            "grid_fs_id": ObjectId(self.grid_fs_id),
         }
 
     def get_dto(self) -> Dict[str, Any]:
         return {
-            "_id": ObjectId(self.file_id),
+            "id": self.file_id,
             "filename": self.filename,
             "mime_type": self.mime_type,
             "file_size": self.file_size,

@@ -32,13 +32,17 @@ class UserModel(BaseModel):
         self.uid = _id
 
     def get_dict_repr(self) -> Dict[str, Any]:
-        return self.get_dto() | {
+        return {
+            "_id": ObjectId(self.uid),
+            "email": self.email,
+            "username": self.username,
+            "provider": self.provider.value,
             "password_hash": self.password_hash,
         }
 
     def get_dto(self) -> Dict[str, Any]:
         return {
-            "_id": ObjectId(self.uid),
+            "id": self.uid,
             "email": self.email,
             "username": self.username,
             "provider": self.provider.value,
