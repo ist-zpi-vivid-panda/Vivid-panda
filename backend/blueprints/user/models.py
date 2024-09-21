@@ -1,10 +1,11 @@
 from enum import Enum
 from typing import Any, Dict
 
+from bson import ObjectId
 from itsdangerous import URLSafeTimedSerializer
 
-import env_vars
-from model_utils import BaseModel
+from config import env_vars
+from utils.model_utils import BaseModel
 
 
 class AccountDataProvider(Enum):
@@ -22,7 +23,7 @@ class UserModel(BaseModel):
         provider: AccountDataProvider,
     ) -> None:
         self.uid = uid
-        self.email = email
+        self.email = email.upper()
         self.username = username
         self.password_hash = password_hash
         self.provider = provider
@@ -32,14 +33,16 @@ class UserModel(BaseModel):
 
     def get_dict_repr(self) -> Dict[str, Any]:
         return {
+            "_id": ObjectId(self.uid),
             "email": self.email,
             "username": self.username,
-            "password_hash": self.password_hash,
             "provider": self.provider.value,
+            "password_hash": self.password_hash,
         }
 
-    def get_accessible_by_user(self) -> Dict[str, Any]:
+    def get_dto(self) -> Dict[str, Any]:
         return {
+            "id": self.uid,
             "email": self.email,
             "username": self.username,
             "provider": self.provider.value,

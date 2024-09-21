@@ -2,17 +2,17 @@ from flask import render_template_string, url_for
 from flask_mailman import EmailMessage
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
-import env_vars
 from blueprints.user.models import UserModel
+from config import env_vars
 from emails_services.reset_password_email_html_content import reset_password_email_html_content
 from run_services import user_service
 
 
-def send_reset_password_email(user):
+def send_reset_password_email(user: UserModel) -> None:
     reset_password_url = url_for(
         "auth.reset_password",
         token=user.generate_reset_password_token(),
-        user_id=user.id,
+        user_id=user.uid,
         _external=True,
     )
 
@@ -28,7 +28,7 @@ def send_reset_password_email(user):
     message.send()
 
 
-def validate_reset_password_token(token: str, user_id: str):
+def validate_reset_password_token(token: str, user_id: str) -> UserModel | None:
     user: UserModel | None = user_service.get_by_id(user_id)
 
     if user is None:

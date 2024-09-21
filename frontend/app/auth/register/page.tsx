@@ -7,13 +7,17 @@ import { Metadata } from 'next';
 // can't use metadata and 'use client' in one file
 export const metadata: Metadata = {
   title: 'Register',
-};
+} as const;
 // ------------------ end :: metadata ------------------
 
-const RegisterPage = () => (
-  <HydrationBoundary state={dehydrate(getQueryClient())}>
-    <Register />
-  </HydrationBoundary>
-);
+const RegisterPage = () => {
+  const queryClient = getQueryClient();
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Register />
+    </HydrationBoundary>
+  );
+};
 
 export default RegisterPage;

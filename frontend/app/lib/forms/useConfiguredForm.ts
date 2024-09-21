@@ -1,17 +1,18 @@
-import { useSchema } from '@/app/lib/validation/config';
+import { SchemaNames, useSchema } from '@/app/lib/validation/config';
 import { ajvResolver } from '@hookform/resolvers/ajv';
 import { fullFormats } from 'ajv-formats/dist/formats';
 import { FieldPath, FieldPathValue, FieldValues, SetValueConfig, useForm, UseFormProps } from 'react-hook-form';
 
-export const useConfiguredForm = ({ schemaName, ...restOfProps }: UseFormProps & { schemaName: string }) => {
+const useConfiguredForm = ({ schemaName, ...restOfProps }: UseFormProps & { schemaName: SchemaNames }) => {
   const schema = useSchema(schemaName);
 
   const formHook = useForm({
     ...restOfProps,
     mode: 'onChange',
-    // resolver: useCustomAjvResolver(schemaName),
-    resolver: ajvResolver(schema, {
-      formats: fullFormats,
+    ...(schema && {
+      resolver: ajvResolver(schema, {
+        formats: fullFormats,
+      }),
     }),
   });
 
@@ -26,3 +27,5 @@ export const useConfiguredForm = ({ schemaName, ...restOfProps }: UseFormProps &
     setValue: setValueWithValidation, // this may cause the validation to run when loading a form but that's not really a concern
   };
 };
+
+export default useConfiguredForm;

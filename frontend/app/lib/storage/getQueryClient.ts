@@ -26,13 +26,16 @@ export const getQueryClient = () => {
     // This is very important, so we don't re-make a new client if React
     // suspends during the initial render. This may not be needed if we
     // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient();
+    }
+
     return browserQueryClient;
   }
 };
 
 export const clearAllQueries = () => getQueryClient().clear();
 
-export const invalidate = async (queryKey: any) => getQueryClient().invalidateQueries({ queryKey });
+export const invalidate = async (queryKey: string[]) => getQueryClient().invalidateQueries({ queryKey });
 
 export const invalidateAllQueries = async () => getQueryClient().invalidateQueries();

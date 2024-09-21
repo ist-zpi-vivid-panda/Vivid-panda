@@ -1,29 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import API_CONFIG from '@/app/lib/api/config';
 import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import useUserData from '@/app/lib/storage/useUserData';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 
-export const GET = 'GET';
-export const PUT = 'PUT';
-export const POST = 'POST';
-export const DELETE = 'DELETE';
+export type ApiResponse<T> = { error: string } | T;
+
+export const GET = 'GET' as const;
+export const PUT = 'PUT' as const;
+export const POST = 'POST' as const;
+export const DELETE = 'DELETE' as const;
 
 type HttpMethod = typeof GET | typeof PUT | typeof POST | typeof DELETE;
 
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
-export const apiCallNoAutoConfig = async (method: HttpMethod, fullUri: string, token?: string, data?: never) => {
+
+export const apiCallNoAutoConfig = async <T>(
+  method: HttpMethod,
+  fullUri: string,
+  token?: string,
+  data?: any
+): Promise<ApiResponse<T>> => {
   const { logout } = useUserData.getState();
 
-  const isFormData = (data as any) instanceof FormData;
+  const isFormData = data instanceof FormData;
 
   const headers = {
-    'Content-Type': 'application/json',
+    ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
     ...(token ? { Authorization: `Bearer ${token}` } : null),
   };
 
   const body = method !== GET && data ? (isFormData ? data : JSON.stringify(data)) : undefined;
 
-  console.log(method, fullUri);
+  console.log(method, fullUri, '\nHEADERS:', headers, '\nBODY:', body);
 
   const response = await fetch(fullUri, {
     method,
@@ -41,22 +50,28 @@ export const apiCallNoAutoConfig = async (method: HttpMethod, fullUri: string, t
       // shady actions!
       logout?.();
     }
+
+    console.log('HEADERS:', headers, token);
     throw new Error(responseText);
   }
 
-  return await response.json();
+  const json = await response.json();
+
+  console.log('RESPONSE:', json);
+
+  return json;
 };
 
-export const apiCall = async (method: HttpMethod, resourcePath: string, data?: any) => {
+export const apiCall = async <T>(method: HttpMethod, resourcePath: string, data?: any) => {
   const { accessToken } = useUserData.getState();
   const fullUri = buildWholeApiUri(resourcePath);
 
-  return apiCallNoAutoConfig(method, fullUri, accessToken, data);
+  return apiCallNoAutoConfig<T>(method, fullUri, accessToken, data);
 };
 
-export const getCall = async (requestUri: string) => apiCall(GET, requestUri);
+export const getCall = async <T>(requestUri: string) => <T>apiCall(GET, requestUri);
 
-export const postCall = async (requestUri: string, data: any) => apiCall(POST, requestUri, data);
+export const postCall = async <T>(requestUri: string, data: any) => <T>apiCall(POST, requestUri, data);
 
 export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestUri);
 
@@ -67,7 +82,7 @@ export const useInvalidationMutation = (
   mutationFn: {
     (data: any): Promise<any>;
     (data: any): Promise<any>;
-    ({ data, update }: { data: any; update: any }): Promise<any>;
+    (data: any): Promise<any>;
   },
   invalidationFn: () => unknown
 ) =>
@@ -76,17 +91,17 @@ export const useInvalidationMutation = (
     onSuccess: async () => invalidationFn(),
   });
 
-export const useGetQuery = (queryKey: string[], requestUri: string) =>
-  useSuspenseQuery({ queryKey: [...queryKey, requestUri], queryFn: () => getCall(requestUri) });
+export const useGetQuery = <T>(queryKey: string[], requestUri: string) =>
+  useSuspenseQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
 
-export const prefetchGetQuery = (queryKey: string[], requestUri: string) =>
-  getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => getCall(requestUri) });
+export const prefetchGetQuery = <T>(queryKey: string[], requestUri: string) =>
+  getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
 
-export const usePostMutation = (invalidationFn: any, requestUri: string) =>
-  useInvalidationMutation((data: any) => postCall(requestUri, data), invalidationFn);
+export const usePostMutation = <T>(invalidationFn: any, requestUri: string) =>
+  useInvalidationMutation((data: T) => postCall(requestUri, data), invalidationFn);
 
-export const useDeleteMutation = (invalidationFn: any, requestUriFn: (arg0: any) => string) =>
-  useInvalidationMutation((data: any) => deleteCall(requestUriFn(data)), invalidationFn);
+export const useDeleteMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+  useInvalidationMutation((data: T) => deleteCall(requestUriFn(data)), invalidationFn);
 
-export const useUpdateMutation = (invalidationFn: any, requestUriFn: (arg0: any, arg1: any) => string) =>
-  useInvalidationMutation(({ data, update }) => putCall(requestUriFn(data, update), data), invalidationFn);
+export const useUpdateMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+  useInvalidationMutation((data: T) => putCall(requestUriFn(data), data), invalidationFn);

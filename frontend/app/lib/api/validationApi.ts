@@ -1,7 +1,17 @@
-import { prefetchGetQuery, useGetQuery } from '@/app/lib/api/apiUtils';
+import * as Ajv from 'ajv';
 
-const VALIDATION_QUERY_KEY = 'validation-qk';
+import { prefetchGetQuery, useGetQuery } from './apiUtils';
 
-export const useValidationData = () => useGetQuery([VALIDATION_QUERY_KEY], '/validation/');
+type ValidationSchema = {
+  components: {
+    schemas: Record<string, Ajv.JSONSchemaType<unknown>>;
+  };
+};
 
-export const prefetchValidation = () => prefetchGetQuery([VALIDATION_QUERY_KEY], '/validation/');
+const VALIDATION_QUERY_KEY = 'validation-qk' as const;
+
+const VALIDATION_ENDPOINT = '/validation' as const;
+
+export const useValidationData = () => useGetQuery<ValidationSchema>([VALIDATION_QUERY_KEY], VALIDATION_ENDPOINT);
+
+export const prefetchValidation = () => prefetchGetQuery([VALIDATION_QUERY_KEY], VALIDATION_ENDPOINT);

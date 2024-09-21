@@ -1,11 +1,11 @@
 'use client';
 
 import { LoginProps, loginUser } from '@/app/lib/api/authApi';
-import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
+import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import useUserData from '@/app/lib/storage/useUserData';
-import { SCHEMA_NAMES } from '@/app/lib/validation/config';
+import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
-import { ControlledCustomInput, ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
+import ControlledCustomInput, { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
 import SubmitButton from '@/app/ui/shared/SubmitButton';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -20,7 +20,7 @@ const Login = () => {
     handleSubmit,
     setError,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
-  } = useConfiguredForm({ schemaName: SCHEMA_NAMES.LOGIN_SCHEMA });
+  } = useConfiguredForm({ schemaName: SchemaNames.LoginSchema });
 
   const onSubmit = async (values: FieldValues) => {
     // check has internet connection

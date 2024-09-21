@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
+<<<<<<< HEAD
 import { changePassword, ChangePasswordProps, RequestSendPasswordProps } from '@/app/lib/api/authApi';
 import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
 import { SCHEMA_NAMES } from '@/app/lib/validation/config';
@@ -11,6 +12,13 @@ import { useParams } from 'react-router-dom';
 
 import Auth from './Auth';
 import SubmitButton from '../shared/SubmitButton';
+=======
+import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
+import { SchemaNames } from '@/app/lib/validation/config';
+import Auth from '@/app/ui/auth/Auth';
+import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
+import SubmitButton from '@/app/ui/shared/SubmitButton';
+>>>>>>> 37c5320eac91e6d63f6f838500e4fb21fdaddc8c
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -21,7 +29,11 @@ const ChangePassword = () => {
     handleSubmit,
     setError,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
+<<<<<<< HEAD
   } = useConfiguredForm({ schemaName: SCHEMA_NAMES.LOGIN_SCHEMA });
+=======
+  } = useConfiguredForm({ schemaName: SchemaNames.ResetPasswordSchema });
+>>>>>>> 37c5320eac91e6d63f6f838500e4fb21fdaddc8c
 
   const onSubmit = useCallback(
     (values: FieldValues) => {

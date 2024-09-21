@@ -1,5 +1,5 @@
-import { apiCall, POST, postCall } from '@/app/lib/api/apiUtils';
-import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
+import { apiCall, ApiResponse, POST, postCall } from '@/app/lib/api/apiUtils';
+import { UserInfo } from '@/app/lib/storage/useUserData';
 
 export type LoginProps = {
   email: string;
@@ -21,34 +21,32 @@ export type ChangePasswordProps = {
   password_repeated: string;
 };
 
-export const loginUser = async (loginProps: LoginProps) => {
-  const apiResult = await apiCall(POST, '/auth/login', loginProps);
+export type AuthResult = {
+  access_token: string;
+  refresh_token: string;
+};
 
-  if (!apiResult || !apiResult.access_token || !apiResult.refresh_token) {
+const auth = (apiResult: ApiResponse<AuthResult>) => {
+  if (!apiResult || 'error' in apiResult || !apiResult.access_token || !apiResult.refresh_token) {
     return;
   }
 
-  const loginData: UserInfo = {
+  return {
     accessToken: apiResult.access_token,
     refreshToken: apiResult.refresh_token,
-  };
+  } as UserInfo;
+};
 
-  return loginData;
+export const loginUser = async (loginProps: LoginProps) => {
+  const apiResult = await postCall<AuthResult>('/auth/login', loginProps);
+
+  return auth(apiResult);
 };
 
 export const registerUser = async (registerProps: RegisterProps) => {
-  const apiResult = await apiCall(POST, '/auth/register', registerProps);
+  const apiResult = await postCall<AuthResult>('/auth/register', registerProps);
 
-  if (!apiResult || !apiResult.accessToken || !apiResult.refreshToken) {
-    return false;
-  }
-
-  const loginData: UserInfo = {
-    accessToken: apiResult.accessToken,
-    refreshToken: apiResult.refreshToken,
-  };
-
-  return loginData;
+  return auth(apiResult);
 };
 
 export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {

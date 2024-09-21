@@ -1,33 +1,20 @@
 'use client';
 
-import { ChangeEvent, useCallback, useRef, useState, DragEvent } from 'react';
+import { ChangeEvent, useRef, useState, DragEvent } from 'react';
 
 import PressableSpan from '@/app/ui/shared/PressableSpan';
 
 type ImageUploadProps = {
-  onImageUpload: (image: string) => void;
+  // onImageUpload: (image: string) => void;
+  onImageUpload: (image: File) => void;
 };
 
-const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png';
+const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
+const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  // a function as using useMemo yields an error due to:
-  // https://stackoverflow.com/questions/74962589/referenceerror-filereader-is-not-defined-in-next-js
-  const configuredFileReader = useCallback(() => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      if (reader.result) {
-        const result = reader.result as string;
-        onImageUpload(result);
-      }
-    };
-
-    return reader;
-  }, [onImageUpload]);
 
   const handleDragEvent = (newDragActive: boolean) => (e: DragEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +35,7 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
     const file = e.dataTransfer.files?.[0];
 
     if (file) {
-      configuredFileReader().readAsDataURL(file);
+      onImageUpload(file);
     }
   };
 
@@ -58,7 +45,7 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      configuredFileReader().readAsDataURL(file);
+      onImageUpload(file);
     }
   };
 
@@ -79,6 +66,8 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
             type="file"
             accept={ACCEPTED_EXTENSIONS}
             multiple={false}
+            max={1}
+            min={1}
             onChange={handleImageUpload}
             ref={inputRef}
           />

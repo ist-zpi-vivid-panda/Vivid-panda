@@ -92,6 +92,10 @@ body {
   background-color: rgb(var(--info));
 }
 
+.dangerBackground {
+  background-color: rgb(var(--danger));
+}
+
 .disabled {
   color: rgb(var(--disabled));
   background: rgb(var(--disabled-light));

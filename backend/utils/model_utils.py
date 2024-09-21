@@ -14,7 +14,7 @@ class BaseModel(ABC):
         pass
 
     @abstractmethod
-    def get_accessible_by_user(self) -> Dict[str, Any]:
+    def get_dto(self) -> Dict[str, Any]:
         pass
 
     def __dict__(self) -> Dict[str, Any]:

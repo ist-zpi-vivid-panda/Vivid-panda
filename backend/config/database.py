@@ -3,7 +3,7 @@ from typing import Any, Mapping
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from env_vars import MONGO_HOST, MONGO_PASSWORD, MONGO_PORT, MONGO_USERNAME
+from config.env_vars import MONGO_HOST, MONGO_PASSWORD, MONGO_PORT, MONGO_USERNAME
 
 config = {
     "host": MONGO_HOST,

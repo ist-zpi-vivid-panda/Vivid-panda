@@ -1,11 +1,29 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
+
 import useUserData from '@/app/lib/storage/useUserData';
 import Image from 'next/image';
-import { FaChevronDown } from 'react-icons/fa6';
+import { useRouter } from 'next/navigation';
+
+import { DropdownItemProps } from './shared/dropdown/DropdownItem';
+import DropdownMenu from './shared/dropdown/DropdownMenu';
 
 const UserInfo = () => {
-  const { userName, email, profilePicture } = useUserData();
+  const { userName, email, profilePicture, logout } = useUserData();
+  const router = useRouter();
+
+  const navigateToImages = useCallback(() => {
+    router.push('/files/list');
+  }, [router]);
+
+  const dropdownOptions: DropdownItemProps[] = useMemo(
+    () => [
+      { label: 'Logout', onSelect: logout },
+      { label: 'Images', onSelect: navigateToImages },
+    ],
+    [logout, navigateToImages]
+  );
 
   return (
     <div className="primaryBackground flex flex-row fixed top-0 right-0 p-3 rounded-bl-xl">
@@ -13,14 +31,7 @@ const UserInfo = () => {
         <span>{userName || 'userName'}</span>
         <span className="font-light">{email || 'test-email@vivid-panda.com'}</span>
 
-        <div className="flex flex-row flex-wrap items-center gap-2">
-          <FaChevronDown
-            onClick={() => {
-              console.log('open options');
-            }}
-          />
-          <span>Options</span>
-        </div>
+        <DropdownMenu options={dropdownOptions} text={'Options'} />
       </div>
 
       <Image
