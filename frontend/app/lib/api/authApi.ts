@@ -56,7 +56,8 @@ export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {
 };
 
 export const changePassword = async (changePassword: ChangePasswordProps, resetCode: string, userId: string) => {
-  const apiResult = await postCall(`/auth/reset_password/${resetCode}/${userId}`, changePassword);
+  console.log("duap8");
+  const apiResult = await postCall(`/auth/reset_password?token=${resetCode}&user_id=${userId}`, changePassword);
 
   return !!apiResult;
 };

@@ -113,14 +113,17 @@ def request_reset_password() -> Tuple[Response, int] | Response:
     if user.provider != AccountDataProvider.LOCAL:
         return jsonify({"error": "Cannot reset password for this account provider"}), 400
 
-    send_reset_password_email(user.upper())
+    send_reset_password_email(user)
 
     return jsonify(success=True)
 
 
-@auth_blueprint.route("/reset_password/<token>/<user_id>", methods=["POST"])
-def reset_password(token: str, user_id: str) -> Tuple[Response, int] | Response:
-    if user := validate_reset_password_token(token, user_id) is None:
+@auth_blueprint.route("/reset_password", methods=["POST"])
+def reset_password() -> Tuple[Response, int] | Response:
+    token = request.args.get("token")
+    user_id = request.args.get("user_id")
+
+    if (user := validate_reset_password_token(token, user_id)) is None:
         return jsonify({"error": "Token expired"}), 400
 
     reset_password_schema = ResetPasswordSchema()
@@ -131,10 +134,10 @@ def reset_password(token: str, user_id: str) -> Tuple[Response, int] | Response:
     password = request.json["password"]
     password_repeated = request.json["password_repeated"]
 
-    if password == password_repeated:
+    if not password == password_repeated:
         return jsonify({"error": "Passwords are not the same"}), 400
 
-    if user is None or not check_password_hash(user.password_hash, password):
+    if user is None or check_password_hash(user.password_hash, password):
         return jsonify({"error": "Passwords cannot be the same as previous password"}), 400
 
     user.password_hash = generate_password_hash(password)

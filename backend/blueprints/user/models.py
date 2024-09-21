@@ -28,9 +28,6 @@ class UserModel(BaseModel):
         self.password_hash = password_hash
         self.provider = provider
 
-    def set_id(self, _id: str) -> None:
-        self.uid = _id
-
     def get_dict_repr(self) -> Dict[str, Any]:
         return {
             "_id": ObjectId(self.uid),
@@ -51,4 +48,4 @@ class UserModel(BaseModel):
     def generate_reset_password_token(self):
         serializer = URLSafeTimedSerializer(env_vars.APP_SECRET)
 
-        return serializer.dumps(self.id, salt=self.password_hash)
+        return serializer.dumps(self.uid, salt=self.password_hash)

@@ -1,53 +1,45 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 
-<<<<<<< HEAD
-import { changePassword, ChangePasswordProps, RequestSendPasswordProps } from '@/app/lib/api/authApi';
-import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
-import { SCHEMA_NAMES } from '@/app/lib/validation/config';
-import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
-import { useRouter } from 'next/navigation';
-import { FieldValues } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
-
-import Auth from './Auth';
-import SubmitButton from '../shared/SubmitButton';
-=======
+import { ChangePasswordProps, changePassword } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
 import SubmitButton from '@/app/ui/shared/SubmitButton';
->>>>>>> 37c5320eac91e6d63f6f838500e4fb21fdaddc8c
+import { useParams, useRouter } from 'next/navigation';
+import { FieldValues } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation'
 
 const ChangePassword = () => {
   const router = useRouter();
-  const { resetCode, userId } = useParams();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token')
+  const userId = searchParams.get('user_id')
+
 
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
-<<<<<<< HEAD
-  } = useConfiguredForm({ schemaName: SCHEMA_NAMES.LOGIN_SCHEMA });
-=======
   } = useConfiguredForm({ schemaName: SchemaNames.ResetPasswordSchema });
->>>>>>> 37c5320eac91e6d63f6f838500e4fb21fdaddc8c
 
   const onSubmit = useCallback(
     (values: FieldValues) => {
-      if (resetCode && userId) {
+      console.log(`token ${token}`)
+      console.log(`user_id ${userId}`)
+      if (token && userId) {
         const changePasswordData: ChangePasswordProps = {
           password: values.password,
           password_repeated: values.password_repeated,
         };
-        changePassword(changePasswordData, resetCode, userId);
+        changePassword(changePasswordData, token as string, userId as string);
       }
 
       router.replace('/auth/login');
     },
-    [resetCode, router, userId]
+    [token, router, userId]
   );
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>

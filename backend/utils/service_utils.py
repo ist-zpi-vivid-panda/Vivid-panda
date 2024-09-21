@@ -57,21 +57,18 @@ class BaseCRUDService(ABC):
         return str(self.get_collection().insert_one(data.get_dict_repr()).inserted_id)
 
     def update(self, data: T) -> str | None:
-        old_data = self.get_by_identifier(data)
-        if old_data is None:
-            return None
-
-        data.set_id(old_data.uid)
-
-        # update method is not as straight-forward
-        return str(self.get_collection().insert_one(data.get_dict_repr()).inserted_id)
+        return str(
+            self.get_collection()
+            .update_one({"_id": ObjectId(self.get_id(data))}, {"$set": data.get_dict_repr()}, upsert=False)
+            .upserted_id
+        )
 
     def delete(self, data: T) -> bool:
         old_data = self.get_by_identifier(data)
         if old_data is None:
             return False
 
-        return self.get_collection().delete_one({"_id": self.get_id(old_data)}).deleted_count > 0
+        return self.get_collection().delete_one({"_id": ObjectId(self.get_id(old_data))}).deleted_count > 0
 
     def get_one_by(self, identifier: Dict[str, Any]) -> T | None:
         data = self.get_collection().find_one(identifier)

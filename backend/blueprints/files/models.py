@@ -27,9 +27,6 @@ class FileInfoModel(BaseModel):
         self.owner_id = owner_id
         self.grid_fs_id = grid_fs_id
 
-    def set_id(self, _id: str) -> None:
-        self.file_id = _id
-
     def get_dict_repr(self) -> Dict[str, Any]:
         return {
             "_id": ObjectId(self.file_id),

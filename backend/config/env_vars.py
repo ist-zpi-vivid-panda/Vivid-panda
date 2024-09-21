@@ -3,7 +3,8 @@ from datetime import timedelta
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(".env")
+load_dotenv(".env.local", override=True)
 
 MONGO_HOST: str = os.getenv("MONGO_HOST")
 MONGO_PORT: int = int(os.getenv("MONGO_PORT"))
@@ -28,3 +29,11 @@ GOOGLE_CLIENT_SECRET: str = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_DISCOVERY_URL: str = os.getenv("GOOGLE_DISCOVERY_URL")
 
 MAX_CONTENT_LENGTH: int = int(os.getenv("MAX_CONTENT_LENGTH"))
+
+MAIL_SERVER: str = os.getenv("MAIL_SERVER")
+MAIL_PORT: int = int(os.getenv("MAIL_PORT"))
+MAIL_USE_TLS: bool = os.getenv("MAIL_USE_TLS") == "True"
+MAIL_USE_SSL: bool = os.getenv("MAIL_USE_SSL") == "True"
+MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER: str = os.getenv("MAIL_DEFAULT_SENDER")

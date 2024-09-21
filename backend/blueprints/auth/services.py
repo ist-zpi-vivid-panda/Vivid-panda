@@ -1,19 +1,17 @@
-from flask import render_template_string, url_for
+from flask import render_template_string
 from flask_mailman import EmailMessage
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from blueprints.user.models import UserModel
 from config import env_vars
+from config.env_vars import FRONTEND_URL
 from emails_services.reset_password_email_html_content import reset_password_email_html_content
 from run_services import user_service
 
 
 def send_reset_password_email(user: UserModel) -> None:
-    reset_password_url = url_for(
-        "auth.reset_password",
-        token=user.generate_reset_password_token(),
-        user_id=user.uid,
-        _external=True,
+    reset_password_url = (
+        f"{FRONTEND_URL}/auth/change-password?token={user.generate_reset_password_token()}&user_id={user.uid}"
     )
 
     email_body = render_template_string(reset_password_email_html_content, reset_password_url=reset_password_url)
