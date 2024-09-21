@@ -3,8 +3,11 @@ import API_CONFIG from '@/app/lib/api/config';
 import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import useUserData from '@/app/lib/storage/useUserData';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
-export type ApiResponse<T> = { error: string } | T;
+export type ErrorApiResponse = { error: string };
+
+export type ApiResponse<T> = ErrorApiResponse | T;
 
 export const GET = 'GET' as const;
 export const PUT = 'PUT' as const;
@@ -42,24 +45,23 @@ export const apiCallNoAutoConfig = async <T>(
     ...(body && { body }),
   });
 
+  const responseBody = await response.json();
+
   if (!response.ok) {
     console.warn('error on: ', method, fullUri);
-    const responseText = await response.text();
+    const projectedResponse = responseBody as ErrorApiResponse;
 
     if (response.status === 403) {
       // shady actions!
       logout?.();
     }
 
-    console.log('HEADERS:', headers, token);
-    throw new Error(responseText);
+    toast.error(projectedResponse.error);
   }
 
-  const json = await response.json();
+  console.log('RESPONSE:', responseBody);
 
-  console.log('RESPONSE:', json);
-
-  return json;
+  return responseBody;
 };
 
 export const apiCall = async <T>(method: HttpMethod, resourcePath: string, data?: any) => {
