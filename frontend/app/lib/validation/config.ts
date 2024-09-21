@@ -3,6 +3,8 @@ import { useValidationData } from '@/app/lib/api/validationApi';
 export const SCHEMA_NAMES = {
   LOGIN_SCHEMA: 'LoginSchema',
   REGISTER_SCHEMA: 'RegisterSchema',
+  RESET_PASSWORD_SCHEMA: 'ResetPasswordSchema',
+  FORGOT_PASSWORD_EMAIL: 'ForgotPassowrdEmailSchema',
 };
 
 export const useSchema = (schemaName: string) => {
@@ -136,10 +138,11 @@ const getStringAfterLastSlash = (string) => {
 const getStringBeforeFirstSlash = (string) => string.split('/')[0];
  */
 
-export const setFieldErrors = (setError: (arg0: string, arg1: { type: string; message: any; }) => void) => (errorMessages: { [x: string]: any; }) =>
-  Object.keys(errorMessages).forEach((field) => {
-    setError(field, {
-      type: 'manual',
-      message: errorMessages[field],
+export const setFieldErrors =
+  (setError: (arg0: string, arg1: { type: string; message: any }) => void) => (errorMessages: { [x: string]: any }) =>
+    Object.keys(errorMessages).forEach((field) => {
+      setError(field, {
+        type: 'manual',
+        message: errorMessages[field],
+      });
     });
-  });

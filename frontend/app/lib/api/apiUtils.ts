@@ -63,7 +63,14 @@ export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestU
 export const putCall = async (requestUri: string, data: any) => apiCall(PUT, requestUri, data);
 
 // onSuccess invalidates all queryKeys that start with value of queryKey (even ones with id)
-export const useInvalidationMutation = (mutationFn: { (data: any): Promise<any>; (data: any): Promise<any>; ({ data, update }: { data: any; update: any; }): Promise<any>; }, invalidationFn: () => unknown) =>
+export const useInvalidationMutation = (
+  mutationFn: {
+    (data: any): Promise<any>;
+    (data: any): Promise<any>;
+    ({ data, update }: { data: any; update: any }): Promise<any>;
+  },
+  invalidationFn: () => unknown
+) =>
   useMutation({
     mutationFn,
     onSuccess: async () => invalidationFn(),

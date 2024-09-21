@@ -1,21 +1,42 @@
 'use client';
+import { useState, useEffect, useCallback } from 'react';
 
+import { changePassword, ChangePasswordProps, RequestSendPasswordProps } from '@/app/lib/api/authApi';
 import { useConfiguredForm } from '@/app/lib/forms/useConfiguredForm';
-import Auth from '@/app/ui/auth/Auth';
+import { SCHEMA_NAMES } from '@/app/lib/validation/config';
 import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
-import SubmitButton from '@/app/ui/shared/SubmitButton';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { FieldValues } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+
+import Auth from './Auth';
+import SubmitButton from '../shared/SubmitButton';
 
 const ChangePassword = () => {
+  const router = useRouter();
+  const { resetCode, userId } = useParams();
+
   const {
     control,
-    reset,
     handleSubmit,
     setError,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
-  } = useConfiguredForm();
+  } = useConfiguredForm({ schemaName: SCHEMA_NAMES.LOGIN_SCHEMA });
 
-  const onSubmit = () => {};
+  const onSubmit = useCallback(
+    (values: FieldValues) => {
+      if (resetCode && userId) {
+        const changePasswordData: ChangePasswordProps = {
+          password: values.password,
+          password_repeated: values.password_repeated,
+        };
+        changePassword(changePasswordData, resetCode, userId);
+      }
+
+      router.replace('/auth/login');
+    },
+    [resetCode, router, userId]
+  );
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
       <span className="text-2xl m-auto">Change password</span>
@@ -26,7 +47,7 @@ const ChangePassword = () => {
         control={control}
         errors={errors}
         label="Repeat password"
-        name="password"
+        name="password_repeated"
         required
       />
 

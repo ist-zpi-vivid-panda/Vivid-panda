@@ -1,4 +1,4 @@
-import { apiCall, POST } from '@/app/lib/api/apiUtils';
+import { apiCall, POST, postCall } from '@/app/lib/api/apiUtils';
 import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
 
 export type LoginProps = {
@@ -10,6 +10,15 @@ export type RegisterProps = {
   email: string;
   password: string;
   username?: string;
+};
+
+export type RequestSendPasswordProps = {
+  email: string;
+};
+
+export type ChangePasswordProps = {
+  password: string;
+  password_repeated: string;
 };
 
 export const loginUser = async (loginProps: LoginProps) => {
@@ -40,4 +49,16 @@ export const registerUser = async (registerProps: RegisterProps) => {
   };
 
   return loginData;
+};
+
+export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {
+  const apiResult = await postCall('/auth/request_reset_password', sendPassword);
+
+  return !!apiResult;
+};
+
+export const changePassword = async (changePassword: ChangePasswordProps, resetCode: string, userId: string) => {
+  const apiResult = await postCall(`/auth/reset_password/${resetCode}/${userId}`, changePassword);
+
+  return !!apiResult;
 };

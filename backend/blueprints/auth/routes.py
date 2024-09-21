@@ -99,6 +99,9 @@ def request_reset_password():
 
     user = user_service.get_by_email(email)
 
+    if user is None:
+        return jsonify({"error": "User does not exists"}), 400
+
     send_reset_password_email(user)
 
     return jsonify(success=True)

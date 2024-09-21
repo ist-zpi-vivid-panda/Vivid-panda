@@ -3,6 +3,7 @@ from flask_mailman import EmailMessage
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 import env_vars
+from blueprints.user.models import UserModel
 from emails_services.reset_password_email_html_content import reset_password_email_html_content
 from run_services import user_service
 
@@ -28,7 +29,7 @@ def send_reset_password_email(user):
 
 
 def validate_reset_password_token(token: str, user_id: str):
-    user = user_service.get_by_id(user_id)
+    user: UserModel | None = user_service.get_by_id(user_id)
 
     if user is None:
         return None
@@ -36,7 +37,7 @@ def validate_reset_password_token(token: str, user_id: str):
     serializer = URLSafeTimedSerializer(env_vars.APP_SECRET)
 
     try:
-        token_user_email = serializer.loads(
+        token_user_id = serializer.loads(
             token,
             max_age=env_vars.RESET_PASS_TOKEN_MAX_AGE,
             salt=user.password_hash,
@@ -44,7 +45,7 @@ def validate_reset_password_token(token: str, user_id: str):
     except (BadSignature, SignatureExpired):
         return None
 
-    if token_user_email != user.email:
+    if token_user_id != user.uid:
         return None
 
     return user

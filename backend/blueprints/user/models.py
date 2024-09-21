@@ -48,4 +48,4 @@ class UserModel(BaseModel):
     def generate_reset_password_token(self):
         serializer = URLSafeTimedSerializer(env_vars.APP_SECRET)
 
-        return serializer.dumps(self.email, salt=self.password_hash)
+        return serializer.dumps(self.id, salt=self.password_hash)
