@@ -6,10 +6,6 @@ from typing import Any, Dict
 @dataclass
 class BaseModel(ABC):
     @abstractmethod
-    def set_id(self, _id: str) -> None:
-        pass
-
-    @abstractmethod
     def get_dict_repr(self) -> Dict[str, Any]:
         pass
 

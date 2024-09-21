@@ -73,7 +73,7 @@ export const apiCall = async <T>(method: HttpMethod, resourcePath: string, data?
 
 export const getCall = async <T>(requestUri: string) => <T>apiCall(GET, requestUri);
 
-export const postCall = async (requestUri: string, data: any) => apiCall(POST, requestUri, data);
+export const postCall = async <T>(requestUri: string, data: any) => <T>apiCall(POST, requestUri, data);
 
 export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestUri);
 

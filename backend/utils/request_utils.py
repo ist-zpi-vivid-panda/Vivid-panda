@@ -3,7 +3,7 @@ from functools import wraps
 from typing import Any, Tuple
 
 from flask import Response, jsonify
-from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request, current_user, get_current_user
+from flask_jwt_extended import get_current_user, verify_jwt_in_request
 
 from blueprints.user.models import UserModel
 

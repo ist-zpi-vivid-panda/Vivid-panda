@@ -1,21 +1,28 @@
 import gridfs
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
-from flask_cors import CORS
 
 from config.database import Connection
 from config.env_vars import (
     APP_SECRET,
+    FRONTEND_URL,
     GOOGLE_CLIENT_ID,
     JWT_ACCESS_TOKEN_EXPIRES,
     JWT_SECRET_KEY,
+    MAIL_DEFAULT_SENDER,
+    MAIL_PASSWORD,
+    MAIL_PORT,
+    MAIL_SERVER,
+    MAIL_USE_SSL,
+    MAIL_USE_TLS,
+    MAIL_USERNAME,
+    MAX_CONTENT_LENGTH,
     MONGO_DB_NAME,
     TEMPLATE_FOLDER,
-    MAX_CONTENT_LENGTH,
-    FRONTEND_URL,
 )
 
 marshmallow = Marshmallow()
@@ -36,6 +43,14 @@ def create_app() -> Flask:
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = JWT_ACCESS_TOKEN_EXPIRES
 
     app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
+
+    app.config["MAIL_SERVER"] = MAIL_SERVER
+    app.config["MAIL_PORT"] = MAIL_PORT
+    app.config["MAIL_USE_TLS"] = MAIL_USE_TLS
+    app.config["MAIL_USE_SSL"] = MAIL_USE_SSL
+    app.config["MAIL_USERNAME"] = MAIL_USERNAME
+    app.config["MAIL_PASSWORD"] = MAIL_PASSWORD
+    app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER
 
     app.url_map.strict_slashes = False
 

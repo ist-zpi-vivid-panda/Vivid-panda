@@ -1,12 +1,13 @@
 import base64
 import io
-from typing import Any, Mapping, Tuple, Dict
+from typing import Any, Dict, Mapping, Tuple
 
 import gridfs
 from bson.objectid import ObjectId
 from flask import Request, Response, jsonify
 from gridfs import GridOut
 from marshmallow import ValidationError
+from PIL import Image
 from pymongo.collection import Collection
 from werkzeug.datastructures.file_storage import FileStorage
 
@@ -14,8 +15,6 @@ from app import database, grid_fs
 from blueprints.files.models import FileInfoModel
 from schemas.file import FileDataSchema
 from utils.service_utils import BaseCRUDService, Pagination
-
-from PIL import Image
 
 try:
     file_info_collection = database["file_info"]

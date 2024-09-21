@@ -1,4 +1,4 @@
-import { apiCall, ApiResponse, POST } from '@/app/lib/api/apiUtils';
+import { apiCall, ApiResponse, POST, postCall } from '@/app/lib/api/apiUtils';
 import { UserInfo } from '@/app/lib/storage/useUserData';
 
 export type LoginProps = {
@@ -10,6 +10,15 @@ export type RegisterProps = {
   email: string;
   password: string;
   username?: string;
+};
+
+export type RequestSendPasswordProps = {
+  email: string;
+};
+
+export type ChangePasswordProps = {
+  password: string;
+  password_repeated: string;
 };
 
 export type AuthResult = {
@@ -29,13 +38,26 @@ const auth = (apiResult: ApiResponse<AuthResult>) => {
 };
 
 export const loginUser = async (loginProps: LoginProps) => {
-  const apiResult = await apiCall<AuthResult>(POST, '/auth/login', loginProps);
+  const apiResult = await postCall<AuthResult>('/auth/login', loginProps);
 
   return auth(apiResult);
 };
 
 export const registerUser = async (registerProps: RegisterProps) => {
-  const apiResult = await apiCall<AuthResult>(POST, '/auth/register', registerProps);
+  const apiResult = await postCall<AuthResult>('/auth/register', registerProps);
 
   return auth(apiResult);
+};
+
+export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {
+  const apiResult = await postCall('/auth/request_reset_password', sendPassword);
+
+  return !!apiResult;
+};
+
+export const changePassword = async (changePassword: ChangePasswordProps, resetCode: string, userId: string) => {
+  console.log("duap8");
+  const apiResult = await postCall(`/auth/reset_password?token=${resetCode}&user_id=${userId}`, changePassword);
+
+  return !!apiResult;
 };
