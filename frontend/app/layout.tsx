@@ -1,7 +1,6 @@
 import Providers from '@/app/providers';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import { ToastContainer, toast } from 'react-toastify';
 
 import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,7 +34,6 @@ const RootLayout = ({
 }>) => (
   <html lang="en">
     <body className={inter.className}>
-      <ToastContainer />
       <Providers>{children}</Providers>
     </body>
   </html>

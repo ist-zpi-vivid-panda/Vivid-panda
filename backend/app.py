@@ -1,7 +1,6 @@
 import gridfs
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
@@ -26,7 +25,6 @@ from config.env_vars import (
 )
 
 marshmallow = Marshmallow()
-jwt = JWTManager()
 oauth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 database = Connection(MONGO_DB_NAME)
 grid_fs = gridfs.GridFS(database)
@@ -61,14 +59,13 @@ def create_app() -> Flask:
         origins=FRONTEND_URL,
         allow_headers=["Content-Type", "Authorization"],
     )
+    from config.jwt_config import JWTConfig
+
+    jwt = JWTConfig()
+
     marshmallow.init_app(app)
     jwt.init_app(app)
-    # register_cors(app)
     mail.init_app(app)
-
-    from config.jwt_config import config_jwt
-
-    config_jwt(jwt)
 
     from blueprints.auth.routes import auth_blueprint
     from blueprints.core.routes import core_blueprint

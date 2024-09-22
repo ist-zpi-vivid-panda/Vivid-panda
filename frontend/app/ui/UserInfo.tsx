@@ -8,9 +8,12 @@ import { useRouter } from 'next/navigation';
 
 import { DropdownItemProps } from './shared/dropdown/DropdownItem';
 import DropdownMenu from './shared/dropdown/DropdownMenu';
+import { useUserInfo, useUserProfilePicture } from '../lib/api/userApi';
 
 const UserInfo = () => {
-  const { userName, email, profilePicture, logout } = useUserData();
+  const { logout } = useUserData();
+  const { email, username } = useUserInfo().data;
+  const { data: profilePicture } = useUserProfilePicture().data;
   const router = useRouter();
 
   const navigateToImages = useCallback(() => {
@@ -28,8 +31,8 @@ const UserInfo = () => {
   return (
     <div className="primaryBackground flex flex-row fixed top-0 right-0 p-3 rounded-bl-xl">
       <div className="flex flex-col flex-wrap">
-        <span>{userName || 'userName'}</span>
-        <span className="font-light">{email || 'test-email@vivid-panda.com'}</span>
+        <span>{username}</span>
+        <span className="font-light">{email}</span>
 
         <DropdownMenu options={dropdownOptions} text={'Options'} />
       </div>

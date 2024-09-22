@@ -1,4 +1,4 @@
-import { clearAllQueries } from '@/app/lib/storage/getQueryClient';
+import { invalidateAllQueries, removeAllQueries } from '@/app/lib/storage/getQueryClient';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
@@ -6,9 +6,6 @@ export type UserInfo = {
   language?: string;
   accessToken?: string;
   refreshToken?: string;
-  userName?: string;
-  email?: string;
-  profilePicture?: string;
 };
 
 export type UserInfoStore = {
@@ -22,9 +19,6 @@ const EMPTY_USER_INFO: UserInfo = {
   language: undefined,
   accessToken: undefined,
   refreshToken: undefined,
-  profilePicture: undefined,
-  userName: undefined,
-  email: undefined,
 };
 
 const useUserData = create<UserInfoStore>()(
@@ -35,14 +29,20 @@ const useUserData = create<UserInfoStore>()(
         login: (loginData: UserInfo) => {
           console.log('LOGIN');
 
-          return set({ ...loginData });
+          const result = set({ ...loginData });
+
+          invalidateAllQueries();
+
+          return result;
         },
         logout: () => {
           console.log('LOGOUT');
 
-          clearAllQueries();
+          const result = set({ ...EMPTY_USER_INFO });
 
-          return set({ ...EMPTY_USER_INFO });
+          invalidateAllQueries();
+
+          return result;
         },
       }),
       {

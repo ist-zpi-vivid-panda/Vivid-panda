@@ -17,19 +17,22 @@ class UserService(BaseCRUDService):
         return users_collection
 
     def get_by_identifier(self, user: UserModel) -> UserModel | None:
-        return self.get_by_email(user.email.upper())
+        return self.get_by_email(user.email)
 
     def map_from_db(self, data) -> UserModel:
         return UserModel(
             uid=str(data["_id"]),
-            email=data["email"],
+            email=data["email"].lower(),
             username=data["username"],
             password_hash=data["password_hash"],
             provider=AccountDataProvider(data["provider"]),
+            profile_picture_grid_fs_id=str(data["profile_picture_grid_fs_id"])
+            if data["profile_picture_grid_fs_id"]
+            else None,
         )
 
     def get_id(self, user: UserModel) -> str:
         return user.uid
 
     def get_by_email(self, email: str) -> UserModel | None:
-        return super().get_one_by({"email": email.upper()})
+        return super().get_one_by({"email": email.lower()})

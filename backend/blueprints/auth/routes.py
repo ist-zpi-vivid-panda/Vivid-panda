@@ -16,6 +16,7 @@ from blueprints.user.models import AccountDataProvider, UserModel
 from config.env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_DISCOVERY_URL
 from run_services import user_service
 from schemas.auth import LoginSchema, RegisterSchema, ResetPasswordSchema, SendEmailRequestSchema
+from utils.request_utils import error_dict, validation_errors_dict
 
 # Short-lived tokens mean that we do not need a blocklist
 # and the fact that we use JWT in headers means that there is no need for a logout endpoint.
@@ -43,24 +44,18 @@ def register() -> Tuple[Response, int] | Response:
     register_schema = RegisterSchema()
     errors = register_schema.validate(request.json)
     if errors:
-        return jsonify({"errors": errors}), 400
+        return jsonify(validation_errors_dict(errors)), 400
 
     email: str = request.json.get("email")
     username: str = request.json.get("username", None)
     # password is sent through HTTPS thus this is safe
     password: str = request.json.get("password")
 
-    user = UserModel(
-        None,
-        email.upper(),
-        username,
-        generate_password_hash(password),
-        AccountDataProvider.LOCAL,
-    )
+    user = UserModel(None, email, username, generate_password_hash(password), AccountDataProvider.LOCAL, None)
     result = user_service.insert(user)
 
     if result is None:
-        return jsonify({"error": "Email already registered"}), 400
+        return jsonify(error_dict("Email already registered")), 400
 
     return create_tokens(user)
 
@@ -70,17 +65,17 @@ def login() -> Tuple[Response, int] | Response:
     login_schema = LoginSchema()
     errors = login_schema.validate(request.json)
     if errors:
-        return jsonify({"errors": errors}), 400
+        return jsonify(validation_errors_dict(errors)), 400
 
     email = request.json["email"]
     password = request.json["password"]
 
     user = user_service.get_by_email(email)
     if user is None or not check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid username or password"}), 401
+        return jsonify(error_dict("Invalid username or password")), 401
 
     if user.provider != AccountDataProvider.LOCAL:
-        return jsonify({"error": "Account already exists for another provider"}), 400
+        return jsonify(error_dict("Account already exists for another provider")), 400
 
     return create_tokens(user)
 
@@ -101,17 +96,17 @@ def request_reset_password() -> Tuple[Response, int] | Response:
     send_email_password_schema = SendEmailRequestSchema()
     errors = send_email_password_schema.validate(request.json)
     if errors:
-        return jsonify({"errors": errors}), 400
+        return jsonify(validation_errors_dict(errors)), 400
 
     email = request.json.get("email")
 
     user = user_service.get_by_email(email)
 
     if user is None:
-        return jsonify({"error": "User does not exists"}), 400
+        return jsonify(error_dict("User does not exists")), 400
 
     if user.provider != AccountDataProvider.LOCAL:
-        return jsonify({"error": "Cannot reset password for this account provider"}), 400
+        return jsonify(error_dict("Cannot reset password for this account provider")), 400
 
     send_reset_password_email(user)
 
@@ -124,21 +119,21 @@ def reset_password() -> Tuple[Response, int] | Response:
     user_id = request.args.get("user_id")
 
     if (user := validate_reset_password_token(token, user_id)) is None:
-        return jsonify({"error": "Token expired"}), 400
+        return jsonify(error_dict("Token expired")), 400
 
     reset_password_schema = ResetPasswordSchema()
     errors = reset_password_schema.validate(request.json)
     if errors:
-        return jsonify({"errors": errors}), 400
+        return jsonify(validation_errors_dict(errors)), 400
 
     password = request.json["password"]
     password_repeated = request.json["password_repeated"]
 
     if not password == password_repeated:
-        return jsonify({"error": "Passwords are not the same"}), 400
+        return jsonify(error_dict("Passwords are not the same")), 400
 
     if user is None or check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Passwords cannot be the same as previous password"}), 400
+        return jsonify(error_dict("Passwords cannot be the same as previous password")), 400
 
     user.password_hash = generate_password_hash(password)
     user_service.update(user)
@@ -189,18 +184,18 @@ def callback_google() -> Tuple[Response, int] | Response:
     userinfo = userinfo_response.json()
     if not userinfo.get("email_verified"):
         return (
-            jsonify({"error": "User email not available or not verified by Google"}),
+            jsonify(error_dict("User email not available or not verified by Google")),
             400,
         )
 
-    email = userinfo["email"].upper()
+    email = userinfo["email"]
     username = userinfo["given_name"]
 
     user = user_service.get_by_email(email)
     if user is None:
-        user = UserModel(None, email, username, "", AccountDataProvider.GOOGLE)
+        user = UserModel(None, email, username, "", AccountDataProvider.GOOGLE, None)
         user_service.insert(user)
     elif user.provider != AccountDataProvider.GOOGLE:
-        return jsonify({"error": "Account already exists for another provider"}), 400
+        return jsonify(error_dict("Account already exists for another provider")), 400
 
     return create_tokens(user)

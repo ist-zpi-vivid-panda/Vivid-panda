@@ -7,7 +7,11 @@ import { toast } from 'react-toastify';
 
 export type ErrorApiResponse = { error: string };
 
+export type ValidationErrorsApiResponse = { validation_errors: Record<string, string[]> };
+
 export type ApiResponse<T> = ErrorApiResponse | T;
+
+export type ApiResponseWithValidationErrors<T> = ValidationErrorsApiResponse | ApiResponse<T>;
 
 export const GET = 'GET' as const;
 export const PUT = 'PUT' as const;
@@ -18,7 +22,7 @@ type HttpMethod = typeof GET | typeof PUT | typeof POST | typeof DELETE;
 
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
 
-export const apiCallNoAutoConfig = async <T>(
+export const apiCallNoAutoConfig = async <T extends object>(
   method: HttpMethod,
   fullUri: string,
   token?: string,
@@ -45,26 +49,34 @@ export const apiCallNoAutoConfig = async <T>(
     ...(body && { body }),
   });
 
-  const responseBody = await response.json();
+  const responseBody: ApiResponseWithValidationErrors<T> = await response.json();
 
   if (!response.ok) {
     console.warn('error on: ', method, fullUri);
-    const projectedResponse = responseBody as ErrorApiResponse;
 
     if (response.status === 403) {
       // shady actions!
       logout?.();
     }
 
-    toast.error(projectedResponse.error);
+    if ('validation_errors' in responseBody) {
+      for (const error in responseBody.validation_errors) {
+        toast.error(`${error}: ${responseBody.validation_errors[error]}`);
+      }
+
+      throw new Error(JSON.stringify(responseBody.validation_errors));
+    }
+
+    if ('error' in responseBody) {
+      throw new Error(responseBody.error);
+    }
   }
 
-  console.log('RESPONSE:', responseBody);
-
-  return responseBody;
+  // checked for validation so casting to ApiResponse<T> is OK
+  return responseBody as T;
 };
 
-export const apiCall = async <T>(method: HttpMethod, resourcePath: string, data?: any) => {
+export const apiCall = async <T extends object>(method: HttpMethod, resourcePath: string, data?: any) => {
   const { accessToken } = useUserData.getState();
   const fullUri = buildWholeApiUri(resourcePath);
 
@@ -83,8 +95,6 @@ export const putCall = async (requestUri: string, data: any) => apiCall(PUT, req
 export const useInvalidationMutation = (
   mutationFn: {
     (data: any): Promise<any>;
-    (data: any): Promise<any>;
-    (data: any): Promise<any>;
   },
   invalidationFn: () => unknown
 ) =>
@@ -99,11 +109,11 @@ export const useGetQuery = <T>(queryKey: string[], requestUri: string) =>
 export const prefetchGetQuery = <T>(queryKey: string[], requestUri: string) =>
   getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
 
-export const usePostMutation = <T>(invalidationFn: any, requestUri: string) =>
+export const usePostMutation = <T>(invalidationFn: () => unknown, requestUri: string) =>
   useInvalidationMutation((data: T) => postCall(requestUri, data), invalidationFn);
 
-export const useDeleteMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+export const useDeleteMutation = <T>(invalidationFn: () => unknown, requestUriFn: (_: T) => string) =>
   useInvalidationMutation((data: T) => deleteCall(requestUriFn(data)), invalidationFn);
 
-export const useUpdateMutation = <T>(invalidationFn: any, requestUriFn: (_: T) => string) =>
+export const useUpdateMutation = <T>(invalidationFn: () => unknown, requestUriFn: (_: T) => string) =>
   useInvalidationMutation((data: T) => putCall(requestUriFn(data), data), invalidationFn);

@@ -1,4 +1,3 @@
-
 from app import create_app
 from config.env_vars import APP_HOST, APP_PORT, DEBUG
 

@@ -6,4 +6,4 @@ const configs = Object.freeze({
   DEV: ApiConfig_LOCALHOST,
 });
 
-export default configs['DEV'];
+export default configs.DEV;

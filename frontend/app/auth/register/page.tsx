@@ -1,6 +1,4 @@
-import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import Register from '@/app/ui/auth/Register';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
@@ -11,13 +9,7 @@ export const metadata: Metadata = {
 // ------------------ end :: metadata ------------------
 
 const RegisterPage = () => {
-  const queryClient = getQueryClient();
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Register />
-    </HydrationBoundary>
-  );
+  return <Register />;
 };
 
 export default RegisterPage;
