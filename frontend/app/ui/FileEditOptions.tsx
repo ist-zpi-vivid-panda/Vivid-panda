@@ -13,18 +13,18 @@ import { IoIosColorPalette } from "react-icons/io";
 import { IoIosColorFilter } from "react-icons/io";
 
 export const fileEditListOptions = () => {
-return (
-    <div>
-    <p>Scissors</p><FaScissors />
-    <p>Brush</p><FaPaintbrush />
-    <p>Wand</p><FaWandSparkles />
-    <p>Bucket</p><FaBucket />
-    <p>Change brightness</p><FaSun />
-    <p>Resize</p><GiResize />
-    <p>Eraser</p><LuEraser />
-    <p>Text</p><IoText />
-    <p>Change color</p><IoIosColorPalette />
-    <p>Rotate</p><FaArrowRotateRight />
-    <p>Add filter</p><IoIosColorFilter />
-    </div>
-)};
+    return (
+        <div style={{ fontSize: '20px', gap: '10px'}}>
+            <p>Scissors</p><FaScissors />
+            <p>Brush</p><FaPaintbrush />
+            <p>Wand</p><FaWandSparkles />
+            <p>Bucket</p><FaBucket />
+            <p>Change brightness</p><FaSun />
+            <p>Resize</p><GiResize />
+            <p>Eraser</p><LuEraser />
+            <p>Text</p><IoText />
+            <p>Change color</p><IoIosColorPalette />
+            <p>Rotate</p><FaArrowRotateRight />
+            <p>Add filter</p><IoIosColorFilter />
+        </div>
+    )};
