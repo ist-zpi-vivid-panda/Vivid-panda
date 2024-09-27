@@ -10,7 +10,7 @@ type ValidationSchema = {
 
 const VALIDATION_QUERY_KEY = 'validation-qk' as const;
 
-const VALIDATION_ENDPOINT = '/validation' as const;
+const VALIDATION_ENDPOINT = '/swagger' as const;
 
 export const useValidationData = () => useGetQuery<ValidationSchema>([VALIDATION_QUERY_KEY], VALIDATION_ENDPOINT);
 

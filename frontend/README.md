@@ -6,9 +6,7 @@ Best `ZPI` in the entire universe, don't change my mind
 
 - api/ui/shared - UI components that are used across the entire app like buttons
 - app/ui - reusable components, less atomic components such as headers, footers
-- storage - managing anything storage or cache related
-- utilities - any utils/helpers
-- api - anything related to calling the API
+- app/lib - anything related to any non UI components like API integration
 - app - project template created folder used for routing
 - public - all files available to user like the favicon
 
@@ -29,23 +27,24 @@ If you are creating functions that are used in client/server components add `'us
 
 ## Getting Started
 
-First, run the development server:
+- Install dependencies using
+    ```bash
+    npm install
+    ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Run the development server:
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    # or
+    pnpm dev
+    # or
+    bun dev
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Learn More
 

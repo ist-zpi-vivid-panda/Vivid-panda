@@ -1,5 +1,5 @@
-import { ApiResponse, postCall } from '@/app/lib/api/apiUtils';
-import { UserInfo } from '@/app/lib/storage/useUserData';
+import { apiCallNoAutoToken, POST, postCall } from '@/app/lib/api/apiUtils';
+import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
 import { toast } from 'react-toastify';
 
 export type LoginProps = {
@@ -22,16 +22,20 @@ export type ChangePasswordProps = {
   password_repeated: string;
 };
 
-export type AuthResult = {
+export type AccessTokenResult = {
   access_token: string;
+};
+
+export type AuthResult = AccessTokenResult & {
   refresh_token: string;
 };
 
 const AUTH_ENDPOINT = '/auth' as const;
 const LOGIN_ENDPOINT = '/login' as const;
 const REGISTER_ENDPOINT = '/register' as const;
-const REQUEST_RESET_PASSWORD_ENDPOINT = 'request_reset_password' as const;
-const RESET_PASSWORD_ENDPOINT = 'reset_password' as const;
+const REQUEST_RESET_PASSWORD_ENDPOINT = '/request_reset_password' as const;
+const RESET_PASSWORD_ENDPOINT = '/reset_password' as const;
+const REFRESH_TOKENS_ENDPOINT = '/refresh' as const;
 
 const TOKEN_QS = 'token' as const;
 const USER_ID_QS = 'user_id' as const;
@@ -59,13 +63,11 @@ const auth = async (apiCallFn: () => Promise<AuthResult>) => {
   }
 };
 
-export const loginUser = async (loginProps: LoginProps) => {
-  return auth(() => postCall<AuthResult>(AUTH_ENDPOINT + LOGIN_ENDPOINT, loginProps));
-};
+export const loginUser = async (loginProps: LoginProps) =>
+  auth(() => postCall<AuthResult>(AUTH_ENDPOINT + LOGIN_ENDPOINT, loginProps));
 
-export const registerUser = async (registerProps: RegisterProps) => {
-  return auth(() => postCall<AuthResult>(AUTH_ENDPOINT + REGISTER_ENDPOINT, registerProps));
-};
+export const registerUser = async (registerProps: RegisterProps) =>
+  auth(() => postCall<AuthResult>(AUTH_ENDPOINT + REGISTER_ENDPOINT, registerProps));
 
 export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {
   const apiResult = await postCall(AUTH_ENDPOINT + REQUEST_RESET_PASSWORD_ENDPOINT, sendPassword);
@@ -80,4 +82,25 @@ export const changePassword = async (changePassword: ChangePasswordProps, resetC
   );
 
   return !!apiResult;
+};
+
+export const refreshToken = async () => {
+  const { refreshToken, login, ...restOfLoginProps } = useUserData.getState();
+
+  const apiResult = await apiCallNoAutoToken<AccessTokenResult>(
+    POST,
+    AUTH_ENDPOINT + REFRESH_TOKENS_ENDPOINT,
+    refreshToken
+  );
+
+  if (!apiResult.access_token) {
+    return;
+  }
+
+  const userInfo: UserInfo = {
+    ...restOfLoginProps,
+    accessToken: apiResult.access_token,
+  };
+
+  login(userInfo);
 };

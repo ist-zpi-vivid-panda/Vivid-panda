@@ -1,9 +1,10 @@
+import 'react-toastify/dist/ReactToastify.css';
+import './globals.css';
+
 import Providers from '@/app/providers';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-
-import './globals.css';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 import { Children } from './lib/definitions';
 
@@ -34,7 +35,11 @@ const RootLayout = ({
 }>) => (
   <html lang="en">
     <body className={inter.className}>
-      <Providers>{children}</Providers>
+      <Providers>
+        <ToastContainer />
+
+        {children}
+      </Providers>
     </body>
   </html>
 );

@@ -1,4 +1,4 @@
-import { invalidateAllQueries, removeAllQueries } from '@/app/lib/storage/getQueryClient';
+import { clearQueryCache, invalidateAllQueries } from '@/app/lib/storage/getQueryClient';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
@@ -41,6 +41,7 @@ const useUserData = create<UserInfoStore>()(
           const result = set({ ...EMPTY_USER_INFO });
 
           invalidateAllQueries();
+          clearQueryCache();
 
           return result;
         },

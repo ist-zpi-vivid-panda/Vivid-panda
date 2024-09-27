@@ -27,7 +27,6 @@ export type FileInfo = {
 };
 
 export type FileInfoEditDTO = {
-  id: string;
   filename: string;
 };
 
@@ -35,7 +34,7 @@ const FILES_QUERY_KEY = 'files-qk' as const;
 
 const FILES_ENDPOINT = '/files' as const;
 
-const getFileUrl = (file: { id: string }) => FILES_ENDPOINT + file.id;
+const getFileUrl = (id: string) => `${FILES_ENDPOINT}/${id}`;
 
 export const invalidateFiles = async (id?: string) => await invalidate(id ? [FILES_QUERY_KEY, id] : [FILES_QUERY_KEY]);
 

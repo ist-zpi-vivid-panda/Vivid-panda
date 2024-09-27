@@ -8,7 +8,7 @@ export enum SchemaNames {
   ResetPasswordSchema = 'ResetPasswordSchema',
 
   // files
-  FileInfoSchema = 'FileInfoSchema',
+  FileInfoEditSchema = 'FileInfoEditSchema',
   FileDataSchema = 'FileDataSchema',
 }
 

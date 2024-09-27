@@ -35,7 +35,7 @@ export const getQueryClient = () => {
   }
 };
 
-export const clearAllQueries = () => getQueryClient().clear();
+export const clearQueryCache = () => getQueryClient().clear();
 export const invalidateAllQueries = async () => getQueryClient().invalidateQueries();
 export const removeAllQueries = () => getQueryClient().removeQueries();
 

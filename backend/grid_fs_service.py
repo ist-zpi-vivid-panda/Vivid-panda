@@ -1,6 +1,6 @@
 import base64
 import io
-from typing import Tuple
+from typing import Any, Dict, Tuple
 
 import gridfs
 from bson import ObjectId
@@ -47,7 +47,7 @@ def get_image_thumbnail(file_id: str) -> str:
 
     img.thumbnail((150, 150))
     thumb_io = io.BytesIO()
-    img.save(thumb_io, format="JPEG")
+    img.save(thumb_io, format=img.format)
     thumb_io.seek(0)
 
     return base64.b64encode(thumb_io.getvalue()).decode()
@@ -69,3 +69,9 @@ def validate_file_data(request: Request) -> Tuple[Response, int] | FileStorage:
         return jsonify(error_dict(str(err.messages))), 400
 
     return file
+
+
+def add_thumbnail(obj_dict: Dict[str, Any], grid_fs_id: str) -> Dict[str, Any]:
+    thumbnail = get_image_thumbnail(grid_fs_id)
+    obj_dict["thumbnail"] = thumbnail
+    return obj_dict

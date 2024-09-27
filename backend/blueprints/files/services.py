@@ -1,11 +1,11 @@
-from typing import Any, Dict, Mapping
+from typing import Any, Mapping
 
 from bson.objectid import ObjectId
 from pymongo.collection import Collection
 
 from app import database
 from blueprints.files.models import FileInfoModel
-from grid_fs_service import get_image_thumbnail
+from grid_fs_service import add_thumbnail
 from utils.service_utils import BaseCRUDService, Pagination
 
 try:
@@ -41,13 +41,8 @@ class FileInfoService(BaseCRUDService):
     def get_paginated_by_owner_id(self, owner_id: str, page: int, per_page: int) -> Pagination:
         resulting_page = super().get_all_by_paginated({"owner_id": ObjectId(owner_id)}, page, per_page)
 
-        def add_thumbnail(file: Dict[str, Any], grid_fs_id: str) -> Dict[str, Any]:
-            thumbnail = get_image_thumbnail(grid_fs_id)
-            file["thumbnail"] = thumbnail
-            return file
-
         resulting_page.collection = [
-            add_thumbnail(file=file.get_dto(), grid_fs_id=file.grid_fs_id) for file in resulting_page.collection
+            add_thumbnail(obj_dict=file.get_dto(), grid_fs_id=file.grid_fs_id) for file in resulting_page.collection
         ]
 
         return resulting_page

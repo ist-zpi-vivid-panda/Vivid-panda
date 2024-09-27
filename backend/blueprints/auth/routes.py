@@ -5,7 +5,7 @@ from flask import Blueprint, Response, json, jsonify, redirect, request, url_for
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_jwt_identity,
+    get_current_user,
     jwt_required,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -83,12 +83,12 @@ def login() -> Tuple[Response, int] | Response:
 @auth_blueprint.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)  # only refresh tokens can access this
 def refresh() -> Tuple[Response, int] | Response:
-    user: UserModel | None = get_jwt_identity()
+    user: UserModel | None = get_current_user()
     if user is None:
         return jsonify(success=False), 401
 
     access_token = create_access_token_for_user(user)
-    return jsonify(access_token)
+    return jsonify({"access_token": access_token})
 
 
 @auth_blueprint.route("/request_reset_password", methods=["POST"])
