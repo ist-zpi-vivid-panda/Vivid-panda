@@ -49,7 +49,7 @@ export const useFilesData = () =>
     ),
   });
 
-export const usePostFileMutation = () => usePostMutation<File>(invalidateFiles, FILES_ENDPOINT);
+export const usePostFileMutation = () => usePostMutation<File>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
 
 export const useUpdateFileMutation = () => useUpdateMutation<FileInfoEditDTO>(invalidateFiles, getFileUrl);
 

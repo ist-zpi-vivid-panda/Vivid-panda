@@ -29,7 +29,11 @@ def get_user(user: UserModel) -> Tuple[Response, int] | Response:
 @user_required
 def get_user_profile_picture(user: UserModel) -> Tuple[Response, int] | Response:
     return jsonify(
-        {"data": get_file_grid_fs(user.profile_picture_grid_fs_id) if user.profile_picture_grid_fs_id else None}
+        {
+            "data": get_file_grid_fs(user.profile_picture_grid_fs_id)
+            if user.profile_picture_grid_fs_id is not None
+            else None
+        }
     )
 
 

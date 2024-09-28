@@ -20,9 +20,6 @@ class FileInfoService(BaseCRUDService):
     def get_collection(self) -> Collection[Mapping[str, Any]]:
         return file_info_collection
 
-    def get_by_identifier(self, file: FileInfoModel) -> FileInfoModel | None:
-        return super().get_one_by({"_id": file.file_id})
-
     def map_from_db(self, data) -> FileInfoModel:
         return FileInfoModel(
             file_id=str(data["_id"]),

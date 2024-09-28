@@ -137,8 +137,8 @@ export const useGetQuery = <T>(queryKey: string[], requestUri: string) =>
 export const prefetchGetQuery = <T>(queryKey: string[], requestUri: string) =>
   getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
 
-export const usePostMutation = <T>(invalidationFn: () => void, requestUri: string) =>
-  useInvalidationMutation<T>((data: T) => postCall(requestUri, data), invalidationFn);
+export const usePostMutation = <T>(invalidationFn: () => void, requestUri: string, formatFn?: (_: T) => any) =>
+  useInvalidationMutation<T>((data: T) => postCall(requestUri, formatFn?.(data) ?? data), invalidationFn);
 
 export const useDeleteMutation = <T>(invalidationFn: () => void, requestUriFn: (_: T) => string) =>
   useInvalidationMutation<T>((data: T) => deleteCall(requestUriFn(data)), invalidationFn);

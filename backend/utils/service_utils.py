@@ -33,10 +33,6 @@ class BaseCRUDService(ABC):
         pass
 
     @abstractmethod
-    def get_by_identifier(self, data: T) -> T | None:
-        pass
-
-    @abstractmethod
     def map_from_db(self, data) -> T:
         pass
 
@@ -51,7 +47,9 @@ class BaseCRUDService(ABC):
         return self.get_one_by({"_id": ObjectId(_id)})
 
     def insert(self, data: T) -> str | None:
-        if self.get_by_identifier(data) is not None:
+        data_id = self.get_id(data)
+
+        if not (data_id is None or self.get_by_id(data_id) is None):
             return None
 
         return str(self.get_collection().insert_one(data.get_dict_repr()).inserted_id)
@@ -64,7 +62,7 @@ class BaseCRUDService(ABC):
         )
 
     def delete(self, data: T) -> bool:
-        old_data = self.get_by_identifier(data)
+        old_data = self.get_by_id(self.get_id(data))
         if old_data is None:
             return False
 
@@ -73,10 +71,10 @@ class BaseCRUDService(ABC):
     def get_one_by(self, identifier: Dict[str, Any]) -> T | None:
         data = self.get_collection().find_one(identifier)
 
-        if data:
-            return self.map_from_db(data)
+        if data is None:
+            return None
 
-        return None
+        return self.map_from_db(data)
 
     # pagination starts on 1
     def get_all_by_paginated(self, identifier: Dict[str, Any], page: int, per_page: int) -> Pagination:

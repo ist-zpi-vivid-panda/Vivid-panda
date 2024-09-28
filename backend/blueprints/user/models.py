@@ -38,7 +38,7 @@ class UserModel(BaseModel):
             "provider": self.provider.value,
             "password_hash": self.password_hash,
             "profile_picture_grid_fs_id": ObjectId(self.profile_picture_grid_fs_id)
-            if self.profile_picture_grid_fs_id
+            if self.profile_picture_grid_fs_id is not None
             else None,
         }
 

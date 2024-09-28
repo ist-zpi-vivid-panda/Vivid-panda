@@ -16,9 +16,6 @@ class UserService(BaseCRUDService):
     def get_collection(self) -> Collection[Mapping[str, Any]]:
         return users_collection
 
-    def get_by_identifier(self, user: UserModel) -> UserModel | None:
-        return self.get_by_email(user.email)
-
     def map_from_db(self, data) -> UserModel:
         return UserModel(
             uid=str(data["_id"]),

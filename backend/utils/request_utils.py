@@ -4,12 +4,11 @@ from typing import Any, Dict, List, Tuple, Type
 
 from flask import Response, jsonify
 from flask_apispec import doc, marshal_with
-from flask_jwt_extended import get_current_user, verify_jwt_in_request, jwt_required
+from flask_jwt_extended import get_current_user, jwt_required, verify_jwt_in_request
 from marshmallow import Schema
 
 from blueprints.user.models import UserModel
 from config.doc_config import get_security
-from schemas.responses import ErrorSchema
 
 
 def error_dict(message: str) -> Dict[str, Any]:
