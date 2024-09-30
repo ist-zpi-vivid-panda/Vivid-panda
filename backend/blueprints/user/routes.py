@@ -1,32 +1,36 @@
 from typing import Tuple
 
-from flask import Blueprint, Response, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask import Blueprint, Response, jsonify
 from werkzeug.datastructures.file_storage import FileStorage
 
 from blueprints.user.models import UserModel
-from grid_fs_service import get_file_grid_fs, put_file_on_grid_fs, update_file_on_grid_fs, validate_file_data
-from run_services import user_service
-from utils.request_utils import error_dict, user_required
+from grid_fs_service import get_file_grid_fs, put_file_on_grid_fs, update_file_on_grid_fs
+from schemas.file import FileDataSchema
+from schemas.responses import ErrorSchema, SuccessSchema
+from schemas.user import UserModelSchema, UserProfilePictureSchema
+from utils.request_utils import doc_endpoint, error_dict, success_dict
 
 users_blueprint = Blueprint("users", __name__)
 
-
-@users_blueprint.route("/all", methods=["GET"])
-def get_all_users() -> Tuple[Response, int] | Response:
-    return jsonify(user_service.get_all_list())
+tags = ["Users"]
 
 
 @users_blueprint.route("/", methods=["GET"])
-@jwt_required()
-@user_required
+@doc_endpoint(
+    description="Get current user data",
+    tags=tags,
+    response_schemas=[(UserModelSchema, 200)],
+)
 def get_user(user: UserModel) -> Tuple[Response, int] | Response:
     return jsonify(user.get_dto())
 
 
 @users_blueprint.route("/profile-picture", methods=["GET"])
-@jwt_required()
-@user_required
+@doc_endpoint(
+    description="Get current user profile picture",
+    tags=tags,
+    response_schemas=[(UserProfilePictureSchema, 200)],
+)
 def get_user_profile_picture(user: UserModel) -> Tuple[Response, int] | Response:
     return jsonify(
         {
@@ -38,21 +42,21 @@ def get_user_profile_picture(user: UserModel) -> Tuple[Response, int] | Response
 
 
 @users_blueprint.route("/profile-picture", methods=["POST"])
-@jwt_required()
-@user_required
-def upsert_user_profile_picture(user: UserModel) -> Tuple[Response, int] | Response:
-    file_data_or_response = validate_file_data(request)
-
-    if not isinstance(file_data_or_response, FileStorage):
-        return file_data_or_response
-
+@doc_endpoint(
+    description="Get current user profile picture",
+    tags=tags,
+    input_schema=FileDataSchema,
+    response_schemas=[(SuccessSchema, 200), (ErrorSchema, 400)],
+    location="files",
+)
+def upsert_user_profile_picture(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     file_id_grid_fs = (
-        put_file_on_grid_fs(file_data_or_response)
+        put_file_on_grid_fs(file)
         if user.profile_picture_grid_fs_id is None
-        else update_file_on_grid_fs(file_data_or_response, user.profile_picture_grid_fs_id)
+        else update_file_on_grid_fs(file, user.profile_picture_grid_fs_id)
     )
 
     if file_id_grid_fs is None:
-        return jsonify(error_dict("File not saved")), 400
+        return error_dict("File not saved"), 400
 
-    return jsonify(success=True)
+    return success_dict(True)

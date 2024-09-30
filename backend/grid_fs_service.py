@@ -4,7 +4,7 @@ from typing import Any, Dict, Tuple
 
 import gridfs
 from bson import ObjectId
-from flask import Request, Response, jsonify
+from flask import Request
 from gridfs import GridOut
 from marshmallow import ValidationError
 from PIL import Image
@@ -53,20 +53,20 @@ def get_image_thumbnail(file_id: str) -> str:
     return base64.b64encode(thumb_io.getvalue()).decode()
 
 
-def validate_file_data(request: Request) -> Tuple[Response, int] | FileStorage:
+def validate_file_data(request: Request) -> Tuple[dict, int] | FileStorage:
     if "file" not in request.files:
-        return jsonify(error_dict("No file part")), 400
+        return error_dict("No file part"), 400
 
     file = request.files["file"]
 
     if file.filename is None:
-        return jsonify(error_dict("No selected file")), 400
+        return error_dict("No selected file"), 400
 
     try:
         FileDataSchema().load({"file": file})
 
     except ValidationError as err:
-        return jsonify(error_dict(str(err.messages))), 400
+        return error_dict(str(err.messages)), 400
 
     return file
 

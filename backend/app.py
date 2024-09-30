@@ -17,6 +17,7 @@ from config.env_vars import (
     TEMPLATE_FOLDER,
 )
 from config.mail_config import MailConfig
+from config.validation_config import ValidationConfig
 
 marshmallow = Marshmallow()
 oauth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
@@ -59,5 +60,6 @@ def create_app() -> Flask:
 
     # Swagger
     DocConfig(app, api_spec)
+    ValidationConfig(app)
 
     return app

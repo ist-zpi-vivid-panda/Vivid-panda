@@ -36,7 +36,11 @@ class FileInfoSchema(FileInfoEditSchema):
 
 
 class FileDataSchema(Schema):
-    file = fields.Field(required=True, validate=[validate_file_size, validate_file_extension])
+    file = fields.Field(
+        required=True,
+        validate=[validate_file_size, validate_file_extension],
+        description=f"File of type {ALLOWED_EXTENSIONS} up to {MAX_CONTENT_LENGTH}B",
+    )
 
 
 class FilePaginationSchema(BasePaginationSchema):
