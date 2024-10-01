@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 
-import { useDeleteMutation, useGetQuery, usePostMutation, useUpdateMutation } from './apiUtils';
+import { buildWholeApiUri, useDeleteMutation, useGetQuery, usePostMutation, useUpdateMutation } from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
 import { invalidate } from '../storage/getQueryClient';
+import useUserData from '../storage/useUserData';
 
 export type FileInfoDTO = {
   id: string;
@@ -69,3 +70,26 @@ export const parseDTO = (dto: FileInfoDTO): FileInfo => ({
   last_update_at: dayjs(dto.last_update_at).toDate(),
   uploaded_at: dayjs(dto.uploaded_at).toDate(),
 });
+
+export const useGetFile = (id: string) => {
+  const userData = useUserData.getState();
+  const token = userData.accessToken;
+  const uri = buildWholeApiUri(`${FILES_ENDPOINT}/download/${id}`);
+
+  const getFile = async () => {
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.status}`);
+    }
+
+    return response.blob(); 
+  };
+
+  return { getFile };
+};

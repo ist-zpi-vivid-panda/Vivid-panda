@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Tuple
 
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, request, send_file
 from flask_jwt_extended import jwt_required
 from werkzeug.datastructures import FileStorage
 
@@ -142,3 +142,27 @@ def update_file_data(file_id: int, user: UserModel) -> Tuple[Response, int] | Re
         return jsonify({"error": "File not updated"}), 400
 
     return jsonify(success=True)
+
+
+@files_blueprint.route("/download/<file_id>", methods=["GET"])
+@jwt_required()
+@user_required
+def get_file_to_download(user: UserModel, file_id: str) -> Tuple[Response, int] | Response:
+    file_info = file_service.get_by_id(file_id)
+
+    if file_info is None:
+        return jsonify({"error": "File not found"}), 404
+
+    file_data = file_service.get_file_grid_fs(file_info)
+
+    if file_data is None:
+        return jsonify({"error": "File not found in GridFS"}), 404
+
+    response = send_file(
+        file_data,
+        mimetype=file_info.mime_type,
+        as_attachment=True,
+        attachment_filename=file_info.filename
+    )
+
+    return response

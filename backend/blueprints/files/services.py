@@ -1,5 +1,6 @@
 import base64
 import io
+import string
 from typing import Any, Dict, Mapping, Tuple
 
 import gridfs
