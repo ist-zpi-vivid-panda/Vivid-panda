@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback } from 'react';
+
 import { LoginProps, loginUser } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import useUserData from '@/app/lib/storage/useUserData';
@@ -22,18 +24,19 @@ const Login = () => {
     formState: { errors, isDirty, isSubmitting, isSubmitted },
   } = useConfiguredForm({ schemaName: SchemaNames.LoginSchema });
 
-  const onSubmit = async (values: FieldValues) => {
-    // check has internet connection
+  const onSubmit = useCallback(
+    async (values: FieldValues) => {
+      const loginProps: LoginProps = { email: values.email, password: values.password };
 
-    const loginProps: LoginProps = { email: values.email, password: values.password };
+      const loginResult = await loginUser(loginProps);
 
-    const loginResult = await loginUser(loginProps);
-
-    if (loginResult) {
-      login(loginResult);
-      router.replace('/auth/login');
-    }
-  };
+      if (loginResult) {
+        login(loginResult);
+        router.replace('/auth/login');
+      }
+    },
+    [login, router]
+  );
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>

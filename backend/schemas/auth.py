@@ -1,34 +1,32 @@
 from flask_marshmallow import Schema
-from marshmallow import fields, validate
+from marshmallow import fields
 
-# at least 8 characters, one uppercase, one lowercase, one digit
-PASSWORD_REGEX = r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+from schemas.generic import get_email_field, get_password_field
 
 
 class LoginSchema(Schema):
-    email = fields.Email(required=True)
+    email = get_email_field()
     password = fields.Str(required=True)
 
 
 class RegisterSchema(Schema):
-    email = fields.Email(required=True)
+    email = get_email_field()
     username = fields.Str()
-    password = fields.Str(
-        required=True,
-        validate=[validate.Regexp(PASSWORD_REGEX)],
-    )
+    password = get_password_field()
 
 
 class SendEmailRequestSchema(Schema):
-    email = fields.Email(required=True)
+    email = get_email_field()
 
 
 class ResetPasswordSchema(Schema):
-    password = fields.Str(
-        required=True,
-        validate=[validate.Regexp(PASSWORD_REGEX)],
-    )
-    password_repeated = fields.Str(
-        required=True,
-        validate=[validate.Regexp(PASSWORD_REGEX)],
-    )
+    password = get_password_field()
+    password_repeated = get_password_field()
+
+
+class AccessTokenSchema(Schema):
+    access_token = fields.Str(required=True)
+
+
+class TokensSchema(AccessTokenSchema):
+    refresh_token = fields.Str(required=True)

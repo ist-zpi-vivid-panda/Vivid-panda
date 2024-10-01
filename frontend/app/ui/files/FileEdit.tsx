@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { FileInfo, FileInfoDTO, FileInfoEditDTO, useUpdateFileMutation } from '@/app/lib/api/fileApi';
+import { FileInfo, FileInfoEditDTO, useUpdateFileMutation } from '@/app/lib/api/fileApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { SchemaNames } from '@/app/lib/validation/config';
 import { Card, Modal } from '@mui/material';
@@ -23,22 +23,23 @@ const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
     setError,
     reset,
     formState: { errors, isDirty, isSubmitting, isSubmitted },
-  } = useConfiguredForm({ schemaName: SchemaNames.FileInfoSchema });
+  } = useConfiguredForm({ schemaName: SchemaNames.FileInfoEditSchema });
 
   const onSubmit = useCallback(
-    async (values: FieldValues) => {
+    (values: FieldValues) => {
       if (!fileInfo) {
         return;
       }
 
       const edited: FileInfoEditDTO = {
-        id: fileInfo.id,
         filename: values.filename,
       };
 
-      await updateFile.mutateAsync(edited);
+      updateFile.mutateAsync({ id: fileInfo.id, data: edited });
+
+      onClose();
     },
-    [updateFile, fileInfo]
+    [fileInfo, updateFile, onClose]
   );
 
   useEffect(() => {

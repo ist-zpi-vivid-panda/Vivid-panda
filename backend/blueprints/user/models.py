@@ -21,12 +21,14 @@ class UserModel(BaseModel):
         username: str,
         password_hash: str,
         provider: AccountDataProvider,
+        profile_picture_grid_fs_id: str | None,
     ) -> None:
         self.uid = uid
-        self.email = email.upper()
+        self.email = email.lower()
         self.username = username
         self.password_hash = password_hash
         self.provider = provider
+        self.profile_picture_grid_fs_id = profile_picture_grid_fs_id
 
     def get_dict_repr(self) -> Dict[str, Any]:
         return {
@@ -35,6 +37,9 @@ class UserModel(BaseModel):
             "username": self.username,
             "provider": self.provider.value,
             "password_hash": self.password_hash,
+            "profile_picture_grid_fs_id": ObjectId(self.profile_picture_grid_fs_id)
+            if self.profile_picture_grid_fs_id is not None
+            else None,
         }
 
     def get_dto(self) -> Dict[str, Any]:

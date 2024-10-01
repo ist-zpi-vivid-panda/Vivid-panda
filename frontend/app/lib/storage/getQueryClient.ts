@@ -1,12 +1,13 @@
 import { isServer, QueryClient, defaultShouldDehydrateQuery } from '@tanstack/react-query';
 
-const STALE_TIME = 1000 * 60 * 15; // 15 minutes
+const STALE_TIME = 1000 * 60 * 60 * 2; // 2 hours
 
 const makeQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: STALE_TIME,
+        retry: 3,
       },
       dehydrate: {
         // include pending queries in dehydration
@@ -34,8 +35,8 @@ export const getQueryClient = () => {
   }
 };
 
-export const clearAllQueries = () => getQueryClient().clear();
+export const clearQueryCache = () => getQueryClient().clear();
+export const invalidateAllQueries = async () => getQueryClient().invalidateQueries();
+export const removeAllQueries = () => getQueryClient().removeQueries();
 
 export const invalidate = async (queryKey: string[]) => getQueryClient().invalidateQueries({ queryKey });
-
-export const invalidateAllQueries = async () => getQueryClient().invalidateQueries();

@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-import Canvas from '@/app/ui/drawing/Canvas';
-import { Box, Grid2 as Grid } from '@mui/material';
-import GridItem from '@mui/material/Grid';
+import { Grid2 as Grid } from '@mui/material';
+import Image from 'next/image';
 
 import ActionsMenu from './ActionsMenu';
 import { fileEditListOptions } from './FileEditOptions';
 import ImageUpload from './ImageUpload';
-import { convertFileToFormData, usePostFileMutation } from '../lib/api/fileApi';
+import { usePostFileMutation } from '../lib/api/fileApi';
 
 const GridView = (p0: unknown) => {
   const [uploadedImage, setUploadedImage] = useState<JSX.Element | null>(null);
@@ -16,13 +15,12 @@ const GridView = (p0: unknown) => {
 
   const handleImageUpload = async (image: File) => {
     try {
-      const formData = convertFileToFormData(image);
-      const response = await mutateAsync(formData);
+      const response = await mutateAsync(image);
       console.log('File uploaded successfully:', response);
       const imageUrl = URL.createObjectURL(image);
       setUploadedImageUrl(imageUrl);
       setUploadedImage(
-        <img src={imageUrl} alt="Uploaded Image" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+        <Image src={imageUrl} alt="Uploaded Image" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       );
     } catch (error) {
       console.error('Error uploading file:', error);

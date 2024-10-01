@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 
 import Canvas from '@/app/ui/drawing/Canvas';
 import ImageUpload from '@/app/ui/ImageUpload';
+
 import GridView from '../GridView';
 
 const ImageEditingScreen = () => {
@@ -31,7 +32,9 @@ const ImageEditingScreen = () => {
     [configuredFileReader]
   );
 
-  return !imageStr ? GridView(<ImageUpload onImageUpload={onImageUpload} />) : GridView(<Canvas imageStr={imageStr!} gridSize={{width: 600, height: 600}} />);
+  return !imageStr
+    ? GridView(<ImageUpload onImageUpload={onImageUpload} />)
+    : GridView(<Canvas imageStr={imageStr!} gridSize={{ width: 600, height: 600 }} />);
 };
 
 export default ImageEditingScreen;

@@ -7,9 +7,10 @@ import Avatar from '@mui/material/Avatar';
 type FilesListItemProps = {
   fileInfo: FileInfo;
   onEditClick?: (_: FileInfo) => void;
+  onDeleteClick?: (_: FileInfo) => void;
 };
 
-const FilesListItem = ({ fileInfo, onEditClick }: FilesListItemProps) => {
+const FilesListItem = ({ fileInfo, onEditClick, onDeleteClick }: FilesListItemProps) => {
   return (
     <Card className="flex flex-col p-2">
       {fileInfo.thumbnail && <Avatar variant="square" src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}></Avatar>}
@@ -23,6 +24,7 @@ const FilesListItem = ({ fileInfo, onEditClick }: FilesListItemProps) => {
       <span>{fileInfo.last_update_at?.toDateString()}</span>
 
       {onEditClick && <button onClick={() => onEditClick(fileInfo)}>Edit</button>}
+      {onDeleteClick && <button onClick={() => onDeleteClick(fileInfo)}>Delete</button>}
     </Card>
   );
 };

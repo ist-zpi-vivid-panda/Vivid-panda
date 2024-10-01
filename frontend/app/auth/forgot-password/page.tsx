@@ -1,6 +1,4 @@
-import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import ForgotPassword from '@/app/ui/auth/ForgotPassword';
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
@@ -11,13 +9,7 @@ export const metadata: Metadata = {
 // ------------------ end :: metadata ------------------
 
 const ForgotPasswordPage = () => {
-  const queryClient = getQueryClient();
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ForgotPassword />
-    </HydrationBoundary>
-  );
+  return <ForgotPassword />;
 };
 
 export default ForgotPasswordPage;

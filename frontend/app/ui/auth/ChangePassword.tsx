@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 
 import { ChangePasswordProps, changePassword } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
@@ -7,16 +7,14 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
 import SubmitButton from '@/app/ui/shared/SubmitButton';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
-import { useSearchParams } from 'next/navigation'
 
 const ChangePassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token')
-  const userId = searchParams.get('user_id')
-
+  const token = searchParams.get('token');
+  const userId = searchParams.get('user_id');
 
   const {
     control,
@@ -27,8 +25,6 @@ const ChangePassword = () => {
 
   const onSubmit = useCallback(
     (values: FieldValues) => {
-      console.log(`token ${token}`)
-      console.log(`user_id ${userId}`)
       if (token && userId) {
         const changePasswordData: ChangePasswordProps = {
           password: values.password,
