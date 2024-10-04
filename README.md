@@ -1,4 +1,9 @@
 # Vivid-Panda
+Vivid-Panda to nasze zespołowe przedsięwzięcie inżynierskie. Próbujemy w nim przedstawić nasze umiejętności nabyte podczas studiów. 
+
+## Logo projektu
+![Logo](https://github.com/ist-zpi-vivid-panda/Vivid-panda/blob/main/logo.png)
+
 ## Aplikacja internetowa do edycji zdjęć.
 
 ## Funkcje
@@ -23,7 +28,7 @@ Frontend: Uladzimir Mazaleuski, Paweł Dudek, Karolina Majkowska
 Backend: Paweł Dudek, Karolina Majkowska
 
 
-Osoba wspierająca nasz zespół: dr.inż Martin Tabakow
+Osoby wspierające nasz zespół: dr.inż Martin Tabakow, dr inż. Piotr Syga
 
 ## Backend
 Moduł związany z obsługą użytkownika: Paweł Dudek, Karolina Majkowska
