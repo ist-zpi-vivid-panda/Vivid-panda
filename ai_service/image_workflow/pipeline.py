@@ -1,4 +1,4 @@
-from typing import Callable, Tuple, List, Any
+from typing import Any, Callable, List, Tuple
 
 from image_processing.features_processor import FeaturesProcessor
 
@@ -16,7 +16,7 @@ class ImagePipeline:
         for operation in self.operations:
             result = operation(self.processor)
             print(f"Result of {operation.__name__}: {result}")
-            if hasattr(operation, 'failures'):
+            if hasattr(operation, "failures"):
                 self.validation_failures.extend(operation.failures)
 
     def get_validation_failures(self) -> List[Tuple[str, float, float, float]]:
@@ -24,7 +24,8 @@ class ImagePipeline:
         Retrieve all validation failures.
 
         Returns:
-            List[Tuple[str, float, float, float]]: List of tuples containing function name, result, min value, and max value.
+            List[Tuple[str, float, float, float]]: List of tuples containing
+            function name, result, min value, and max value.
         """
         return self.validation_failures
 
@@ -45,8 +46,9 @@ if __name__ == "__main__":
         print("Validation failures detected:")
         for failure in failures:
             func_name, result, min_val, max_val = failure
-            print(f"{func_name} returned {result}, expected between {min_val} and {max_val}")
+            print(
+                f"{func_name} returned {result}, expected between "
+                f"{min_val} and {max_val}"
+            )
     else:
         print("All validations passed.")
-
-
