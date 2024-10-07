@@ -5,6 +5,7 @@ import { UIEventHandler, useCallback, useMemo, useState } from 'react';
 import {
   convertFileToFormData,
   FileInfo,
+  onDownloadClick,
   useDeleteFileMutation,
   useFilesData,
   usePostFileMutation,
@@ -59,7 +60,12 @@ const FilesList = () => {
         <Grid container spacing={2}>
           {files.map((file, index) => (
             <Grid key={index} size={{ xs: 4, sm: 3, md: 2 }}>
-              <FilesListItem fileInfo={file} onEditClick={setEditedFileInfo} onDeleteClick={onDeleteImage} />
+              <FilesListItem
+                fileInfo={file}
+                onEditClick={setEditedFileInfo}
+                onDeleteClick={onDeleteImage}
+                onDownloadClick={onDownloadClick}
+              />
             </Grid>
           ))}
         </Grid>

@@ -1,6 +1,14 @@
 import dayjs from 'dayjs';
 
-import { buildWholeApiUri, getCall, SuccessStatusResponse, useDeleteMutation, useGetQuery, usePostMutation, useUpdateMutation } from './apiUtils';
+import {
+  buildWholeApiUri,
+  getCall,
+  SuccessStatusResponse,
+  useDeleteMutation,
+  useGetQuery,
+  usePostMutation,
+  useUpdateMutation,
+} from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
 import { invalidate } from '../storage/getQueryClient';
 import useUserData from '../storage/useUserData';
@@ -35,7 +43,7 @@ export type FileDownloadDTO = {
   file: string;
   mime_type: string;
   name: string;
-}
+};
 
 const FILES_QUERY_KEY = 'files-qk' as const;
 
@@ -60,13 +68,16 @@ export const useFilesData = () =>
     ),
   });
 
-export const usePostFileMutation = () => usePostMutation<File, FileInfoDTO>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
+export const usePostFileMutation = () =>
+  usePostMutation<File, FileInfoDTO>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
 
-export const useUpdateFileMutation = () => useUpdateMutation<FileInfoEditDTO, SuccessStatusResponse>(invalidateFiles, getFileUrl);
+export const useUpdateFileMutation = () =>
+  useUpdateMutation<FileInfoEditDTO, SuccessStatusResponse>(invalidateFiles, getFileUrl);
 
 export const useDeleteFileMutation = () => useDeleteMutation(invalidateFiles, getFileUrl);
 
-export const downloadFile = async (id: string) => await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`)
+export const downloadFile = async (id: string) =>
+  await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`);
 
 export const convertFileToFormData = (image: File) => {
   const formData = new FormData();
@@ -99,8 +110,26 @@ export const useGetFile = (id: string) => {
       throw new Error(`Failed to fetch file: ${response.status}`);
     }
 
-    return response.blob(); 
+    return response.blob();
   };
 
   return { getFile };
+};
+
+export const handleDownloadFileToBrowser = (idOfPhoto?: string, url?: string, filename?: string) => {
+  if (idOfPhoto && url && filename) {
+    downloadFile(idOfPhoto);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+};
+
+export const onDownloadClick = async (fileInfo: FileInfo) => {
+  const downloadedImageFile = await downloadFile(fileInfo.id);
+  const url = URL.createObjectURL(downloadedImageFile);
+  handleDownloadFileToBrowser(fileInfo.id, url, fileInfo.filename);
 };
