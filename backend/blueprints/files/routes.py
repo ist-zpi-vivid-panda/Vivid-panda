@@ -1,9 +1,11 @@
 from datetime import datetime
 from typing import Tuple
+import io
 
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify, request, send_file
 from werkzeug.datastructures import FileStorage
 
+import grid_fs_service
 from blueprints.files.models import FileInfoModel
 from blueprints.user.models import UserModel
 from grid_fs_service import (
@@ -14,7 +16,8 @@ from grid_fs_service import (
     validate_file_data,
 )
 from run_services import file_service
-from schemas.file import FileDataSchema, FileInfoEditSchema, FileInfoSchema, FilePaginationSchema
+from schemas.file import FileInputDataSchema, FileInfoEditSchema, FileInfoSchema, FilePaginationSchema, \
+    FileOutputDataSchema
 from schemas.responses import ErrorSchema, SuccessSchema
 from utils.request_utils import doc_endpoint, error_dict, success_dict
 
@@ -57,7 +60,7 @@ def get_file(file_id: int, user: UserModel) -> Tuple[Response, int] | Response:
     description="Add new file",
     tags=tags,
     response_schemas=[(FileInfoSchema, 200), (ErrorSchema, 400)],
-    input_schema=FileDataSchema,
+    input_schema=FileInputDataSchema,
     location="files",
 )
 def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
@@ -138,7 +141,7 @@ def update_file_info(file_id: int, user: UserModel, filename: str) -> Tuple[dict
 @doc_endpoint(
     description="Switch file data for a given file",
     tags=tags,
-    input_schema=FileDataSchema,
+    input_schema=FileInputDataSchema,
     response_schemas=[(SuccessSchema, 200), (ErrorSchema, 400)],
     location="files",
 )
@@ -161,3 +164,27 @@ def update_file_data(file_id: str, user: UserModel, fileData: FileStorage) -> Tu
         return error_dict("File not updated"), 400
 
     return success_dict(True)
+
+
+@files_blueprint.route("/data/download/<file_id>", methods=["GET"])
+@doc_endpoint(
+    description="Download data",
+    tags=tags,
+    response_schemas=[(FileOutputDataSchema, 200), (ErrorSchema, 400)],
+)
+def get_file_data(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
+    file: FileInfoModel | None = file_service.get_by_id(file_id)
+
+    if file is None or file.owner_id != user.uid:
+        return jsonify(error_dict("File data doesn't exist")), 400
+
+    file_from_grid = grid_fs_service.get_file_grid_fs(file.grid_fs_id)
+
+    if file_from_grid is None:
+        return jsonify(error_dict("File doesn't exist")), 400
+
+    return send_file(
+            io.BytesIO(file_from_grid.read()),
+            mimetype=file_from_grid.content_type if file_from_grid.content_type is not None else 'application/octet-stream',
+            download_name=file_from_grid.filename
+        )

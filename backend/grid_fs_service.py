@@ -11,7 +11,7 @@ from PIL import Image
 from werkzeug.datastructures.file_storage import FileStorage
 
 from app import grid_fs
-from schemas.file import FileDataSchema
+from schemas.file import FileInputDataSchema
 from utils.request_utils import error_dict
 
 
@@ -53,6 +53,14 @@ def get_image_thumbnail(file_id: str) -> str:
     return base64.b64encode(thumb_io.getvalue()).decode()
 
 
+def get_image(file_id: str) -> str:
+    grid_out = get_file_grid_fs(file_id)
+
+    image_bytes = grid_out.read()
+
+    return base64.b64encode(image_bytes).decode()
+
+
 def validate_file_data(request: Request) -> Tuple[dict, int] | FileStorage:
     if "file" not in request.files:
         return error_dict("No file part"), 400
@@ -63,7 +71,7 @@ def validate_file_data(request: Request) -> Tuple[dict, int] | FileStorage:
         return error_dict("No selected file"), 400
 
     try:
-        FileDataSchema().load({"file": file})
+        FileInputDataSchema().load({"file": file})
 
     except ValidationError as err:
         return error_dict(str(err.messages)), 400

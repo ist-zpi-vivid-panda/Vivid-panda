@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { buildWholeApiUri, useDeleteMutation, useGetQuery, usePostMutation, useUpdateMutation } from './apiUtils';
+import { buildWholeApiUri, getCall, SuccessStatusResponse, useDeleteMutation, useGetQuery, usePostMutation, useUpdateMutation } from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
 import { invalidate } from '../storage/getQueryClient';
 import useUserData from '../storage/useUserData';
@@ -31,9 +31,19 @@ export type FileInfoEditDTO = {
   filename: string;
 };
 
+export type FileDownloadDTO = {
+  file: string;
+  mime_type: string;
+  name: string;
+}
+
 const FILES_QUERY_KEY = 'files-qk' as const;
 
 const FILES_ENDPOINT = '/files' as const;
+
+const DOWNLOAD_ENDPOINT = '/download' as const;
+
+const DATA_ENDPOINT = '/data' as const;
 
 const getFileUrl = (id: string) => `${FILES_ENDPOINT}/${id}`;
 
@@ -50,11 +60,13 @@ export const useFilesData = () =>
     ),
   });
 
-export const usePostFileMutation = () => usePostMutation<File>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
+export const usePostFileMutation = () => usePostMutation<File, FileInfoDTO>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
 
-export const useUpdateFileMutation = () => useUpdateMutation<FileInfoEditDTO>(invalidateFiles, getFileUrl);
+export const useUpdateFileMutation = () => useUpdateMutation<FileInfoEditDTO, SuccessStatusResponse>(invalidateFiles, getFileUrl);
 
 export const useDeleteFileMutation = () => useDeleteMutation(invalidateFiles, getFileUrl);
+
+export const downloadFile = async (id: string) => await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`)
 
 export const convertFileToFormData = (image: File) => {
   const formData = new FormData();

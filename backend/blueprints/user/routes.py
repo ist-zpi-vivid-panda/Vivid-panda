@@ -5,7 +5,7 @@ from werkzeug.datastructures.file_storage import FileStorage
 
 from blueprints.user.models import UserModel
 from grid_fs_service import get_file_grid_fs, put_file_on_grid_fs, update_file_on_grid_fs
-from schemas.file import FileDataSchema
+from schemas.file import FileInputDataSchema
 from schemas.responses import ErrorSchema, SuccessSchema
 from schemas.user import UserModelSchema, UserProfilePictureSchema
 from utils.request_utils import doc_endpoint, error_dict, success_dict
@@ -45,7 +45,7 @@ def get_user_profile_picture(user: UserModel) -> Tuple[Response, int] | Response
 @doc_endpoint(
     description="Get current user profile picture",
     tags=tags,
-    input_schema=FileDataSchema,
+    input_schema=FileInputDataSchema,
     response_schemas=[(SuccessSchema, 200), (ErrorSchema, 400)],
     location="files",
 )

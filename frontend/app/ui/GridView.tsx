@@ -4,24 +4,25 @@ import { Grid2 as Grid } from '@mui/material';
 import Image from 'next/image';
 
 import ActionsMenu from './ActionsMenu';
-import { fileEditListOptions } from './FileEditOptions';
+import FileEditListOptions from './FileEditOptions';
 import ImageUpload from './ImageUpload';
-import { usePostFileMutation } from '../lib/api/fileApi';
+import { downloadFile, FileDownloadDTO, FileInfoDTO, usePostFileMutation } from '../lib/api/fileApi';
 
-const GridView = (p0: unknown) => {
-  const [uploadedImage, setUploadedImage] = useState<JSX.Element | null>(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+const GridView = () => {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [fileInfo, setFileInfo] = useState<FileInfoDTO | null>(null);
+  const [imageFile, setImageFile] = useState<Blob | null>(null);
+
   const { mutateAsync } = usePostFileMutation();
 
   const handleImageUpload = async (image: File) => {
     try {
       const response = await mutateAsync(image);
+      setFileInfo(response)
       console.log('File uploaded successfully:', response);
-      const imageUrl = URL.createObjectURL(image);
-      setUploadedImageUrl(imageUrl);
-      setUploadedImage(
-        <Image src={imageUrl} alt="Uploaded Image" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-      );
+      const downloadedImageFile = await downloadFile(response.id);
+      setImageFile(downloadedImageFile);
+      setUploadedImage(URL.createObjectURL(downloadedImageFile));
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -39,7 +40,7 @@ const GridView = (p0: unknown) => {
 
       <Grid container direction="row" spacing={2} justifyContent="center" alignItems="center" sx={{ height: '100vh' }}>
         <Grid size={{ xs: 1, sm: 2, md: 2 }} sx={{ padding: 2 }}>
-          {fileEditListOptions()}
+          <FileEditListOptions/>
         </Grid>
 
         <Grid
@@ -55,7 +56,8 @@ const GridView = (p0: unknown) => {
             padding: 2,
           }}
         >
-          {uploadedImage ? uploadedImage : <ImageUploadComponent />}
+          
+        {uploadedImage ? <img src={uploadedImage} alt="Uploaded Image" style={{ width: '100%', height: '100%', objectFit: 'contain' }}/> : <ImageUploadComponent />}
         </Grid>
 
         <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>

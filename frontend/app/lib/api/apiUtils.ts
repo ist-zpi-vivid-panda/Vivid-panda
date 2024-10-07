@@ -20,6 +20,8 @@ type UpdateData<T> = {
   data: T;
 };
 
+export type SuccessStatusResponse = { success: boolean };
+
 export const GET = 'GET' as const;
 export const PATCH = 'PATCH' as const;
 export const POST = 'POST' as const;
@@ -28,6 +30,11 @@ export const DELETE = 'DELETE' as const;
 type HttpMethod = typeof GET | typeof PATCH | typeof POST | typeof DELETE;
 
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
+
+const buildHeaders = (isFormData: boolean, token?: string) => ({
+  ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
+  ...(token ? { Authorization: `Bearer ${token}` } : null),
+});
 
 export const apiCallNoAutoConfig = async <T extends object>(
   method: HttpMethod,
@@ -39,10 +46,7 @@ export const apiCallNoAutoConfig = async <T extends object>(
 
   const isFormData = data instanceof FormData;
 
-  const headers = {
-    ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
-    ...(token ? { Authorization: `Bearer ${token}` } : null),
-  };
+  const headers = buildHeaders(isFormData, token);
 
   const body = method !== GET && data ? (isFormData ? data : JSON.stringify(data)) : undefined;
 
@@ -56,7 +60,10 @@ export const apiCallNoAutoConfig = async <T extends object>(
     ...(body && { body }),
   });
 
-  const responseBody: ApiResponseWithValidationErrors<T> = await response.json();
+  const contentType = response.headers.get('Content-Type');
+
+  const responseBody: ApiResponseWithValidationErrors<T> =
+    contentType === 'application/json' ? await response.json() : await response.blob();
 
   if (!response.ok) {
     console.warn('error on: ', method, fullUri);
@@ -111,18 +118,18 @@ export const apiCall = async <T extends object>(method: HttpMethod, resourcePath
   return apiCallNoAutoToken<T>(method, resourcePath, accessToken, data);
 };
 
-export const getCall = async <T>(requestUri: string) => <T>apiCall(GET, requestUri);
+export const getCall = async <T extends object>(requestUri: string) => apiCall<T>(GET, requestUri);
 
-export const postCall = async <T>(requestUri: string, data: any) => <T>apiCall(POST, requestUri, data);
+export const postCall = async <T extends object>(requestUri: string, data: any) => apiCall<T>(POST, requestUri, data);
 
-export const deleteCall = async (requestUri: string) => apiCall(DELETE, requestUri);
+export const deleteCall = async <T extends object>(requestUri: string) => apiCall<T>(DELETE, requestUri);
 
-export const patchCall = async (requestUri: string, data: any) => apiCall(PATCH, requestUri, data);
+export const patchCall = async <T extends object>(requestUri: string, data: any) => apiCall<T>(PATCH, requestUri, data);
 
 // onSuccess invalidates all queryKeys that start with value of queryKey (even ones with id)
-export const useInvalidationMutation = <T>(
+export const useInvalidationMutation = <T, R extends object>(
   mutationFn: {
-    (data: T): Promise<any>;
+    (data: T): Promise<R>;
   },
   invalidationFn: () => void
 ) =>
@@ -131,20 +138,26 @@ export const useInvalidationMutation = <T>(
     onSuccess: async () => invalidationFn(),
   });
 
-export const useGetQuery = <T>(queryKey: string[], requestUri: string) =>
-  useSuspenseQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
+export const useGetQuery = <T extends object>(queryKey: string[], requestUri: string) =>
+  useSuspenseQuery({ queryKey: [...queryKey, requestUri], queryFn: () => getCall<T>(requestUri) });
 
-export const prefetchGetQuery = <T>(queryKey: string[], requestUri: string) =>
-  getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => <T>getCall(requestUri) });
+export const prefetchGetQuery = <T extends object>(queryKey: string[], requestUri: string) =>
+  getQueryClient().prefetchQuery({ queryKey: [...queryKey, requestUri], queryFn: () => getCall<T>(requestUri) });
 
-export const usePostMutation = <T>(invalidationFn: () => void, requestUri: string, formatFn?: (_: T) => any) =>
-  useInvalidationMutation<T>((data: T) => postCall(requestUri, formatFn?.(data) ?? data), invalidationFn);
+export const usePostMutation = <T, R extends object>(
+  invalidationFn: () => void,
+  requestUri: string,
+  formatFn?: (_: T) => any
+) => useInvalidationMutation<T, R>((data: T) => postCall<R>(requestUri, formatFn?.(data) ?? data), invalidationFn);
 
-export const useDeleteMutation = <T>(invalidationFn: () => void, requestUriFn: (_: T) => string) =>
-  useInvalidationMutation<T>((data: T) => deleteCall(requestUriFn(data)), invalidationFn);
+export const useDeleteMutation = <T, R extends object>(invalidationFn: () => void, requestUriFn: (_: T) => string) =>
+  useInvalidationMutation<T, R>((data: T) => deleteCall<R>(requestUriFn(data)), invalidationFn);
 
-export const useUpdateMutation = <T>(invalidationFn: () => void, requestUriFn: (_: string) => string) =>
-  useInvalidationMutation<UpdateData<T>>(
-    (data: UpdateData<T>) => patchCall(requestUriFn(data.id), data.data),
+export const useUpdateMutation = <T, R extends object>(
+  invalidationFn: () => void,
+  requestUriFn: (_: string) => string
+) =>
+  useInvalidationMutation<UpdateData<T>, R>(
+    (data: UpdateData<T>) => patchCall<R>(requestUriFn(data.id), data.data),
     invalidationFn
   );

@@ -1,37 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { FaSave, FaDownload } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { MdOutlineCleaningServices } from 'react-icons/md';
 
-import { useGetFile } from '../lib/api/fileApi';
+import { downloadFile, useGetFile } from '../lib/api/fileApi';
 
-const ActionsMenu = () => {
-  const { getFile } = useGetFile('66efe7f76c7aeffedcbbfffd');
-  const [fileBlob, setFileBlob] = useState<Blob | null>(null);
+type ActionsMenuProps = {
+  idOfPhoto?: string;
+};
 
-  useEffect(() => {
-    const fetchFile = async () => {
-      const blob = await getFile();
-      setFileBlob(blob);
-    };
-    fetchFile();
-  }, [getFile]);
-
-  const handleDownload = async () => {
-    if (!fileBlob) return;
-    try {
-      const fileUrl = URL.createObjectURL(fileBlob);
-      const link = document.createElement('a');
-      link.href = fileUrl;
-      link.download = 'file-name.jpg';
-      link.click();
-    } catch (error) {
-      console.error(error);
+const ActionsMenu = ({ idOfPhoto }: ActionsMenuProps) => {
+  const handleDownload = useCallback(() => {
+    if (idOfPhoto) {
+      downloadFile(idOfPhoto);
     }
-  };
+  }, [idOfPhoto]);
 
   return (
     <div style={{ fontSize: '26px', display: 'flex', gap: '10px' }}>

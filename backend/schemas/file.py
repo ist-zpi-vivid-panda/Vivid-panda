@@ -35,7 +35,7 @@ class FileInfoSchema(FileInfoEditSchema):
     thumbnail = fields.Str()
 
 
-class FileDataSchema(Schema):
+class FileInputDataSchema(Schema):
     file = fields.Field(
         required=True,
         validate=[validate_file_size, validate_file_extension],
@@ -45,3 +45,16 @@ class FileDataSchema(Schema):
 
 class FilePaginationSchema(BasePaginationSchema):
     collection = fields.List(fields.Nested(FileInfoSchema), required=True)
+
+
+class FileOutputDataSchema(Schema):
+    file = fields.Str(
+        required=True,
+    )
+    mime_type = fields.Str(
+        required=True,
+    )
+    name = fields.Str(
+        required=True,
+    )
+
