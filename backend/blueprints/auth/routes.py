@@ -135,6 +135,9 @@ def reset_password(password: str, password_repeated: str) -> Tuple[dict, int] | 
     token = request.args.get("token")
     user_id = request.args.get("user_id")
 
+    if token is None or user_id is None:
+        return error_dict("Missing data"), 400
+
     if (user := validate_reset_password_token(token, user_id)) is None:
         return error_dict("Token expired"), 400
 
@@ -161,7 +164,7 @@ def auth_with_google() -> Tuple[Response, int] | Response:
         scope=["openid", "email", "profile"],
     )
 
-    return redirect(request_uri)
+    return jsonify(request_uri)
 
 
 @auth_blueprint.route("/google/callback", methods=["GET"])

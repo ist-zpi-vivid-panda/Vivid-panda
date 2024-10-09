@@ -18,7 +18,7 @@ class UserModel(BaseModel):
         self,
         uid: str | None,
         email: str,
-        username: str,
+        username: str | None,
         password_hash: str,
         provider: AccountDataProvider,
         profile_picture_grid_fs_id: str | None,

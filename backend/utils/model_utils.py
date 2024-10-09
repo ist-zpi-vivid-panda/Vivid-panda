@@ -13,8 +13,5 @@ class BaseModel(ABC):
     def get_dto(self) -> Dict[str, Any]:
         pass
 
-    def __dict__(self) -> Dict[str, Any]:
-        return self.get_dict_repr()
-
     def __repr__(self) -> str:
         return str(self.get_dict_repr())

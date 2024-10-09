@@ -30,7 +30,7 @@ def user_required(fn: Callable[[Any], Tuple[Response, int] | Response]):
         verify_jwt_in_request()
         user: UserModel | None = get_current_user()
 
-        if user is None:
+        if user is None or user.uid is None:
             return jsonify(error_dict("Incorrect user")), 401
 
         kwargs["user"] = user

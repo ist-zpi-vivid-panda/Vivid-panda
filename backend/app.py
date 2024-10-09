@@ -6,8 +6,8 @@ from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
 from oauthlib.oauth2 import WebApplicationClient
 
-from config.cors_config import CorsConfig
-from config.database import Connection
+from config.cors_config import create_cors_config
+from config.database import create_db_connection
 from config.doc_config import DocConfig
 from config.env_vars import (
     APP_SECRET,
@@ -17,11 +17,11 @@ from config.env_vars import (
     TEMPLATE_FOLDER,
 )
 from config.mail_config import MailConfig
-from config.validation_config import ValidationConfig
+from config.validation_config import create_validation_config
 
 marshmallow = Marshmallow()
 oauth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
-database = Connection(MONGO_DB_NAME)
+database = create_db_connection(MONGO_DB_NAME)
 grid_fs = gridfs.GridFS(database)
 mail = Mail()
 api_spec = APISpec(
@@ -41,10 +41,10 @@ def create_app() -> Flask:
 
     app.url_map.strict_slashes = False
 
-    from config.jwt_config import JWTConfig
+    from config.jwt_config import create_jwt_config
 
-    CorsConfig(app)
-    JWTConfig(app)
+    create_cors_config(app)
+    create_jwt_config(app)
     marshmallow.init_app(app)
     MailConfig(app, mail)
 
@@ -60,6 +60,6 @@ def create_app() -> Flask:
 
     # Swagger
     DocConfig(app, api_spec)
-    ValidationConfig(app)
+    create_validation_config(app)
 
     return app
