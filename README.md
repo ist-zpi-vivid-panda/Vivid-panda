@@ -19,6 +19,7 @@ Projekt pozwoli na obróbkę zdjęć niezależnie od systemu, na którym się zn
 - [Tanstack Query](https://tanstack.com/query/latest/docs/framework/react/overview)
 - [Zustand](https://www.npmjs.com/package/zustand)
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
+- [React Hook Forms](https://react-hook-form.com/docs)
 ## Backend:
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)  
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
