@@ -57,7 +57,7 @@ const getFileUrl = (id: string) => `${FILES_ENDPOINT}/${id}`;
 
 export const invalidateFiles = async (id?: string) => await invalidate(id ? [FILES_QUERY_KEY, id] : [FILES_QUERY_KEY]);
 
-export const useFileData = (id: string) => useGetQuery<FileInfo>([FILES_QUERY_KEY, id], FILES_ENDPOINT + id);
+export const useFileData = (id: string) => useGetQuery<FileInfo>([FILES_QUERY_KEY, id], getFileUrl(id));
 
 export const useFilesData = () =>
   usePaginator({

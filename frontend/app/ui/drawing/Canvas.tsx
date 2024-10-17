@@ -1,16 +1,22 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type CanvasProps = {
   imageStr: string;
-  gridSize: { width: number; height: number }; // Add gridSize prop
 };
 
-const Canvas = ({ imageStr, gridSize }: CanvasProps) => {
+type Size = {
+  width: number;
+  height: number;
+};
+
+const Canvas = ({ imageStr }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [imageDimensions, setImageDimensions] = useState<Size>({ width: 0, height: 0 });
 
   const getCanvas = useCallback(() => canvasRef.current, [canvasRef]);
+
   const getCtx = useCallback(() => {
     const canvas = getCanvas();
     if (canvas) {
@@ -18,6 +24,7 @@ const Canvas = ({ imageStr, gridSize }: CanvasProps) => {
     }
   }, [getCanvas]);
 
+  // Ensure canvas size does not exceed image dimensions
   useEffect(() => {
     const canvas = getCanvas();
     const ctx = getCtx();
@@ -28,40 +35,87 @@ const Canvas = ({ imageStr, gridSize }: CanvasProps) => {
 
     const image = new Image();
     image.src = imageStr;
+
     image.onload = () => {
-      const canvasWidth = gridSize.width; // Take width from gridSize
-      const canvasHeight = gridSize.height; // Take height from gridSize
-      const imageWidth = image.width;
-      const imageHeight = image.height;
+      setImageDimensions({ width: image.width, height: image.height });
 
-      let width = canvasWidth;
-      let height = canvasHeight;
+      canvas.width = image.width;
+      canvas.height = image.height;
 
-      if (imageWidth > canvasWidth || imageHeight > canvasHeight) {
-        // If the image is larger than the canvas, resize it to fit
-        if (imageWidth > canvasWidth) {
-          height = (imageHeight / imageWidth) * canvasWidth;
-          width = canvasWidth;
-        } else {
-          width = (imageWidth / imageHeight) * canvasHeight;
-          height = canvasHeight;
-        }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+    };
+  }, [getCanvas, getCtx, imageStr]);
+
+  // Calculate the new dimensions to fit inside the parent container without exceeding the image size
+  useEffect(() => {
+    const canvas = getCanvas();
+
+    if (!canvas) {
+      return;
+    }
+
+    const resizeCanvas = () => {
+      if (!imageDimensions.width || !imageDimensions.height) {
+        return;
       }
 
-      canvas.width = width;
-      canvas.height = height;
+      const parent = canvas.parentElement;
 
-      ctx.drawImage(image, 0, 0, width, height);
+      if (!parent) {
+        return;
+      }
+
+      const parentWidth = parent.clientWidth;
+      const parentHeight = parent.clientHeight;
+
+      const aspectRatio = imageDimensions.width / imageDimensions.height;
+
+      let newWidth = Math.min(parentWidth, imageDimensions.width);
+      let newHeight = Math.min(parentHeight, imageDimensions.height);
+
+      if (newWidth / newHeight > aspectRatio) {
+        newWidth = newHeight * aspectRatio;
+      } else {
+        newHeight = newWidth / aspectRatio;
+      }
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      const ctx = getCtx();
+      if (!ctx) {
+        return;
+      }
+
+      const image = new Image();
+      image.src = imageStr;
+      image.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, newWidth, newHeight);
+      };
     };
-  }, [getCanvas, getCtx, imageStr, gridSize]);
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, [getCanvas, getCtx, imageStr, imageDimensions]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={gridSize.width} // Set canvas width from gridSize
-      height={gridSize.height} // Set canvas height from gridSize
-      className="flex flex-1"
-    />
+    <div
+      style={{
+        display: 'flex',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <canvas ref={canvasRef} />
+    </div>
   );
 };
 

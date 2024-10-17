@@ -20,9 +20,8 @@ const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
   const {
     control,
     handleSubmit,
-    setError,
     reset,
-    formState: { errors, isDirty, isSubmitting, isSubmitted },
+    formState: { errors },
   } = useConfiguredForm({ schemaName: SchemaNames.FileInfoEditSchema });
 
   const onSubmit = useCallback(

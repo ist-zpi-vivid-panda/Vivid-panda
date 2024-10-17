@@ -3,7 +3,6 @@
 import { UIEventHandler, useCallback, useMemo, useState } from 'react';
 
 import {
-  convertFileToFormData,
   FileInfo,
   onDownloadClick,
   useDeleteFileMutation,
@@ -11,14 +10,18 @@ import {
   usePostFileMutation,
 } from '@/app/lib/api/fileApi';
 import Grid from '@mui/material/Grid2';
+import { useRouter } from 'next/navigation';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
 import ImageUpload from '../ImageUpload';
 import Scrollable from '../shared/Scrollable';
+import UserInfo from '../UserInfo';
 import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {
+  const router = useRouter();
+
   const { data, fetchNextPage, hasNextPage, isLoading } = useFilesData();
   const postFile = usePostFileMutation();
   const deleteFile = useDeleteFileMutation();
@@ -28,12 +31,11 @@ const FilesList = () => {
 
   const files = useMemo(() => (data ? data.pages.flatMap((itemsList) => itemsList.collection) : []), [data]);
 
-  const onImageUpload = useCallback((image: File) => postFile.mutateAsync(image), [postFile]);
   const onDeleteImage = useCallback(
     (fileInfo: FileInfo) =>
       prompt({
         title: 'Do you want to delete the image?',
-        actions: [{ text: 'Delete', onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
+        actions: [{ text: 'Delete ', onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
         cancelable: true,
       }),
     [deleteFile, prompt]
@@ -50,14 +52,19 @@ const FilesList = () => {
     [fetchNextPage, hasNextPage, isLoading]
   );
 
+  const onEditPhotoClick = useCallback((fileInfo: FileInfo) => router.push(`/canvas/edit/${fileInfo.id}`), [router]);
+
   return (
     <>
-      <FileEdit fileInfo={editedFileInfo} onClose={() => setEditedFileInfo(undefined)} />
+      <div style={{ padding: '5px 0' }}>
+        <UserInfo />
+      </div>
 
-      <ImageUpload onImageUpload={onImageUpload} />
+      {editedFileInfo && <FileEdit fileInfo={editedFileInfo} onClose={() => setEditedFileInfo(undefined)} />}
 
       <Scrollable onScroll={onScroll}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Grid size={{ xs: 3, sm: 2, md: 1 }}></Grid>
           {files.map((file, index) => (
             <Grid key={index} size={{ xs: 4, sm: 3, md: 2 }}>
               <FilesListItem
@@ -65,6 +72,7 @@ const FilesList = () => {
                 onEditClick={setEditedFileInfo}
                 onDeleteClick={onDeleteImage}
                 onDownloadClick={onDownloadClick}
+                onEditPhotoClick={onEditPhotoClick}
               />
             </Grid>
           ))}

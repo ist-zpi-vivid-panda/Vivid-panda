@@ -4,33 +4,88 @@ import { FaScissors, FaPaintbrush, FaWandSparkles, FaBucket, FaSun, FaArrowRotat
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorPalette, IoIosColorFilter } from 'react-icons/io';
 import { IoText } from 'react-icons/io5';
+import { IconContext } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
 
 const FileEditListOptions = () => {
   return (
-    <div style={{ fontSize: '20px', gap: '10px' }}>
-      <p>Scissors</p>
-      <FaScissors />
-      <p>Brush</p>
-      <FaPaintbrush />
-      <p>Wand</p>
-      <FaWandSparkles />
-      <p>Bucket</p>
-      <FaBucket />
-      <p>Change brightness</p>
-      <FaSun />
-      <p>Resize</p>
-      <GiResize />
-      <p>Eraser</p>
-      <LuEraser />
-      <p>Text</p>
-      <IoText />
-      <p>Change color</p>
-      <IoIosColorPalette />
-      <p>Rotate</p>
-      <FaArrowRotateRight />
-      <p>Add filter</p>
-      <IoIosColorFilter />
+    <div
+      style={{
+        padding: 10,
+        fontSize: '24px',
+        display: 'flex',
+        gap: '20px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
+      <IconContext.Provider value={{ color: 'red', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Scissors
+          <FaScissors />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'pink', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Brush
+          <FaPaintbrush />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'orange', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Wand
+          <FaWandSparkles />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'yellow', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Bucket
+          <FaBucket />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'cyan', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Brightness
+          <FaSun />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'teal', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Resize
+          <GiResize />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'green', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Eraser
+          <LuEraser />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'blue', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Text
+          <IoText />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'purple', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Change color
+          <IoIosColorPalette />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'indigo', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Rotate
+          <FaArrowRotateRight />
+        </span>
+      </IconContext.Provider>
+      <IconContext.Provider value={{ color: 'black', size: '25px' }}>
+        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+          Add filter
+          <IoIosColorFilter />
+        </span>
+      </IconContext.Provider>
     </div>
   );
 };

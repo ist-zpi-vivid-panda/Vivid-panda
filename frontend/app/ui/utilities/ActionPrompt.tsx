@@ -80,7 +80,7 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
         className="flex flex-auto items-center justify-center mb-32"
       >
         <Card>
-          <div>
+          <div style={{ backgroundColor: 'lavender' }}>
             {title}
 
             {message}
@@ -93,7 +93,7 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
           )}
 
           {actionsWithAdditional && actionsWithAdditional.length > 0 && (
-            <div>
+            <div style={{ backgroundColor: 'lavender' }}>
               {actionsWithAdditional?.map((action, index) => (
                 <PromptAction
                   key={index}

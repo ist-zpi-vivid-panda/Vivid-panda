@@ -9,11 +9,18 @@ type FilesListItemProps = {
   onEditClick?: (_: FileInfo) => void;
   onDeleteClick?: (_: FileInfo) => void;
   onDownloadClick?: (_: FileInfo) => void;
+  onEditPhotoClick?: (_: FileInfo) => void;
 };
 
-const FilesListItem = ({ fileInfo, onEditClick, onDeleteClick, onDownloadClick }: FilesListItemProps) => {
+const FilesListItem = ({
+  fileInfo,
+  onEditClick,
+  onDeleteClick,
+  onDownloadClick,
+  onEditPhotoClick,
+}: FilesListItemProps) => {
   return (
-    <Card className="flex flex-col p-2">
+    <Card className="flex flex-col p-2" style={{ backgroundColor: 'lavender' }}>
       {fileInfo.thumbnail && <Avatar variant="square" src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}></Avatar>}
 
       <span>{fileInfo.filename}</span>
@@ -27,6 +34,7 @@ const FilesListItem = ({ fileInfo, onEditClick, onDeleteClick, onDownloadClick }
       {onEditClick && <button onClick={() => onEditClick(fileInfo)}>Edit</button>}
       {onDeleteClick && <button onClick={() => onDeleteClick(fileInfo)}>Delete</button>}
       {onDownloadClick && <button onClick={() => onDownloadClick(fileInfo)}>Download</button>}
+      {onEditPhotoClick && <button onClick={() => onEditPhotoClick(fileInfo)}>Edit Photo</button>}
     </Card>
   );
 };

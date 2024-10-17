@@ -20,12 +20,17 @@ const UserInfo = () => {
     router.push('/files/list');
   }, [router]);
 
+  const navigateToEdit = useCallback(() => {
+    router.push('/canvas/new');
+  }, [router]);
+
   const dropdownOptions: DropdownItemProps[] = useMemo(
     () => [
       { label: 'Logout', onSelect: logout },
       { label: 'Images', onSelect: navigateToImages },
+      { label: 'Edit', onSelect: navigateToEdit },
     ],
-    [logout, navigateToImages]
+    [logout, navigateToImages, navigateToEdit]
   );
 
   return (

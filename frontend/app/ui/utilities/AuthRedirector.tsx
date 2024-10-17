@@ -25,7 +25,7 @@ const AuthRedirector = ({ children }: ChildrenProp) => {
     }
 
     if (accessToken && isPreAuthPath) {
-      redirect('/canvas');
+      redirect('/canvas/new');
     }
   }, [accessToken, isPreAuthPath, pathname]);
 
