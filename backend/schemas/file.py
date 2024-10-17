@@ -15,9 +15,12 @@ def validate_file_size(file: FileStorage):
 
 
 def validate_file_extension(file: FileStorage):
+    if file.filename is None:
+        return ""
+
     _, ext = os.path.splitext(file.filename)
 
-    if ext.lower() not in ALLOWED_EXTENSIONS:
+    if ext is None or ext.lower() not in ALLOWED_EXTENSIONS:
         raise ValidationError(f"Invalid file extension. Only ${ALLOWED_EXTENSIONS} are allowed.")
 
 
@@ -57,4 +60,3 @@ class FileOutputDataSchema(Schema):
     name = fields.Str(
         required=True,
     )
-

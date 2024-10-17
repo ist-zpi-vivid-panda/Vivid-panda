@@ -12,7 +12,7 @@ except Exception as e:
     print(f"Error: {e}")
 
 
-class UserService(BaseCRUDService):
+class UserService(BaseCRUDService[UserModel]):
     def get_collection(self) -> Collection[Mapping[str, Any]]:
         return users_collection
 
@@ -28,7 +28,7 @@ class UserService(BaseCRUDService):
             else None,
         )
 
-    def get_id(self, user: UserModel) -> str:
+    def get_id(self, user: UserModel) -> str | None:
         return user.uid
 
     def get_by_email(self, email: str) -> UserModel | None:

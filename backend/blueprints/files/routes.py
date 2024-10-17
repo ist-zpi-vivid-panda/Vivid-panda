@@ -1,6 +1,6 @@
+import io
 from datetime import datetime
 from typing import Tuple
-import io
 
 from flask import Blueprint, Response, jsonify, request, send_file
 from werkzeug.datastructures import FileStorage
@@ -13,11 +13,15 @@ from grid_fs_service import (
     delete_file_from_grid_fs,
     put_file_on_grid_fs,
     update_file_on_grid_fs,
-    validate_file_data,
 )
 from run_services import file_service
-from schemas.file import FileInputDataSchema, FileInfoEditSchema, FileInfoSchema, FilePaginationSchema, \
-    FileOutputDataSchema
+from schemas.file import (
+    FileInfoEditSchema,
+    FileInfoSchema,
+    FileInputDataSchema,
+    FileOutputDataSchema,
+    FilePaginationSchema,
+)
 from schemas.responses import ErrorSchema, SuccessSchema
 from utils.request_utils import doc_endpoint, error_dict, success_dict
 
@@ -35,6 +39,9 @@ def get_files(user: UserModel) -> Tuple[Response, int] | Response:
     page: int = request.args.get("page", 1, type=int)
     per_page: int = request.args.get("per_page", 10, type=int)
 
+    if user.uid is None:
+        return jsonify(error_dict("Incorrect user")), 400
+
     files = file_service.get_paginated_by_owner_id(user.uid, page, per_page)
 
     return jsonify(files.__dict__)
@@ -46,7 +53,7 @@ def get_files(user: UserModel) -> Tuple[Response, int] | Response:
     tags=tags,
     response_schemas=[(FileInfoEditSchema, 200), (ErrorSchema, 400)],
 )
-def get_file(file_id: int, user: UserModel) -> Tuple[Response, int] | Response:
+def get_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
@@ -66,7 +73,7 @@ def get_file(file_id: int, user: UserModel) -> Tuple[Response, int] | Response:
 def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     file_id_grid_fs = put_file_on_grid_fs(file)
 
-    if file_id_grid_fs is None:
+    if file_id_grid_fs is None or user.uid is None or file.filename is None:
         return error_dict("File not saved"), 400
 
     file_info = FileInfoModel(
@@ -121,7 +128,7 @@ def delete_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Respons
         (ErrorSchema, 400),
     ],
 )
-def update_file_info(file_id: int, user: UserModel, filename: str) -> Tuple[dict, int] | dict:
+def update_file_info(file_id: str, user: UserModel, filename: str) -> Tuple[dict, int] | dict:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
@@ -129,9 +136,9 @@ def update_file_info(file_id: int, user: UserModel, filename: str) -> Tuple[dict
 
     file.filename = filename
 
-    updated_file_info: FileInfoModel | None = file_service.update(file)
+    updated_file_info_id: str | None = file_service.update(file)
 
-    if updated_file_info is None:
+    if updated_file_info_id is None:
         return error_dict("File not updated"), 400
 
     return success_dict(True)
@@ -153,12 +160,15 @@ def update_file_data(file_id: str, user: UserModel, fileData: FileStorage) -> Tu
 
     new_file_id_grid_fs = update_file_on_grid_fs(fileData, file_id)
 
+    if new_file_id_grid_fs is None:
+        return error_dict("Couldn't update file"), 400
+
     file.grid_fs_id = new_file_id_grid_fs
 
     if new_file_id_grid_fs is None:
         return error_dict("File not updated"), 400
 
-    updated_file_info: FileInfoModel | None = file_service.update_file_info(file)
+    updated_file_info: str | None = file_service.update(file)
 
     if updated_file_info is None:
         return error_dict("File not updated"), 400
@@ -184,7 +194,7 @@ def get_file_data(file_id: str, user: UserModel) -> Tuple[Response, int] | Respo
         return jsonify(error_dict("File doesn't exist")), 400
 
     return send_file(
-            io.BytesIO(file_from_grid.read()),
-            mimetype=file_from_grid.content_type if file_from_grid.content_type is not None else 'application/octet-stream',
-            download_name=file_from_grid.filename
-        )
+        io.BytesIO(file_from_grid.read()),
+        mimetype=file_from_grid.content_type if file_from_grid.content_type is not None else "application/octet-stream",
+        download_name=file_from_grid.filename,
+    )

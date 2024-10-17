@@ -42,6 +42,9 @@ def delete_file_from_grid_fs(file_id: str):
 def get_image_thumbnail(file_id: str) -> str:
     grid_out = get_file_grid_fs(file_id)
 
+    if grid_out is None:
+        return ""
+
     image_bytes = grid_out.read()
     img = Image.open(io.BytesIO(image_bytes))
 
@@ -55,6 +58,9 @@ def get_image_thumbnail(file_id: str) -> str:
 
 def get_image(file_id: str) -> str:
     grid_out = get_file_grid_fs(file_id)
+
+    if grid_out is None:
+        return ""
 
     image_bytes = grid_out.read()
 

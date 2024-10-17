@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Mapping, TypeVar
+from typing import Any, Dict, List, Mapping, TypeVar, Generic
 
 from bson.objectid import ObjectId
 from pymongo.collection import Collection
@@ -8,12 +8,13 @@ from utils.any_utils import SingletonMeta
 from utils.model_utils import BaseModel
 
 T = TypeVar("T", bound=BaseModel)
+P = TypeVar("P")
 
 
-class Pagination:
+class Pagination(Generic[P]):
     def __init__(
         self,
-        collection: List[T],
+        collection: List[P],
         page: int,
         total_pages: int,
         total_items: int,
@@ -25,7 +26,7 @@ class Pagination:
         self.total_items = total_items
 
 
-class BaseCRUDService(ABC):
+class BaseCRUDService(ABC, Generic[T]):
     __metaclass__ = SingletonMeta
 
     @abstractmethod
@@ -33,15 +34,15 @@ class BaseCRUDService(ABC):
         pass
 
     @abstractmethod
-    def map_from_db(self, data) -> T:
+    def map_from_db(self, data: Mapping[str, Any]) -> T:
         pass
 
     @abstractmethod
-    def get_id(self, data) -> str:
+    def get_id(self, data) -> str | None:
         pass
 
     def get_all_list(self) -> List[Dict[str, Any]]:
-        return [self.map_from_db(doc) for doc in self.get_collection().find()]
+        return [self.map_from_db(doc).get_dto() for doc in self.get_collection().find()]
 
     def get_by_id(self, _id: str) -> T | None:
         return self.get_one_by({"_id": ObjectId(_id)})
@@ -62,7 +63,11 @@ class BaseCRUDService(ABC):
         )
 
     def delete(self, data: T) -> bool:
-        old_data = self.get_by_id(self.get_id(data))
+        data_id = self.get_id(data)
+        if data_id is None:
+            return False
+
+        old_data = self.get_by_id(data_id)
         if old_data is None:
             return False
 
@@ -77,7 +82,7 @@ class BaseCRUDService(ABC):
         return self.map_from_db(data)
 
     # pagination starts on 1
-    def get_all_by_paginated(self, identifier: Dict[str, Any], page: int, per_page: int) -> Pagination:
+    def get_all_by_paginated(self, identifier: Dict[str, Any], page: int, per_page: int) -> Pagination[T]:
         collection = self.get_collection()
         data = collection.find(identifier).skip(per_page * (page - 1)).limit(per_page)
 
