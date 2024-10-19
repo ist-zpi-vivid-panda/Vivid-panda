@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
+import { EditingTool } from '@/app/lib/canvas/types';
 import { ChildrenProp } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
 
 import { FileInfo } from '../../lib/api/fileApi';
 import ActionsMenu from '../ActionsMenu';
-import FileEditListOptions from '../FileEditOptions';
+import FileEditListOptions from './FileEditOptions';
 
 /*
 // a function as using useMemo yields an error due to:
@@ -36,9 +37,10 @@ import FileEditListOptions from '../FileEditOptions';
 type GridViewProps = ChildrenProp & {
   fileStr?: string;
   fileInfo?: FileInfo;
+  setEditingTool?: (_: EditingTool | undefined) => void;
 };
 
-const GridView = ({ fileStr, fileInfo: fileInfoFromParent, children }: GridViewProps) => {
+const GridView = ({ fileStr, fileInfo: fileInfoFromParent, setEditingTool, children }: GridViewProps) => {
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(fileStr);
   const [fileInfo, setFileInfo] = useState<FileInfo | undefined>(fileInfoFromParent);
 
@@ -77,7 +79,7 @@ const GridView = ({ fileStr, fileInfo: fileInfoFromParent, children }: GridViewP
             alignItems: 'center',
           }}
         >
-          <FileEditListOptions />
+          <FileEditListOptions setEditingTool={setEditingTool} />
         </Grid>
 
         <Grid
