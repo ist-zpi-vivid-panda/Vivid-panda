@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { downloadFile, useFileData } from '@/app/lib/api/fileApi';
+import { EditingTool } from '@/app/lib/canvas/types';
 
 import Canvas from './Canvas';
 import GridView from './GridView';
@@ -13,6 +14,7 @@ type EditImageEditingScreenProps = {
 
 const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
+  const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
 
   const { data: fileInfo, isLoading: isLoadingFileInfo } = useFileData(id);
 
@@ -29,8 +31,8 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   }, [fileInfo.id, isLoadingFileInfo]);
 
   return (
-    <GridView fileStr={uploadedImage} fileInfo={fileInfo}>
-      {!!uploadedImage && <Canvas imageStr={uploadedImage} />}
+    <GridView fileStr={uploadedImage} fileInfo={fileInfo} setEditingTool={setEditingTool}>
+      {!!uploadedImage && <Canvas imageStr={uploadedImage} editingTool={editingTool} />}
     </GridView>
   );
 };
