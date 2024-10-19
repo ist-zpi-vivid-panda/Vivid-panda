@@ -126,3 +126,32 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.loading-circle {
+  width: 200px; /* Width of the circle */
+  height: 200px; /* Height of the circle */
+  position: absolute; /* Positioning the loading circle */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Centering adjustment */
+  display: flex; /* Use flexbox to center loading text */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  font-size: 2rem; /* Increase font size for visibility */
+  color: rgb(204, 24, 84); /* Change text color for better visibility */
+}
+
+.loading-circle::before {
+  content: "";
+  position: absolute;
+  width: 465%; /* Full width of the loading circle */
+  height: 465%; /* Full height of the loading circle */
+  border-radius: 50%; /* Make it circular */
+  border: 60px solid rgb(204, 24, 84); /* Outer border color */
+  border-top-color: transparent; /* Make the top border transparent for the spinning effect */
+  animation: spin 2s linear infinite; /* Spin animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
