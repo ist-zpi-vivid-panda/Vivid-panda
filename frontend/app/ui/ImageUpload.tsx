@@ -5,12 +5,11 @@ import { ChangeEvent, useRef, useState, DragEvent } from 'react';
 import PressableSpan from '@/app/ui/shared/PressableSpan';
 
 type ImageUploadProps = {
-  // onImageUpload: (image: string) => void;
   onImageUpload: (image: File) => void;
 };
 
 const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
-const MAX_SIZE = 16 * 1024 * 1024; // 16MB
+// const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -50,7 +49,10 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   };
 
   return (
-    <div className="flex flex-1 m-10 justify-center border-2 border-dashed border-black rounded-xl overflow-hidden">
+    <div
+      className="flex flex-1 justify-center border-2 border-dashed border-black rounded-xl overflow-hidden"
+      style={{ display: 'flex', width: '100%', height: '100%' }}
+    >
       <form
         className="flex flex-1 justify-center items-center"
         onDragEnter={handleDragEvent(true)}

@@ -11,9 +11,11 @@ type CanvasProps = {
   editingTool: EditingTool | undefined;
 };
 
-const RESIZE_EVENT_NAME = 'resize';
+type CanvasOperation = Record<EditingTool, (_: RepeatableCanvasAction) => void>;
 
-const DEFAULT_CANVAS_OPERATIONS: Record<EditingTool, (_: RepeatableCanvasAction) => void> = Object.freeze({
+const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 });
+
+const DEFAULT_CANVAS_OPERATIONS: CanvasOperation = Object.freeze({
   [EditingTool.Rotation]: () => {},
 });
 
@@ -22,49 +24,45 @@ const EDITING_TOOLS_MAP: Record<EditingTool, (_: CanvasAction) => void> = Object
 });
 
 const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
-  const [mouseInfo, setMouseInfo] = useState<MouseInfo>({ x: 0, y: 0, angle: 0 });
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasParentRef = useRef<HTMLDivElement | null>(null);
 
-  const getCanvas = useCallback(() => canvasRef.current, [canvasRef]);
-
-  const [canvasOperations, setCanvasOperations] =
-    useState<Record<EditingTool, (_: RepeatableCanvasAction) => void>>(DEFAULT_CANVAS_OPERATIONS);
+  const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [canvasOperations, setCanvasOperations] = useState<CanvasOperation>(DEFAULT_CANVAS_OPERATIONS);
 
   const canvasAction = useMemo(
-    () => (editingTool == undefined ? undefined : EDITING_TOOLS_MAP[editingTool]),
+    () => (editingTool === undefined ? undefined : EDITING_TOOLS_MAP[editingTool]),
     [editingTool]
-  );
-
-  const getCtx = useCallback(() => {
-    const canvas = getCanvas();
-    if (!canvas) {
-      return null;
-    }
-
-    return canvas.getContext('2d');
-  }, [getCanvas]);
-
-  const resizeListener = useCallback(
-    () => resizeCanvasToParent({ canvas: getCanvas(), ctx: getCtx(), image, canvasOperations }),
-    [canvasOperations, getCanvas, getCtx, image]
-  );
-
-  const mouseListener = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-      mouseInfoSetter({ event, canvas: getCanvas(), setMouseInfo }),
-    [getCanvas]
   );
 
   const handleMouseDown = useCallback(() => setIsDragging(true), []);
 
   const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
+  const getCtx = useCallback(() => {
+    const canvas = canvasRef?.current;
+    if (!canvas) {
+      return null;
+    }
+
+    return canvas.getContext('2d');
+  }, []);
+
+  const resizeListener = useCallback(
+    () => resizeCanvasToParent({ canvas: canvasRef?.current, ctx: getCtx(), image, canvasOperations }),
+    [canvasOperations, getCtx, image]
+  );
+
+  const mouseListener = useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+      mouseInfoSetter({ event, canvas: canvasRef?.current, setMouseInfo }),
+    []
+  );
+
   useEffect(() => {
-    const canvas = getCanvas();
+    const canvas = canvasRef?.current;
     const ctx = getCtx();
 
     if (!canvas || !ctx) {
@@ -74,16 +72,24 @@ const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
     const image = new Image();
     image.src = imageStr;
     image.onload = () => setImage(image);
-  }, [getCanvas, getCtx, imageStr]);
+  }, [getCtx, imageStr]);
 
   useEffect(() => {
-    window.addEventListener(RESIZE_EVENT_NAME, resizeListener);
+    const parent = canvasParentRef?.current;
 
-    return () => window.removeEventListener(RESIZE_EVENT_NAME, resizeListener);
+    if (!parent) {
+      return;
+    }
+
+    const observer = new ResizeObserver(resizeListener);
+
+    observer.observe(parent);
+
+    return () => observer.disconnect();
   }, [resizeListener]);
 
   useEffect(() => {
-    const canvas = getCanvas();
+    const canvas = canvasRef?.current;
     const ctx = getCtx();
 
     if (!isDragging || !canvasAction || !image || !canvas || !ctx) {
@@ -102,10 +108,11 @@ const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
     res({ canvas, image, ctx });
 
     setCanvasOperations((prev) => ({ ...prev, editingTool: res }));
-  }, [canvasAction, getCanvas, getCtx, image, isDragging, mouseInfo]);
+  }, [canvasAction, getCtx, image, isDragging, mouseInfo]);
 
   return (
     <div
+      ref={canvasParentRef}
       onMouseMove={mouseListener}
       style={{
         display: 'flex',

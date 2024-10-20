@@ -155,9 +155,10 @@ export const useDeleteMutation = <T, R extends object>(invalidationFn: () => voi
 
 export const useUpdateMutation = <T, R extends object>(
   invalidationFn: () => void,
-  requestUriFn: (_: string) => string
+  requestUriFn: (_: string) => string,
+  formatFn?: (_: T) => any
 ) =>
   useInvalidationMutation<UpdateData<T>, R>(
-    (data: UpdateData<T>) => patchCall<R>(requestUriFn(data.id), data.data),
+    (data: UpdateData<T>) => patchCall<R>(requestUriFn(data.id), formatFn?.(data.data) ?? data.data),
     invalidationFn
   );

@@ -10,45 +10,13 @@ import { FileInfo } from '../../lib/api/fileApi';
 import ActionsMenu from '../ActionsMenu';
 import FileEditListOptions from './FileEditOptions';
 
-/*
-// a function as using useMemo yields an error due to:
-  // https://stackoverflow.com/questions/74962589/referenceerror-filereader-is-not-defined-in-next-js
-  const configuredFileReader = useCallback(() => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      if (reader.result) {
-        const result = reader.result as string;
-        setImageStr(result);
-      }
-    };
-
-    return reader;
-  }, [setImageStr]);
-
-  const onImageUpload = useCallback(
-    (image: File) => {
-      configuredFileReader().readAsDataURL(image);
-    },
-    [configuredFileReader]
-  );
-*/
-
 type GridViewProps = ChildrenProp & {
-  fileStr?: string;
   fileInfo?: FileInfo;
   setEditingTool?: (_: EditingTool | undefined) => void;
 };
 
-const GridView = ({ fileStr, fileInfo: fileInfoFromParent, setEditingTool, children }: GridViewProps) => {
-  const [uploadedImage, setUploadedImage] = useState<string | undefined>(fileStr);
-  const [fileInfo, setFileInfo] = useState<FileInfo | undefined>(fileInfoFromParent);
-
-  useEffect(() => {
-    if (fileStr) {
-      setUploadedImage(fileStr);
-    }
-  }, [fileStr]);
+const GridView = ({ fileInfo: fileInfoFromParent, setEditingTool, children }: GridViewProps) => {
+  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
 
   useEffect(() => {
     if (fileInfoFromParent) {
@@ -59,7 +27,8 @@ const GridView = ({ fileStr, fileInfo: fileInfoFromParent, setEditingTool, child
   return (
     <Grid container direction="column">
       <Grid size={{ xs: 1, sm: 1, md: 12 }} sx={{ padding: 1, display: 'flex', justifyContent: 'center' }}>
-        <ActionsMenu idOfPhoto={fileInfo?.id} url={uploadedImage} filename={fileInfo?.filename} />
+        {/* TODO: Add file saving with generation of canvas in background to get the best quality of image! */}
+        <ActionsMenu fileInfo={fileInfo} file={null} />{' '}
       </Grid>
 
       <Grid

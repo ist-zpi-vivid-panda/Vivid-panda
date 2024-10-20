@@ -31,7 +31,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   }, [fileInfo.id, isLoadingFileInfo]);
 
   return (
-    <GridView fileStr={uploadedImage} fileInfo={fileInfo} setEditingTool={setEditingTool}>
+    <GridView fileInfo={fileInfo} setEditingTool={setEditingTool}>
       {!!uploadedImage && <Canvas imageStr={uploadedImage} editingTool={editingTool} />}
     </GridView>
   );

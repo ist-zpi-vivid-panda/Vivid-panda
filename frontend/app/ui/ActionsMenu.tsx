@@ -7,18 +7,27 @@ import { FaDeleteLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons/lib';
 import { MdOutlineCleaningServices } from 'react-icons/md';
 
-import { handleDownloadFileToBrowser } from '../lib/api/fileApi';
+import { FileInfo, onDownloadFileInfo, useUpdateFileDataMutation } from '../lib/api/fileApi';
 
 type ActionsMenuProps = {
-  idOfPhoto?: string;
-  url?: string;
-  filename?: string;
+  fileInfo: FileInfo | null;
+  file: File | null;
 };
 
-const ActionsMenu = ({ idOfPhoto, url, filename }: ActionsMenuProps) => {
+const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
+  const updateFileData = useUpdateFileDataMutation();
+
   const handleDownload = useCallback(() => {
-    handleDownloadFileToBrowser(idOfPhoto, url, filename);
-  }, [idOfPhoto, url, filename]);
+    if (fileInfo) {
+      onDownloadFileInfo(fileInfo);
+    }
+  }, [fileInfo]);
+
+  const handleFileUpdate = useCallback(() => {
+    if (fileInfo && file) {
+      updateFileData.mutateAsync({ id: fileInfo.id, data: file });
+    }
+  }, [file, fileInfo, updateFileData]);
 
   return (
     <div
@@ -32,28 +41,31 @@ const ActionsMenu = ({ idOfPhoto, url, filename }: ActionsMenuProps) => {
       }}
     >
       <IconContext.Provider value={{ color: 'red', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+        <button style={{ display: 'flex', gap: '10px', flexDirection: 'row' }} onClick={handleFileUpdate}>
           <p>Save</p>
           <FaSave />
-        </span>
+        </button>
       </IconContext.Provider>
+
       <IconContext.Provider value={{ color: 'yellow', size: '25px' }}>
         <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
           <p>Cleaning</p>
           <MdOutlineCleaningServices />
         </span>
       </IconContext.Provider>
+
       <IconContext.Provider value={{ color: 'green', size: '25px' }}>
         <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
           <p>Delete</p>
           <FaDeleteLeft />
         </span>
       </IconContext.Provider>
+
       <IconContext.Provider value={{ color: 'blue', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+        <button style={{ display: 'flex', gap: '10px', flexDirection: 'row' }} onClick={handleDownload}>
           <p>Download</p>
-          <FaDownload onClick={handleDownload} />
-        </span>
+          <FaDownload />
+        </button>
       </IconContext.Provider>
     </div>
   );

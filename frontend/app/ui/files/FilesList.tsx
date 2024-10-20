@@ -1,10 +1,10 @@
 'use client';
 
-import { UIEventHandler, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import {
   FileInfo,
-  onDownloadClick,
+  onDownloadFileInfo,
   useDeleteFileMutation,
   useFilesData,
   usePostFileMutation,
@@ -15,17 +15,14 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
-import ImageUpload from '../ImageUpload';
-import Scrollable from '../shared/Scrollable';
 import UserInfo from '../UserInfo';
 import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {
   const router = useRouter();
-
-  const { data, fetchNextPage, hasNextPage, isLoading } = useFilesData();
-  const postFile = usePostFileMutation();
   const deleteFile = useDeleteFileMutation();
+
+  const { data, fetchNextPage, hasNextPage } = useFilesData();
   const { prompt } = useActionPrompt();
 
   const [editedFileInfo, setEditedFileInfo] = useState<FileInfo | undefined>(undefined);
@@ -70,7 +67,7 @@ const FilesList = () => {
                 fileInfo={file}
                 onEditClick={setEditedFileInfo}
                 onDeleteClick={onDeleteImage}
-                onDownloadClick={onDownloadClick}
+                onDownloadClick={onDownloadFileInfo}
                 onEditPhotoClick={onEditPhotoClick}
               />
             </Grid>
