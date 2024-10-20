@@ -143,8 +143,8 @@ a:hover {
 .loading-circle::before {
   content: "";
   position: absolute;
-  width: 465%; /* Full width of the loading circle */
-  height: 465%; /* Full height of the loading circle */
+  width: 390%; /* Full width of the loading circle */
+  height: 390%; /* Full height of the loading circle */
   border-radius: 50%; /* Make it circular */
   border: 60px solid rgb(204, 24, 84); /* Outer border color */
   border-top-color: transparent; /* Make the top border transparent for the spinning effect */
