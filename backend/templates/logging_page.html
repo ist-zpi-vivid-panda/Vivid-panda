@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vivid Panda</title>
+        <!-- Include Bootstrap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        >
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/login.css') }}">
+    </head>
+    <body>
+        <div class="container vh-100 d-flex justify-content-end align-items-center">
+            <div class="login-box p-4 shadow rounded">
+                <h1 class="text-left font-weight-bold mb-4">Vivid Panda</h1>
+                <form>
+                    <h2 class="text-center mb-4">Login</h2>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            placeholder="name@example.com"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            placeholder="password"
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Login</button>
+                    <p class="text-center mt-3">
+                        <a href="{{ url_for('forgot_password') }}" class="mr-3">Forgot password?</a>
+                        <a href="{{ url_for('register') }}" class="mr-3">Register</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

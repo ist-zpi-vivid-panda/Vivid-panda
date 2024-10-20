@@ -1,0 +1,157 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  /*
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  */
+  --background-rgb: 132, 140, 188;
+  --primary-rgb: 151, 255, 222;
+  --primary-active-rgb: 213, 255, 242;
+  --danger: 179, 38, 30;
+  --warning: 255, 190, 60;
+  --info: 100, 149, 237;
+  --hover: 69, 160, 7;
+  --disabled: 105, 105, 105;
+  --disabled-light: 211, 211, 211;
+  --text-background: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    /*
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+    */
+    --background-rgb: 132, 140, 188;
+    --primary-rgb: 0, 100, 68;
+    --primary-active-rgb: 91, 255, 203;
+    --danger: 179, 38, 30;
+    --warning: 255, 190, 60;
+    --info: 100, 149, 237;
+    --hover: 69, 160, 7;
+    --disabled: 105, 105, 105;
+    --disabled-light: 211, 211, 211;
+    --text-background: var(--background-rgb);
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: /*linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )*/
+    rgb(var(--background-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.textBackground {
+  background-color: rgb(var(--text-background));
+}
+
+.primaryBackground {
+  background-color: rgb(var(--primary-rgb));
+}
+
+.primaryBorder {
+  border-color: rgb(var(--primary-rgb)) ;
+}
+
+.primaryBackgroundActive {
+  background-color: rgb(var(--primary-active-rgb));
+}
+
+.danger {
+  color: rgb(var(--danger));
+}
+
+.dangerBorder {
+  border-color: rgb(var(--danger)) ;
+}
+
+.warning {
+  color: rgb(var(--warning));
+}
+
+.info {
+  color: rgb(var(--info));
+}
+
+.infoBackground {
+  background-color: rgb(var(--info));
+}
+
+.dangerBackground {
+  background-color: rgb(var(--danger));
+}
+
+.disabled {
+  color: rgb(var(--disabled));
+  background: rgb(var(--disabled-light));
+}
+
+.logoBackground {
+  background-image: url("/logo.png");
+  background-repeat: no-repeat;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+.btn-success {
+  background-color: rgb(var(--info));
+}
+
+.btn-success:hover {
+  background-color: rgb(var(--hover));
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+.loading-circle {
+  width: 200px; /* Width of the circle */
+  height: 200px; /* Height of the circle */
+  position: absolute; /* Positioning the loading circle */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Centering adjustment */
+  display: flex; /* Use flexbox to center loading text */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  font-size: 2rem; /* Increase font size for visibility */
+  color: rgb(204, 24, 84); /* Change text color for better visibility */
+}
+
+.loading-circle::before {
+  content: "";
+  position: absolute;
+  width: 390%; /* Full width of the loading circle */
+  height: 390%; /* Full height of the loading circle */
+  border-radius: 50%; /* Make it circular */
+  border: 60px solid rgb(204, 24, 84); /* Outer border color */
+  border-top-color: transparent; /* Make the top border transparent for the spinning effect */
+  animation: spin 2s linear infinite; /* Spin animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
