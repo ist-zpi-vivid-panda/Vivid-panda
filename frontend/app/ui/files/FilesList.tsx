@@ -11,6 +11,7 @@ import {
 } from '@/app/lib/api/fileApi';
 import Grid from '@mui/material/Grid2';
 import { useRouter } from 'next/navigation';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
@@ -41,17 +42,6 @@ const FilesList = () => {
     [deleteFile, prompt]
   );
 
-  const onScroll: UIEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-
-      if (scrollHeight - scrollTop === clientHeight && !isLoading && hasNextPage) {
-        fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isLoading]
-  );
-
   const onEditPhotoClick = useCallback((fileInfo: FileInfo) => router.push(`/canvas/edit/${fileInfo.id}`), [router]);
 
   return (
@@ -62,11 +52,20 @@ const FilesList = () => {
 
       {editedFileInfo && <FileEdit fileInfo={editedFileInfo} onClose={() => setEditedFileInfo(undefined)} />}
 
-      <Scrollable onScroll={onScroll}>
-        <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Grid size={{ xs: 3, sm: 2, md: 1 }}></Grid>
-          {files.map((file, index) => (
-            <Grid key={index} size={{ xs: 4, sm: 3, md: 2 }}>
+      <InfiniteScroll
+        dataLength={files.length}
+        next={fetchNextPage}
+        hasMore={hasNextPage}
+        loader={<h4>Loading...</h4>}
+        endMessage={
+          <p style={{ textAlign: 'center' }}>
+            <b>Yay! You have seen it all</b>
+          </p>
+        }
+      >
+        <Grid container spacing={3}>
+          {files.map((file) => (
+            <Grid key={file.id} size={{ xs: 5, sm: 4, md: 3, lg: 2 }}>
               <FilesListItem
                 fileInfo={file}
                 onEditClick={setEditedFileInfo}
@@ -77,7 +76,7 @@ const FilesList = () => {
             </Grid>
           ))}
         </Grid>
-      </Scrollable>
+      </InfiniteScroll>
     </>
   );
 };
