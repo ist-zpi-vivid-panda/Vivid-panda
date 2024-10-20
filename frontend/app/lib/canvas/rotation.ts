@@ -5,7 +5,7 @@ export const drawRotated = ({ canvas, ctx, image, angle }: CanvasAction) => {
 
   const { width: canvasWidth, height: canvasHeight } = canvas;
 
-  const { width: scaledWidth, height: scaledHeight } = getBoundingBoxDimensions(
+  const { width: scaledWidth, height: scaledHeight } = getScaledImageDimensions(
     imgWidth,
     imgHeight,
     angle,
@@ -23,7 +23,7 @@ export const drawRotated = ({ canvas, ctx, image, angle }: CanvasAction) => {
   ctx.resetTransform();
 };
 
-const getBoundingBoxDimensions = (
+const getScaledImageDimensions = (
   width: number,
   height: number,
   angle: number,
@@ -43,3 +43,14 @@ const getBoundingBoxDimensions = (
 
   return { width: width * scale, height: height * scale };
 };
+
+// const getBoundingBoxDimensions = (width: number, height: number, angle: number) => {
+//   const radians = (Math.PI / 180) * angle;
+//   const sin = Math.abs(Math.sin(radians));
+//   const cos = Math.abs(Math.cos(radians));
+
+//   const newWidth = height * sin + width * cos;
+//   const newHeight = height * cos + width * sin;
+
+//   return { width: newWidth, height: newHeight };
+// };

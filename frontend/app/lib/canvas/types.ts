@@ -4,10 +4,13 @@ export type MouseInfo = {
   angle: number;
 };
 
-export type CanvasAction = {
+export type RepeatableCanvasAction = {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   image: HTMLImageElement;
+};
+
+export type CanvasAction = RepeatableCanvasAction & {
   x: number;
   y: number;
   angle: number;
