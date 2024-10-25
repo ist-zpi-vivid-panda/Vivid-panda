@@ -11,7 +11,7 @@ class LoginSchema(Schema):
 
 class RegisterSchema(Schema):
     email = get_email_field()
-    username = fields.Str()
+    username = fields.Str(required=False, missing=None)
     password = get_password_field()
 
 
