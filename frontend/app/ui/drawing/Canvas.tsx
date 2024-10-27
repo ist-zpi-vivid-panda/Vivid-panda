@@ -9,6 +9,7 @@ import { Cropper, ReactCropperElement } from 'react-cropper';
 type CanvasProps = {
   imageStr: string;
   editingTool: EditingTool | undefined;
+  getCanvas: (_: HTMLCanvasElement | undefined) => void;
 };
 
 const DEFAULT_ZOOM: number = 1 as const;
@@ -18,7 +19,7 @@ const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 });
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
 
-const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
+const Canvas = ({ imageStr, editingTool, getCanvas }: CanvasProps) => {
   const cropperRef = useRef<ReactCropperElement>(null);
 
   const [image, setImage] = useState<HTMLImageElement | null>(null);
@@ -76,6 +77,10 @@ const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
     image.src = imageStr;
     image.onload = () => setImage(image);
   }, [imageStr]);
+
+  useEffect(() => {
+    getCanvas(cropperRef.current?.cropper?.getCroppedCanvas());
+  }, [getCanvas]);
 
   // change tool
   useEffect(() => {

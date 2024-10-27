@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { FaScissors, FaPaintbrush, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
+import { FaScissors, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
-import { IoIosColorPalette, IoIosColorFilter, IoIosMove } from 'react-icons/io';
+import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
 import { IoText } from 'react-icons/io5';
-import { IconBaseProps, IconContext, IconType } from 'react-icons/lib';
+import { IconContext, IconType } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
 
 import { EditingTool } from '../../lib/canvas/types';

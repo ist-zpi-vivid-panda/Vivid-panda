@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { downloadFile, useFileData } from '@/app/lib/api/fileApi';
+import { downloadFile, useFileData, useUpdateFileDataMutation } from '@/app/lib/api/fileApi';
 import { EditingTool } from '@/app/lib/canvas/types';
 
 import Canvas from './Canvas';
@@ -17,6 +17,19 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
 
   const { data: fileInfo, isLoading: isLoadingFileInfo } = useFileData(id);
+  const updateDataFile = useUpdateFileDataMutation();
+
+  const getBlobFromCnvas = useCallback(
+    (canvas: HTMLCanvasElement | undefined) =>
+      canvas?.toBlob((blob) => {
+        if (!blob) {
+          return;
+        }
+
+        updateDataFile.mutateAsync({ id: fileInfo.id, data: new File([blob], fileInfo.filename, { type: blob.type }) });
+      }),
+    [fileInfo.filename, fileInfo.id, updateDataFile]
+  );
 
   useEffect(() => {
     const getFileData = async () => {
@@ -32,7 +45,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   return (
     <GridView fileInfo={fileInfo} setEditingTool={setEditingTool}>
-      {!!uploadedImage && <Canvas imageStr={uploadedImage} editingTool={editingTool} />}
+      {!!uploadedImage && <Canvas imageStr={uploadedImage} editingTool={editingTool} getCanvas={getBlobFromCnvas} />}
     </GridView>
   );
 };
