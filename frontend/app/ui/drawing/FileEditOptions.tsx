@@ -6,7 +6,7 @@ import { FaScissors, FaPaintbrush, FaWandSparkles, FaBucket, FaSun, FaArrowRotat
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorPalette, IoIosColorFilter } from 'react-icons/io';
 import { IoText } from 'react-icons/io5';
-import { IconContext } from 'react-icons/lib';
+import { IconBaseProps, IconContext, IconType } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
 
 import { EditingTool } from '../../lib/canvas/types';
@@ -14,6 +14,23 @@ import { EditingTool } from '../../lib/canvas/types';
 type FileEditListOptionsProps = {
   setEditingTool?: (_: EditingTool | undefined) => void;
 };
+
+type EditToolPresentationProps = {
+  name: string;
+  color: string;
+  onToolSelect: () => void;
+  Icon: IconType;
+};
+
+const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
+  <IconContext.Provider value={{ color, size: '25px' }}>
+    <button onClick={onToolSelect} style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+      {name}
+    </button>
+
+    <Icon />
+  </IconContext.Provider>
+);
 
 const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
   const [currentEditingTool, setCurrentEditingTool] = useState<EditingTool | undefined>(undefined);
@@ -46,85 +63,45 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
         flexDirection: 'column',
       }}
     >
-      <IconContext.Provider value={{ color: 'red', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Scissors
-          <FaScissors />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation
+        name={'Scissors'}
+        color={'red'}
+        Icon={() => <FaPaintbrush />}
+        onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
+      />
 
-      <IconContext.Provider value={{ color: 'pink', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Brush
-          <FaPaintbrush />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Wand'} color={'orange'} Icon={() => <FaWandSparkles />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'orange', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Wand
-          <FaWandSparkles />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Bucket'} color={'yellow'} Icon={() => <FaBucket />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'yellow', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Bucket
-          <FaBucket />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'cyan', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Brightness
-          <FaSun />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'teal', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Resize
-          <GiResize />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation
+        name={'Resize'}
+        color={'teal'}
+        Icon={() => <GiResize />}
+        onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
+      />
 
-      <IconContext.Provider value={{ color: 'green', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Eraser
-          <LuEraser />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Eraser'} color={'green'} Icon={() => <LuEraser />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'blue', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Text
-          <IoText />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation name={'Text'} color={'blue'} Icon={() => <IoText />} onToolSelect={() => {}} />
 
-      <IconContext.Provider value={{ color: 'purple', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Change color
-          <IoIosColorPalette />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation
+        name={'Filter'}
+        color={'purple'}
+        Icon={() => <IoIosColorFilter />}
+        onToolSelect={() => {}}
+      />
 
-      <IconContext.Provider value={{ color: 'indigo', size: '25px' }}>
-        <button
-          style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}
-          onClick={() => toggleEditingTool(EditingTool.Rotation)}
-        >
-          Rotate
-          <FaArrowRotateRight />
-        </button>
-      </IconContext.Provider>
-
-      <IconContext.Provider value={{ color: 'black', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          Add filter
-          <IoIosColorFilter />
-        </span>
-      </IconContext.Provider>
+      <EditingToolPresentation
+        name={'Rotate'}
+        color={'indigo'}
+        Icon={() => <FaArrowRotateRight />}
+        onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
+      />
     </div>
   );
 };
