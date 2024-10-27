@@ -12,9 +12,9 @@ type CanvasProps = {
   setCurrentEditComponent: (_: ReactNode) => void;
 };
 
-export interface BlobConsumer {
+export type BlobConsumer = {
   getBlob: (callback: (blob: Blob | null) => void, type?: string, quality?: number) => void;
-}
+};
 
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
