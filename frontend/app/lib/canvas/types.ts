@@ -17,5 +17,8 @@ export type CanvasAction = RepeatableCanvasAction & {
 };
 
 export enum EditingTool {
-  Rotation,
+  Rotation = 'ROTATION',
+  Zoom = 'ZOOM',
+  Crop = 'CROP',
+  Move = 'MOVE',
 }

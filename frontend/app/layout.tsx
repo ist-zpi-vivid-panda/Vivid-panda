@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css';
+import 'cropperjs/dist/cropper.css';
 import './globals.css';
 
 import Providers from '@/app/providers';

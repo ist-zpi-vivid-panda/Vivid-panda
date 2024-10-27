@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { FaScissors, FaPaintbrush, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
-import { IoIosColorPalette, IoIosColorFilter } from 'react-icons/io';
+import { IoIosColorPalette, IoIosColorFilter, IoIosMove } from 'react-icons/io';
 import { IoText } from 'react-icons/io5';
 import { IconBaseProps, IconContext, IconType } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
@@ -76,7 +76,12 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
 
       <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
+      <EditingToolPresentation
+        name={'Move'}
+        color={'cyan'}
+        Icon={() => <IoIosMove />}
+        onToolSelect={() => toggleEditingTool(EditingTool.Move)}
+      />
 
       <EditingToolPresentation
         name={'Resize'}
