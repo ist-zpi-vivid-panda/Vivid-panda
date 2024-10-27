@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 import { FaSave, FaDownload } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
-import { IconContext } from 'react-icons/lib';
+import { IconContext, IconType } from 'react-icons/lib';
 import { MdOutlineCleaningServices } from 'react-icons/md';
 
 import { FileInfo, onDownloadFileInfo, useUpdateFileDataMutation } from '../lib/api/fileApi';
@@ -14,8 +14,27 @@ type ActionsMenuProps = {
   file: File | null;
 };
 
+type ActionsMenuPresentationProps = {
+  name: string;
+  color: string;
+  onToolSelect: () => void;
+  Icon: IconType;
+};
+
+const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMenuPresentationProps) => (
+  <IconContext.Provider value={{ color, size: '25px' }}>
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <button onClick={onToolSelect} style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
+        {name}
+        <Icon />
+      </button>
+    </div>
+  </IconContext.Provider>
+);
+
 const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
   const updateFileData = useUpdateFileDataMutation();
+  const iconColor = '#006444';
 
   const handleDownload = useCallback(() => {
     if (fileInfo) {
@@ -34,39 +53,39 @@ const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
       style={{
         fontSize: '24px',
         display: 'flex',
-        gap: '50px',
+        gap: '25px',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: '25px',
       }}
     >
-      <IconContext.Provider value={{ color: 'red', size: '25px' }}>
-        <button style={{ display: 'flex', gap: '10px', flexDirection: 'row' }} onClick={handleFileUpdate}>
-          <p>Save</p>
-          <FaSave />
-        </button>
-      </IconContext.Provider>
+      <ActionsMenuPresentation
+        name={'Save'}
+        color={iconColor}
+        Icon={() => <FaSave />}
+        onToolSelect={handleFileUpdate}
+      />
 
-      <IconContext.Provider value={{ color: 'yellow', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          <p>Cleaning</p>
-          <MdOutlineCleaningServices />
-        </span>
-      </IconContext.Provider>
+      <ActionsMenuPresentation
+        name={'Cleaning'}
+        color={iconColor}
+        Icon={() => <MdOutlineCleaningServices />}
+        onToolSelect={() => {}}
+      />
 
-      <IconContext.Provider value={{ color: 'green', size: '25px' }}>
-        <span style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-          <p>Delete</p>
-          <FaDeleteLeft />
-        </span>
-      </IconContext.Provider>
+      <ActionsMenuPresentation
+        name={'Delete'}
+        color={iconColor}
+        Icon={() => <FaDeleteLeft />}
+        onToolSelect={handleFileUpdate}
+      />
 
-      <IconContext.Provider value={{ color: 'blue', size: '25px' }}>
-        <button style={{ display: 'flex', gap: '10px', flexDirection: 'row' }} onClick={handleDownload}>
-          <p>Download</p>
-          <FaDownload />
-        </button>
-      </IconContext.Provider>
+      <ActionsMenuPresentation
+        name={'Download'}
+        color={iconColor}
+        Icon={() => <FaDownload />}
+        onToolSelect={handleDownload}
+      />
     </div>
   );
 };

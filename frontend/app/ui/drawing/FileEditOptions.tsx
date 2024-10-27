@@ -21,19 +21,23 @@ type EditToolPresentationProps = {
   onToolSelect: () => void;
   Icon: IconType;
 };
-
 const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
   <IconContext.Provider value={{ color, size: '25px' }}>
-    <button onClick={onToolSelect} style={{ display: 'flex', gap: '10px', flexDirection: 'row' }}>
-      {name}
-    </button>
-
-    <Icon />
+    <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <button
+        onClick={onToolSelect}
+        style={{ display: 'flex', gap: '10px', flexDirection: 'row', alignItems: 'center' }}
+      >
+        {name}
+        <Icon />
+      </button>
+    </div>
   </IconContext.Provider>
 );
 
 const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
   const [currentEditingTool, setCurrentEditingTool] = useState<EditingTool | undefined>(undefined);
+  const iconColor = '#006444';
 
   const toggleEditingTool = useCallback(
     (editingTool: EditingTool) =>
@@ -65,40 +69,43 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
     >
       <EditingToolPresentation
         name={'Scissors'}
-        color={'red'}
-        Icon={() => <FaPaintbrush />}
+        color={iconColor}
+        Icon={() => <FaScissors />}
         onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
       />
 
-      <EditingToolPresentation name={'Wand'} color={'orange'} Icon={() => <FaWandSparkles />} onToolSelect={() => {}} />
+      <EditingToolPresentation
+        name={'Wand'}
+        color={iconColor}
+        Icon={() => <FaWandSparkles />}
+        onToolSelect={() => {}}
+      />
 
-      <EditingToolPresentation name={'Bucket'} color={'yellow'} Icon={() => <FaBucket />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Bucket'} color={iconColor} Icon={() => <FaBucket />} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Brightness'} color={'cyan'} Icon={() => <FaSun />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Brightness'} color={iconColor} Icon={() => <FaSun />} onToolSelect={() => {}} />
 
       <EditingToolPresentation
         name={'Resize'}
-        color={'teal'}
+        color={iconColor}
         Icon={() => <GiResize />}
         onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
       />
 
-      <EditingToolPresentation name={'Eraser'} color={'green'} Icon={() => <LuEraser />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Eraser'} color={iconColor} Icon={() => <LuEraser />} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Text'} color={'blue'} Icon={() => <IoText />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Text'} color={iconColor} Icon={() => <IoText />} onToolSelect={() => {}} />
 
       <EditingToolPresentation
         name={'Filter'}
-        color={'purple'}
+        color={iconColor}
         Icon={() => <IoIosColorFilter />}
         onToolSelect={() => {}}
       />
 
       <EditingToolPresentation
         name={'Rotate'}
-        color={'indigo'}
+        color={iconColor}
         Icon={() => <FaArrowRotateRight />}
         onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
       />
