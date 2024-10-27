@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { downloadFile, useFileData } from '@/app/lib/api/fileApi';
 import { EditingTool } from '@/app/lib/canvas/types';
@@ -12,9 +12,13 @@ type EditImageEditingScreenProps = {
   id: string;
 };
 
+const DEFAULT_EDIT_COMPONENT: ReactNode = <div></div>;
+
 const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
+
+  const [currentEditComponent, setCurrentEditComponent] = useState<ReactNode>(DEFAULT_EDIT_COMPONENT);
 
   const { data: fileInfo, isLoading: isLoadingFileInfo } = useFileData(id);
 
@@ -31,9 +35,19 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   }, [fileInfo.id, isLoadingFileInfo]);
 
   return (
-    <GridView fileInfo={fileInfo} setEditingTool={setEditingTool}>
-      {!!uploadedImage && <Canvas imageStr={uploadedImage} editingTool={editingTool} />}
-    </GridView>
+    <>
+      <GridView fileInfo={fileInfo} setEditingTool={setEditingTool}>
+        {!!uploadedImage && (
+          <Canvas
+            imageStr={uploadedImage}
+            editingTool={editingTool}
+            setCurrentEditComponent={setCurrentEditComponent}
+          />
+        )}
+      </GridView>
+
+      {currentEditComponent}
+    </>
   );
 };
 
