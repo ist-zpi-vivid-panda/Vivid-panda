@@ -9,9 +9,13 @@ export const metadata: Metadata = {
 // ------------------ end :: metadata ------------------
 
 type EditCanvasPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-const EditCanvasPage = ({ params }: EditCanvasPageProps) => <EditImageEditingScreen id={params.id} />;
+const EditCanvasPage = async ({ params }: EditCanvasPageProps) => {
+  const { id } = await params;
+
+  return <EditImageEditingScreen id={id} />;
+};
 
 export default EditCanvasPage;
