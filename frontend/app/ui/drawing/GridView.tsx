@@ -1,34 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { EditingTool } from '@/app/lib/canvas/types';
 import { ChildrenProp } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
 
-import { FileInfo } from '../../lib/api/fileApi';
 import ActionsMenu from '../ActionsMenu';
 import FileEditListOptions from './FileEditOptions';
 
 type GridViewProps = ChildrenProp & {
-  fileInfo?: FileInfo;
   setEditingTool?: (_: EditingTool | undefined) => void;
+  onSaveClick: () => void;
+  onDeleteClick: () => void;
+  onDownloadClick: () => void;
 };
 
-const GridView = ({ fileInfo: fileInfoFromParent, setEditingTool, children }: GridViewProps) => {
-  const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
-
-  useEffect(() => {
-    if (fileInfoFromParent) {
-      setFileInfo(fileInfoFromParent);
-    }
-  }, [fileInfoFromParent]);
-
+const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick, children }: GridViewProps) => {
   return (
     <Grid container direction="column">
       <Grid size={{ xs: 1, sm: 1, md: 12 }} sx={{ padding: 1, display: 'flex', justifyContent: 'center' }}>
-        {/* TODO: Add file saving with generation of canvas in background to get the best quality of image! */}
-        <ActionsMenu fileInfo={fileInfo} file={null} />{' '}
+        <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
       </Grid>
 
       <Grid

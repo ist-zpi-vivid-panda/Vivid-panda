@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/types';
@@ -9,8 +9,12 @@ import { Cropper, ReactCropperElement } from 'react-cropper';
 type CanvasProps = {
   imageStr: string;
   editingTool: EditingTool | undefined;
-  getCanvas: (_: HTMLCanvasElement | undefined) => void;
+  setCurrentEditComponent: (_: ReactNode) => void;
 };
+
+export interface BlobConsumer {
+  getBlob: (callback: (blob: Blob | null) => void, type?: string, quality?: number) => void;
+}
 
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
@@ -19,154 +23,209 @@ const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 });
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
 
-const Canvas = ({ imageStr, editingTool, getCanvas }: CanvasProps) => {
-  const cropperRef = useRef<ReactCropperElement>(null);
+const Canvas = forwardRef<BlobConsumer, CanvasProps>(
+  ({ imageStr: passedInImageStr, editingTool, setCurrentEditComponent }, blobConsumer) => {
+    const parentRef = useRef<HTMLDivElement | null>(null);
+    const cropperRef = useRef<ReactCropperElement | null>(null);
 
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
+    const [image, setImage] = useState<HTMLImageElement | null>(null);
+    const [imageStr, setImageStr] = useState<string>(passedInImageStr);
 
-  const [, setZoomValue] = useState<number>(DEFAULT_ZOOM);
-  const [, setRotation] = useState<number>(DEFAULT_ROTATION);
+    const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
+    const [rotation, setRotation] = useState<number>(DEFAULT_ROTATION);
 
-  const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
+    const [isMouseInside, setMouseInside] = useState<boolean>(false);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const handleMouseDown = useCallback(() => setIsDragging(true), []);
+    const handleMouseInside = useCallback(() => setMouseInside(true), []);
+    const handleMouseOutside = useCallback(() => setMouseInside(false), []);
 
-  const handleMouseUp = useCallback(() => setIsDragging(false), []);
+    const handleMouseDown = useCallback(() => setIsDragging(true), []);
+    const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-  const rotateBy = useCallback(
-    (angleBy: number) =>
-      setRotation((prevAngle) => {
-        const newAngle = prevAngle + angleBy;
-        cropperRef.current?.cropper?.rotateTo(newAngle);
+    const rotateBy = useCallback((angleBy: number) => setRotation((prevAngle) => prevAngle + angleBy), []);
+    const rotate = useCallback((angle: number) => setRotation(angle), []);
 
-        return newAngle;
+    const zoomBy = useCallback((zoomBy: number) => setZoomValue((prevZoom) => prevZoom + zoomBy), []);
+    const zoom = useCallback((newZoomValue: number) => setZoomValue(newZoomValue), []);
+
+    const handleCrop = () => {
+      const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
+      const croppedImageUrl = croppedCanvas?.toDataURL();
+
+      if (croppedImageUrl) {
+        setImageStr(croppedImageUrl);
+      }
+    };
+
+    const editComponents: Record<EditingTool, ReactNode> = useMemo(
+      () => ({
+        [EditingTool.Rotation]: (
+          <div>
+            <button onClick={() => rotateBy(ROTATION_STEP)}>Rotate by {ROTATION_STEP}°</button>
+
+            <button onClick={() => rotateBy(-ROTATION_STEP)}>Rotate by -{ROTATION_STEP}°</button>
+          </div>
+        ),
+        [EditingTool.Zoom]: (
+          <div>
+            <button onClick={() => zoomBy(ZOOM_STEP)}>+</button>
+
+            <button onClick={() => zoomBy(-ZOOM_STEP)}>-</button>
+          </div>
+        ),
+        [EditingTool.Crop]: (
+          <div>
+            <button onClick={handleCrop}>Crop</button>
+          </div>
+        ),
+        [EditingTool.Move]: <div />,
       }),
-    []
-  );
+      [rotateBy, zoomBy]
+    );
 
-  const rotate = useCallback(
-    (angle: number) =>
-      setRotation(() => {
-        cropperRef.current?.cropper?.rotate(angle);
+    const mouseListener = useCallback(
+      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo }),
+      []
+    );
 
-        return angle;
-      }),
-    []
-  );
+    useEffect(() => {
+      const image = new Image();
+      image.src = imageStr;
+      image.onload = () => setImage(image);
+    }, [imageStr]);
 
-  const zoomBy = useCallback(
-    (zoomBy: number) =>
-      setZoomValue((prevZoom) => {
-        const newZoom = prevZoom + zoomBy;
-        cropperRef.current?.cropper?.zoomTo(newZoom);
+    // change tool
+    useEffect(() => {
+      const cropper = cropperRef.current?.cropper;
 
-        return newZoom;
-      }),
-    []
-  );
+      if (!cropper) {
+        return;
+      }
 
-  const mouseListener = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-      mouseInfoCalc({ event, cropper: cropperRef.current, setMouseInfo }),
-    []
-  );
+      cropper.setDragMode(
+        editingTool === EditingTool.Crop ? 'crop' : editingTool === EditingTool.Move ? 'move' : 'none'
+      );
 
-  useEffect(() => {
-    const image = new Image();
-    image.src = imageStr;
-    image.onload = () => setImage(image);
-  }, [imageStr]);
+      if (editingTool !== EditingTool.Crop) {
+        cropper.clear();
+      } else {
+        cropper.crop();
+      }
+    }, [editingTool]);
 
-  useEffect(() => {
-    getCanvas(cropperRef.current?.cropper?.getCroppedCanvas());
-  }, [getCanvas]);
+    // get current change component
+    useEffect(() => {
+      if (!editingTool) {
+        return;
+      }
 
-  // change tool
-  useEffect(() => {
-    const cropper = cropperRef.current?.cropper;
+      setCurrentEditComponent(editComponents[editingTool]);
+    }, [editComponents, editingTool, setCurrentEditComponent]);
 
-    if (!cropper) {
-      return;
-    }
+    // while dragging mouse
+    useEffect(() => {
+      if (!isDragging) {
+        return;
+      }
 
-    cropper.setDragMode(editingTool === EditingTool.Crop ? 'crop' : editingTool === EditingTool.Move ? 'move' : 'none');
+      if (editingTool === EditingTool.Rotation) {
+        rotate(mouseInfo.angle);
+      }
+    }, [editingTool, isDragging, mouseInfo.angle, rotate]);
 
-    if (editingTool !== EditingTool.Crop) {
-      cropper.clear();
-    } else {
-      cropper.crop();
-    }
-  }, [editingTool]);
+    // rotate
+    useEffect(() => {
+      cropperRef.current?.cropper?.rotateTo(rotation);
+    }, [rotation]);
 
-  // while dragging mouse
-  useEffect(() => {
-    if (!isDragging) {
-      return;
-    }
+    // zoom
+    useEffect(() => {
+      cropperRef.current?.cropper?.zoomTo(zoomValue);
+    }, [zoomValue]);
 
-    if (editingTool === EditingTool.Rotation) {
-      rotate(mouseInfo.angle);
-    }
-  }, [editingTool, isDragging, mouseInfo.angle, rotate]);
+    // temporary detect mouse down
+    useEffect(() => {
+      window.addEventListener('mousedown', handleMouseDown);
 
-  return (
-    <>
-      <div
-        onMouseMove={mouseListener}
-        style={{
-          display: 'flex',
-          width: '100%',
-          height: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <span>{editingTool}</span>
+      return () => window.removeEventListener('mousedown', handleMouseDown);
+    }, [handleMouseDown]);
 
-        {image && (
-          <Cropper
-            // begin :: listeners
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            // end :: listeners
+    // temporary detect mouse up
+    useEffect(() => {
+      window.addEventListener('mouseup', handleMouseUp);
 
-            src={imageStr}
-            style={{ width: '100%', height: '100%' }}
-            // begin:: Cropper.js options
-            aspectRatio={image.width / image.height}
-            ref={cropperRef}
-            viewMode={1}
-            responsive={false}
-            restore={false}
-            toggleDragModeOnDblclick={false}
-            modal
-            background
-            // end:: Cropper.js options
-          />
-        )}
-      </div>
+      return () => window.removeEventListener('mouseup', handleMouseUp);
+    }, [handleMouseUp]);
 
-      {editingTool === EditingTool.Rotation && (
-        <div>
-          <button onClick={() => rotateBy(ROTATION_STEP)}>Rotate by {ROTATION_STEP}°</button>
+    useEffect(() => {
+      console.log(`isDragging ${isDragging}`);
+    }, [isDragging]);
 
-          <button onClick={() => rotateBy(-ROTATION_STEP)}>Rotate by -{ROTATION_STEP}°</button>
+    useEffect(() => {
+      console.log(`isInside ${isMouseInside}`);
+    }, [isMouseInside]);
+
+    useImperativeHandle(blobConsumer, () => ({
+      getBlob: (callback, type, quality) => {
+        const res = cropperRef.current?.cropper?.getCroppedCanvas();
+
+        if (res) {
+          res.toBlob(callback, type, quality);
+        } else {
+          callback(null);
+        }
+      },
+    }));
+
+    return (
+      <>
+        {/*eslint-disable-next-line jsx-a11y/no-static-element-interactions*/}
+        <div
+          // begin :: listeners
+          onMouseMove={mouseListener}
+          // onMouseDown={handleMouseDown}
+          // onMouseUp={handleMouseUp}
+          onMouseEnter={handleMouseInside}
+          onMouseLeave={() => {
+            handleMouseOutside();
+            handleMouseUp();
+          }}
+          // end :: listeners
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          ref={parentRef}
+        >
+          {image && (
+            <Cropper
+              src={imageStr}
+              style={{ width: '100%', height: '100%' }}
+              // begin:: Cropper.js options
+              dragMode="none"
+              viewMode={1}
+              autoCrop={false}
+              toggleDragModeOnDblclick={false}
+              restore={false}
+              responsive={true}
+              modal={true}
+              background={true}
+              ref={cropperRef}
+              // end:: Cropper.js options
+            />
+          )}
         </div>
-      )}
+      </>
+    );
+  }
+);
 
-      {editingTool === EditingTool.Zoom && (
-        <div>
-          <span>Zoom:</span>
-
-          <button onClick={() => zoomBy(ZOOM_STEP)}>+</button>
-
-          <button onClick={() => zoomBy(-ZOOM_STEP)}>-</button>
-        </div>
-      )}
-    </>
-  );
-};
+Canvas.displayName = 'CanvasFR';
 
 export default Canvas;

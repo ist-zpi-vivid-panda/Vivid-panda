@@ -1,17 +1,14 @@
 'use client';
 
-import { useCallback } from 'react';
-
 import { FaSave, FaDownload } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { IconContext, IconType } from 'react-icons/lib';
 import { MdOutlineCleaningServices } from 'react-icons/md';
 
-import { FileInfo, onDownloadFileInfo, useUpdateFileDataMutation } from '../lib/api/fileApi';
-
 type ActionsMenuProps = {
-  fileInfo: FileInfo | null;
-  file: File | null;
+  onSaveClick: () => void;
+  onDeleteClick: () => void;
+  onDownloadClick: () => void;
 };
 
 type ActionsMenuPresentationProps = {
@@ -32,21 +29,8 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
   </IconContext.Provider>
 );
 
-const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
-  const updateFileData = useUpdateFileDataMutation();
+const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMenuProps) => {
   const iconColor = '#006444';
-
-  const handleDownload = useCallback(() => {
-    if (fileInfo) {
-      onDownloadFileInfo(fileInfo);
-    }
-  }, [fileInfo]);
-
-  const handleFileUpdate = useCallback(() => {
-    if (fileInfo && file) {
-      updateFileData.mutateAsync({ id: fileInfo.id, data: file });
-    }
-  }, [file, fileInfo, updateFileData]);
 
   return (
     <div
@@ -59,12 +43,7 @@ const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
         marginTop: '25px',
       }}
     >
-      <ActionsMenuPresentation
-        name={'Save'}
-        color={iconColor}
-        Icon={() => <FaSave />}
-        onToolSelect={handleFileUpdate}
-      />
+      <ActionsMenuPresentation name={'Save'} color={iconColor} Icon={() => <FaSave />} onToolSelect={onSaveClick} />
 
       <ActionsMenuPresentation
         name={'Cleaning'}
@@ -77,14 +56,14 @@ const ActionsMenu = ({ fileInfo, file }: ActionsMenuProps) => {
         name={'Delete'}
         color={iconColor}
         Icon={() => <FaDeleteLeft />}
-        onToolSelect={handleFileUpdate}
+        onToolSelect={onDeleteClick}
       />
 
       <ActionsMenuPresentation
         name={'Download'}
         color={iconColor}
         Icon={() => <FaDownload />}
-        onToolSelect={handleDownload}
+        onToolSelect={onDownloadClick}
       />
     </div>
   );
