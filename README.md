@@ -33,6 +33,8 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 - [Zustand](https://www.npmjs.com/package/zustand)
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
 - [React Hook Forms](https://react-hook-form.com/docs)
+- [Cropperjs](https://github.com/fengyuanchen/cropperjs/blob/main/README.md)
+  
 ## Backend:
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)  
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
