@@ -3,13 +3,11 @@ import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
-export const metadata: Metadata = {
+export const metadata: Metadata = Object.freeze({
   title: 'Forgot password',
-} as const;
+} as const);
 // ------------------ end :: metadata ------------------
 
-const ForgotPasswordPage = () => {
-  return <ForgotPassword />;
-};
+const ForgotPasswordPage = () => <ForgotPassword />;
 
 export default ForgotPasswordPage;

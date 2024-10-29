@@ -152,23 +152,22 @@ def update_file_info(file_id: str, user: UserModel, filename: str) -> Tuple[dict
     response_schemas=[(SuccessSchema, 200), (ErrorSchema, 400)],
     location="files",
 )
-def update_file_data(file_id: str, user: UserModel, fileData: FileStorage) -> Tuple[dict, int] | dict:
-    file: FileInfoModel | None = file_service.get_by_id(file_id)
-
-    if file is None or file.owner_id != user.uid:
+def update_file_data(file_id: str, user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
+    file_info: FileInfoModel | None = file_service.get_by_id(file_id)
+    if file_info is None or file_info.owner_id != user.uid:
         return error_dict("File doesn't exist"), 400
 
-    new_file_id_grid_fs = update_file_on_grid_fs(fileData, file_id)
+    new_file_id_grid_fs = update_file_on_grid_fs(file, file_info.grid_fs_id)
 
     if new_file_id_grid_fs is None:
         return error_dict("Couldn't update file"), 400
 
-    file.grid_fs_id = new_file_id_grid_fs
+    file_info.grid_fs_id = new_file_id_grid_fs
 
     if new_file_id_grid_fs is None:
         return error_dict("File not updated"), 400
 
-    updated_file_info: str | None = file_service.update(file)
+    updated_file_info: str | None = file_service.update(file_info)
 
     if updated_file_info is None:
         return error_dict("File not updated"), 400

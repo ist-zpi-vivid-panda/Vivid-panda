@@ -1,123 +1,203 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
-import { mouseInfoSetter, resizeCanvasToParent, createCanvasAction } from '@/app/lib/canvas/basic';
-import { drawRotated } from '@/app/lib/canvas/rotation';
-import { CanvasAction, EditingTool, MouseInfo, RepeatableCanvasAction } from '@/app/lib/canvas/types';
+import { mouseInfoCalc } from '@/app/lib/canvas/basic';
+import { EditingTool, MouseInfo } from '@/app/lib/canvas/types';
+import { Cropper, ReactCropperElement } from 'react-cropper';
 
 type CanvasProps = {
   imageStr: string;
   editingTool: EditingTool | undefined;
+  setCurrentEditComponent: (_: ReactNode) => void;
 };
 
-const RESIZE_EVENT_NAME = 'resize';
-
-const DEFAULT_CANVAS_OPERATIONS: Record<EditingTool, (_: RepeatableCanvasAction) => void> = Object.freeze({
-  [EditingTool.Rotation]: () => {},
-});
-
-const EDITING_TOOLS_MAP: Record<EditingTool, (_: CanvasAction) => void> = Object.freeze({
-  [EditingTool.Rotation]: drawRotated,
-});
-
-const Canvas = ({ imageStr, editingTool }: CanvasProps) => {
-  const [mouseInfo, setMouseInfo] = useState<MouseInfo>({ x: 0, y: 0, angle: 0 });
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-
-  const [image, setImage] = useState<HTMLImageElement | null>(null);
-
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const getCanvas = useCallback(() => canvasRef.current, [canvasRef]);
-
-  const [canvasOperations, setCanvasOperations] =
-    useState<Record<EditingTool, (_: RepeatableCanvasAction) => void>>(DEFAULT_CANVAS_OPERATIONS);
-
-  const canvasAction = useMemo(
-    () => (editingTool == undefined ? undefined : EDITING_TOOLS_MAP[editingTool]),
-    [editingTool]
-  );
-
-  const getCtx = useCallback(() => {
-    const canvas = getCanvas();
-    if (!canvas) {
-      return null;
-    }
-
-    return canvas.getContext('2d');
-  }, [getCanvas]);
-
-  const resizeListener = useCallback(
-    () => resizeCanvasToParent({ canvas: getCanvas(), ctx: getCtx(), image, canvasOperations }),
-    [canvasOperations, getCanvas, getCtx, image]
-  );
-
-  const mouseListener = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-      mouseInfoSetter({ event, canvas: getCanvas(), setMouseInfo }),
-    [getCanvas]
-  );
-
-  const handleMouseDown = useCallback(() => setIsDragging(true), []);
-
-  const handleMouseUp = useCallback(() => setIsDragging(false), []);
-
-  useEffect(() => {
-    const canvas = getCanvas();
-    const ctx = getCtx();
-
-    if (!canvas || !ctx) {
-      return;
-    }
-
-    const image = new Image();
-    image.src = imageStr;
-    image.onload = () => setImage(image);
-  }, [getCanvas, getCtx, imageStr]);
-
-  useEffect(() => {
-    window.addEventListener(RESIZE_EVENT_NAME, resizeListener);
-
-    return () => window.removeEventListener(RESIZE_EVENT_NAME, resizeListener);
-  }, [resizeListener]);
-
-  useEffect(() => {
-    const canvas = getCanvas();
-    const ctx = getCtx();
-
-    if (!isDragging || !canvasAction || !image || !canvas || !ctx) {
-      return;
-    }
-
-    const res = createCanvasAction({
-      mouseInfo,
-      canvasAction,
-    });
-
-    if (!res) {
-      return;
-    }
-
-    res({ canvas, image, ctx });
-
-    setCanvasOperations((prev) => ({ ...prev, editingTool: res }));
-  }, [canvasAction, getCanvas, getCtx, image, isDragging, mouseInfo]);
-
-  return (
-    <div
-      onMouseMove={mouseListener}
-      style={{
-        display: 'flex',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <canvas onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} ref={canvasRef} />
-    </div>
-  );
+export type BlobConsumer = {
+  getBlob: (callback: (blob: Blob | null) => void, type?: string, quality?: number) => void;
 };
+
+const DEFAULT_ZOOM: number = 1 as const;
+const DEFAULT_ROTATION: number = 0 as const;
+const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 } as const);
+
+const ZOOM_STEP: number = 0.1 as const;
+const ROTATION_STEP: number = 45 as const;
+
+const Canvas = forwardRef<BlobConsumer, CanvasProps>(
+  ({ imageStr: passedInImageStr, editingTool, setCurrentEditComponent }, blobConsumer) => {
+    const parentRef = useRef<HTMLDivElement | null>(null);
+    const cropperRef = useRef<ReactCropperElement | null>(null);
+
+    const [imageStr, setImageStr] = useState<string>(passedInImageStr);
+
+    const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
+    const [rotation, setRotation] = useState<number>(DEFAULT_ROTATION);
+
+    const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+
+    const handleMouseDown = useCallback(() => setIsDragging(true), []);
+    const handleMouseUp = useCallback(() => setIsDragging(false), []);
+
+    const rotateBy = useCallback((angleBy: number) => setRotation((prevAngle) => prevAngle + angleBy), []);
+    const rotate = useCallback((angle: number) => setRotation(angle), []);
+
+    const zoomBy = useCallback((zoomBy: number) => setZoomValue((prevZoom) => prevZoom + zoomBy), []);
+    const zoom = useCallback((newZoomValue: number) => setZoomValue(newZoomValue), []);
+
+    const handleCrop = () => {
+      const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
+      const croppedImageUrl = croppedCanvas?.toDataURL();
+
+      if (croppedImageUrl) {
+        setImageStr(croppedImageUrl);
+      }
+    };
+
+    const editComponents: Record<EditingTool, ReactNode> = useMemo(
+      () => ({
+        [EditingTool.Rotation]: (
+          <div>
+            <button onClick={() => rotateBy(ROTATION_STEP)}>Rotate by {ROTATION_STEP}°</button>
+
+            <button onClick={() => rotateBy(-ROTATION_STEP)}>Rotate by -{ROTATION_STEP}°</button>
+          </div>
+        ),
+        [EditingTool.Zoom]: (
+          <div>
+            <button onClick={() => zoomBy(ZOOM_STEP)}>+</button>
+
+            <button onClick={() => zoomBy(-ZOOM_STEP)}>-</button>
+          </div>
+        ),
+        [EditingTool.Crop]: (
+          <div>
+            <button onClick={handleCrop}>Crop</button>
+          </div>
+        ),
+        [EditingTool.Move]: <div />,
+      }),
+      [rotateBy, zoomBy]
+    );
+
+    const mouseListener = useCallback(
+      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo }),
+      []
+    );
+
+    // change tool
+    useEffect(() => {
+      const cropper = cropperRef?.current?.cropper;
+
+      if (!cropper) {
+        return;
+      }
+
+      cropper.setDragMode(
+        editingTool === EditingTool.Crop ? 'crop' : editingTool === EditingTool.Move ? 'move' : 'none'
+      );
+
+      if (editingTool !== EditingTool.Crop) {
+        cropper.clear();
+      } else {
+        cropper.crop();
+      }
+    }, [editingTool]);
+
+    // get current change component
+    useEffect(() => {
+      if (!editingTool) {
+        return;
+      }
+
+      setCurrentEditComponent(editComponents[editingTool]);
+    }, [editComponents, editingTool, setCurrentEditComponent]);
+
+    // while dragging mouse
+    useEffect(() => {
+      if (!isDragging) {
+        return;
+      }
+
+      if (editingTool === EditingTool.Rotation) {
+        rotate(mouseInfo.angle);
+      }
+    }, [editingTool, isDragging, mouseInfo.angle, rotate]);
+
+    // rotate
+    useEffect(() => {
+      cropperRef?.current?.cropper?.rotateTo(rotation);
+    }, [rotation]);
+
+    // zoom
+    useEffect(() => {
+      // for some reason only zoomTo has a problem with width not being initialized
+      if (
+        !cropperRef! ||
+        !cropperRef.current ||
+        !cropperRef.current.cropper ||
+        !cropperRef.current.currentSrc ||
+        !cropperRef?.current?.width
+      ) {
+        return;
+      }
+
+      cropperRef?.current?.cropper?.zoomTo(zoomValue);
+    }, [zoomValue]);
+
+    useImperativeHandle(blobConsumer, () => ({
+      getBlob: (callback, type, quality) => {
+        const res = cropperRef?.current?.cropper?.getCroppedCanvas();
+
+        if (res) {
+          res.toBlob(callback, type, quality);
+        } else {
+          callback(null);
+        }
+      },
+    }));
+
+    return (
+      <>
+        <div
+          // begin :: listeners
+          onPointerDown={handleMouseDown}
+          onPointerUp={handleMouseUp}
+          onPointerLeave={handleMouseUp}
+          onPointerMove={mouseListener}
+          // end :: listeners
+          style={{
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          ref={parentRef}
+        >
+          <Cropper
+            src={imageStr}
+            style={{ width: '100%', height: '100%' }}
+            // begin:: Cropper.js options
+            dragMode="none"
+            viewMode={1}
+            autoCrop={false}
+            toggleDragModeOnDblclick={false}
+            restore={false}
+            guides={false}
+            responsive={true}
+            modal={true}
+            background={true}
+            ref={cropperRef}
+            // end:: Cropper.js options
+          />
+        </div>
+      </>
+    );
+  }
+);
+
+Canvas.displayName = 'CanvasFR';
 
 export default Canvas;

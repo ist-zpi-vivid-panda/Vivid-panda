@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 
 import {
-  buildWholeApiUri,
   getCall,
   SuccessStatusResponse,
   useDeleteMutation,
@@ -11,7 +10,6 @@ import {
 } from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
 import { invalidate } from '../storage/getQueryClient';
-import useUserData from '../storage/useUserData';
 
 export type FileInfoDTO = {
   id: string;
@@ -54,6 +52,7 @@ const DOWNLOAD_ENDPOINT = '/download' as const;
 const DATA_ENDPOINT = '/data' as const;
 
 const getFileUrl = (id: string) => `${FILES_ENDPOINT}/${id}`;
+const getFileDataUrl = (id: string) => `${FILES_ENDPOINT}${DATA_ENDPOINT}/${id}`;
 
 export const invalidateFiles = async (id?: string) => await invalidate(id ? [FILES_QUERY_KEY, id] : [FILES_QUERY_KEY]);
 
@@ -70,6 +69,9 @@ export const useFilesData = () =>
 
 export const usePostFileMutation = () =>
   usePostMutation<File, FileInfoDTO>(invalidateFiles, FILES_ENDPOINT, convertFileToFormData);
+
+export const useUpdateFileDataMutation = () =>
+  useUpdateMutation<File, SuccessStatusResponse>(invalidateFiles, getFileDataUrl, convertFileToFormData);
 
 export const useUpdateFileMutation = () =>
   useUpdateMutation<FileInfoEditDTO, SuccessStatusResponse>(invalidateFiles, getFileUrl);
@@ -93,43 +95,19 @@ export const parseDTO = (dto: FileInfoDTO): FileInfo => ({
   uploaded_at: dayjs(dto.uploaded_at).toDate(),
 });
 
-export const useGetFile = (id: string) => {
-  const userData = useUserData.getState();
-  const token = userData.accessToken;
-  const uri = buildWholeApiUri(`${FILES_ENDPOINT}/download/${id}`);
-
-  const getFile = async () => {
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch file: ${response.status}`);
-    }
-
-    return response.blob();
-  };
-
-  return { getFile };
-};
-
-export const handleDownloadFileToBrowser = (idOfPhoto?: string, url?: string, filename?: string) => {
-  if (idOfPhoto && url && filename) {
-    downloadFile(idOfPhoto);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
+export const handleDownloadFileToBrowser = async (idOfPhoto: string, filename: string) => {
+  if (!idOfPhoto || !filename) {
+    return;
   }
+
+  const file = await downloadFile(idOfPhoto);
+  const url = URL.createObjectURL(file);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
 };
 
-export const onDownloadClick = async (fileInfo: FileInfo) => {
-  const downloadedImageFile = await downloadFile(fileInfo.id);
-  const url = URL.createObjectURL(downloadedImageFile);
-  handleDownloadFileToBrowser(fileInfo.id, url, fileInfo.filename);
-};
+export const onDownloadFileInfo = (fileInfo: FileInfo) => handleDownloadFileToBrowser(fileInfo.id, fileInfo.filename);
