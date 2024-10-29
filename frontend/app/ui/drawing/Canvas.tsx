@@ -18,7 +18,7 @@ export type BlobConsumer = {
 
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
-const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 });
+const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 } as const);
 
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
@@ -28,18 +28,13 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const parentRef = useRef<HTMLDivElement | null>(null);
     const cropperRef = useRef<ReactCropperElement | null>(null);
 
-    const [image, setImage] = useState<HTMLImageElement | null>(null);
     const [imageStr, setImageStr] = useState<string>(passedInImageStr);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotation, setRotation] = useState<number>(DEFAULT_ROTATION);
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
-    const [isMouseInside, setMouseInside] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-
-    const handleMouseInside = useCallback(() => setMouseInside(true), []);
-    const handleMouseOutside = useCallback(() => setMouseInside(false), []);
 
     const handleMouseDown = useCallback(() => setIsDragging(true), []);
     const handleMouseUp = useCallback(() => setIsDragging(false), []);
@@ -51,7 +46,7 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const zoom = useCallback((newZoomValue: number) => setZoomValue(newZoomValue), []);
 
     const handleCrop = () => {
-      const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
+      const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
       const croppedImageUrl = croppedCanvas?.toDataURL();
 
       if (croppedImageUrl) {
@@ -91,15 +86,9 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       []
     );
 
-    useEffect(() => {
-      const image = new Image();
-      image.src = imageStr;
-      image.onload = () => setImage(image);
-    }, [imageStr]);
-
     // change tool
     useEffect(() => {
-      const cropper = cropperRef.current?.cropper;
+      const cropper = cropperRef?.current?.cropper;
 
       if (!cropper) {
         return;
@@ -138,39 +127,28 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // rotate
     useEffect(() => {
-      cropperRef.current?.cropper?.rotateTo(rotation);
+      cropperRef?.current?.cropper?.rotateTo(rotation);
     }, [rotation]);
 
     // zoom
     useEffect(() => {
-      cropperRef.current?.cropper?.zoomTo(zoomValue);
+      // for some reason only zoomTo has a problem with width not being initialized
+      if (
+        !cropperRef! ||
+        !cropperRef.current ||
+        !cropperRef.current.cropper ||
+        !cropperRef.current.currentSrc ||
+        !cropperRef?.current?.width
+      ) {
+        return;
+      }
+
+      cropperRef?.current?.cropper?.zoomTo(zoomValue);
     }, [zoomValue]);
-
-    // temporary detect mouse down
-    useEffect(() => {
-      window.addEventListener('mousedown', handleMouseDown);
-
-      return () => window.removeEventListener('mousedown', handleMouseDown);
-    }, [handleMouseDown]);
-
-    // temporary detect mouse up
-    useEffect(() => {
-      window.addEventListener('mouseup', handleMouseUp);
-
-      return () => window.removeEventListener('mouseup', handleMouseUp);
-    }, [handleMouseUp]);
-
-    useEffect(() => {
-      console.log(`isDragging ${isDragging}`);
-    }, [isDragging]);
-
-    useEffect(() => {
-      console.log(`isInside ${isMouseInside}`);
-    }, [isMouseInside]);
 
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
-        const res = cropperRef.current?.cropper?.getCroppedCanvas();
+        const res = cropperRef?.current?.cropper?.getCroppedCanvas();
 
         if (res) {
           res.toBlob(callback, type, quality);
@@ -182,17 +160,12 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     return (
       <>
-        {/*eslint-disable-next-line jsx-a11y/no-static-element-interactions*/}
         <div
           // begin :: listeners
-          onMouseMove={mouseListener}
-          // onMouseDown={handleMouseDown}
-          // onMouseUp={handleMouseUp}
-          onMouseEnter={handleMouseInside}
-          onMouseLeave={() => {
-            handleMouseOutside();
-            handleMouseUp();
-          }}
+          onPointerDown={handleMouseDown}
+          onPointerUp={handleMouseUp}
+          onPointerLeave={handleMouseUp}
+          onPointerMove={mouseListener}
           // end :: listeners
           style={{
             display: 'flex',
@@ -203,23 +176,22 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
           }}
           ref={parentRef}
         >
-          {image && (
-            <Cropper
-              src={imageStr}
-              style={{ width: '100%', height: '100%' }}
-              // begin:: Cropper.js options
-              dragMode="none"
-              viewMode={1}
-              autoCrop={false}
-              toggleDragModeOnDblclick={false}
-              restore={false}
-              responsive={true}
-              modal={true}
-              background={true}
-              ref={cropperRef}
-              // end:: Cropper.js options
-            />
-          )}
+          <Cropper
+            src={imageStr}
+            style={{ width: '100%', height: '100%' }}
+            // begin:: Cropper.js options
+            dragMode="none"
+            viewMode={1}
+            autoCrop={false}
+            toggleDragModeOnDblclick={false}
+            restore={false}
+            guides={false}
+            responsive={true}
+            modal={true}
+            background={true}
+            ref={cropperRef}
+            // end:: Cropper.js options
+          />
         </div>
       </>
     );

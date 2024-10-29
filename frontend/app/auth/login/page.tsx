@@ -3,13 +3,11 @@ import { Metadata } from 'next';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
-export const metadata: Metadata = {
+export const metadata: Metadata = Object.freeze({
   title: 'Login',
-} as const;
+} as const);
 // ------------------ end :: metadata ------------------
 
-const LoginPage = () => {
-  return <Login />;
-};
+const LoginPage = () => <Login />;
 
 export default LoginPage;

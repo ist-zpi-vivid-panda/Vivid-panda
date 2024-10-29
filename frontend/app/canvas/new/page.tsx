@@ -4,9 +4,9 @@ import NewImageEditingScreen from '../../ui/drawing/NewImageEditingScreen';
 
 // ------------------ begin :: metadata ------------------
 // can't use metadata and 'use client' in one file
-export const metadata: Metadata = {
+export const metadata: Metadata = Object.freeze({
   title: 'New',
-} as const;
+} as const);
 // ------------------ end :: metadata ------------------
 
 const NewCanvasPage = () => <NewImageEditingScreen />;

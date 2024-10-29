@@ -3,30 +3,31 @@ import 'cropperjs/dist/cropper.css';
 import './globals.css';
 
 import Providers from '@/app/providers';
+import FONT from '@/constants/Font';
+import SEO_KEYWORDS from '@/constants/SEOKeywords';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 
 import { Children } from './lib/definitions';
 
-const inter = Inter({ subsets: ['latin'] });
-
 const APP_TITLE = 'Vivid-Panda' as const;
 
+const APP_DESCRIPTION = 'Your universal image editing and drawing app!' as const;
+
 // ------------------ begin :: metadata ------------------
-export const metadata: Metadata = {
+export const metadata: Metadata = Object.freeze({
   title: {
     template: `%s | ${APP_TITLE}`,
     default: APP_TITLE,
   },
-  description: 'Your universal image editing and drawing app!',
-  keywords: ['drawing', 'image editing', 'editing', 'creation', 'creative', 'imagination'],
-} as const;
+  description: APP_DESCRIPTION,
+  keywords: SEO_KEYWORDS,
+} as const);
 
-export const viewport: Viewport = {
+export const viewport: Viewport = Object.freeze({
   initialScale: 1,
   width: 'device-width',
-} as const;
+} as const);
 // ------------------ end :: metadata ------------------
 
 const RootLayout = ({
@@ -35,7 +36,7 @@ const RootLayout = ({
   children: Children;
 }>) => (
   <html lang="en">
-    <body className={inter.className}>
+    <body className={FONT.className}>
       <Providers>
         <ToastContainer />
 
