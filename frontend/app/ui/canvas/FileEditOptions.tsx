@@ -107,7 +107,7 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
         name={'Filter'}
         color={iconColor}
         Icon={() => <IoIosColorFilter />}
-        onToolSelect={() => {}}
+        onToolSelect={() => toggleEditingTool(EditingTool.Filter)}
       />
 
       <EditingToolPresentation

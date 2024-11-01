@@ -12,15 +12,13 @@ type EditImageEditingScreenProps = {
   id: string;
 };
 
-const DEFAULT_EDIT_COMPONENT: ReactNode = <div />;
-
 const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const blobRef = useRef<BlobConsumer | null>(null);
 
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
 
-  const [currentEditComponent, setCurrentEditComponent] = useState<ReactNode>(DEFAULT_EDIT_COMPONENT);
+  const [currentEditComponent, setCurrentEditComponent] = useState<ReactNode>(false);
 
   const { data: fileInfo, isLoading: isLoadingFileInfo } = useFileData(id);
 

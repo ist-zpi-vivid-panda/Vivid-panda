@@ -3,13 +3,20 @@
 import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
+import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/types';
+import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
+
+import CropTray from './tool-trays/CropTray';
+import FilterTray from './tool-trays/FilterTray';
+import RotationTray from './tool-trays/RotationTray';
+import ZoomTray from './tool-trays/ZoomTray';
 
 type CanvasProps = {
   imageStr: string;
   editingTool: EditingTool | undefined;
-  setCurrentEditComponent: (_: ReactNode) => void;
+  setCurrentEditComponent: (_: ReactNode | undefined) => void;
 };
 
 export type BlobConsumer = {
@@ -31,54 +38,11 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const [imageStr, setImageStr] = useState<string>(passedInImageStr);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
-    const [rotation, setRotation] = useState<number>(DEFAULT_ROTATION);
+    const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
+    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-
-    const handleMouseDown = useCallback(() => setIsDragging(true), []);
-    const handleMouseUp = useCallback(() => setIsDragging(false), []);
-
-    const rotateBy = useCallback((angleBy: number) => setRotation((prevAngle) => prevAngle + angleBy), []);
-    const rotate = useCallback((angle: number) => setRotation(angle), []);
-
-    const zoomBy = useCallback((zoomBy: number) => setZoomValue((prevZoom) => prevZoom + zoomBy), []);
-    const zoom = useCallback((newZoomValue: number) => setZoomValue(newZoomValue), []);
-
-    const handleCrop = () => {
-      const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
-      const croppedImageUrl = croppedCanvas?.toDataURL();
-
-      if (croppedImageUrl) {
-        setImageStr(croppedImageUrl);
-      }
-    };
-
-    const editComponents: Record<EditingTool, ReactNode> = useMemo(
-      () => ({
-        [EditingTool.Rotation]: (
-          <div>
-            <button onClick={() => rotateBy(ROTATION_STEP)}>Rotate by {ROTATION_STEP}°</button>
-
-            <button onClick={() => rotateBy(-ROTATION_STEP)}>Rotate by -{ROTATION_STEP}°</button>
-          </div>
-        ),
-        [EditingTool.Zoom]: (
-          <div>
-            <button onClick={() => zoomBy(ZOOM_STEP)}>+</button>
-
-            <button onClick={() => zoomBy(-ZOOM_STEP)}>-</button>
-          </div>
-        ),
-        [EditingTool.Crop]: (
-          <div>
-            <button onClick={handleCrop}>Crop</button>
-          </div>
-        ),
-        [EditingTool.Move]: <div />,
-      }),
-      [rotateBy, zoomBy]
-    );
 
     const mouseListener = useCallback(
       (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
@@ -86,7 +50,52 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       []
     );
 
-    // change tool
+    const handleMouseDown = useCallback(() => setIsDragging(true), []);
+    const handleMouseUp = useCallback(() => setIsDragging(false), []);
+
+    const rotate = useCallback((angle: number) => setRotationValue(angle), []);
+
+    const handleCrop = useCallback(() => {
+      const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
+      const croppedImageUrl = croppedCanvas?.toDataURL();
+
+      if (croppedImageUrl) {
+        setImageStr(croppedImageUrl);
+      }
+    }, []);
+
+    const getImageData = useCallback((): ImageData | undefined => {
+      const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
+      const ctx = croppedCanvas?.getContext('2d');
+
+      if (!ctx || !croppedCanvas) {
+        return;
+      }
+
+      return ctx.getImageData(0, 0, croppedCanvas.width, croppedCanvas.height);
+    }, []);
+
+    const editComponents: Record<EditingTool, ReactNode> = useMemo(
+      () => ({
+        [EditingTool.Rotation]: (
+          <RotationTray
+            rotationStep={ROTATION_STEP}
+            setRotation={setRotationValue}
+            currentRotation={rotationValue}
+            defaultRotation={DEFAULT_ROTATION}
+          />
+        ),
+        [EditingTool.Zoom]: (
+          <ZoomTray zoomStep={ZOOM_STEP} setZoom={setZoomValue} currentZoom={zoomValue} defaultZoom={DEFAULT_ZOOM} />
+        ),
+        [EditingTool.Crop]: <CropTray handleCrop={handleCrop} />,
+        [EditingTool.Move]: false,
+        [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
+      }),
+      [handleCrop, rotationValue, zoomValue]
+    );
+
+    // change params according to tool
     useEffect(() => {
       const cropper = cropperRef?.current?.cropper;
 
@@ -107,11 +116,7 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // get current change component
     useEffect(() => {
-      if (!editingTool) {
-        return;
-      }
-
-      setCurrentEditComponent(editComponents[editingTool]);
+      setCurrentEditComponent(editingTool ? editComponents[editingTool] : false);
     }, [editComponents, editingTool, setCurrentEditComponent]);
 
     // while dragging mouse
@@ -127,8 +132,8 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // rotate
     useEffect(() => {
-      cropperRef?.current?.cropper?.rotateTo(rotation);
-    }, [rotation]);
+      cropperRef?.current?.cropper?.rotateTo(rotationValue);
+    }, [rotationValue]);
 
     // zoom
     useEffect(() => {
@@ -145,6 +150,29 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
       cropperRef?.current?.cropper?.zoomTo(zoomValue);
     }, [zoomValue]);
+
+    // filter
+    useEffect(() => {
+      if (!filterType || editingTool !== EditingTool.Filter) {
+        return;
+      }
+
+      const imageData = getImageData();
+
+      if (!imageData) {
+        return;
+      }
+
+      const res = filterTypeToFilterFn[filterType]({
+        imageData,
+        startPointX: 0,
+        startPointY: 0,
+        endPointX: imageData.width,
+        endPointY: imageData.height,
+      });
+
+      setImageStr(convertImageDataToImageStr(res));
+    }, [editingTool, filterType, getImageData]);
 
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {

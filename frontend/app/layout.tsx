@@ -12,7 +12,7 @@ import { Children } from './lib/definitions';
 
 const APP_TITLE = 'Vivid-Panda' as const;
 
-const APP_DESCRIPTION = 'Your universal image editing and drawing app!' as const;
+const APP_DESCRIPTION = 'Your universal image editing app!' as const;
 
 // ------------------ begin :: metadata ------------------
 export const metadata: Metadata = Object.freeze({

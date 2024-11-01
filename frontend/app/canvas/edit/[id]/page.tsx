@@ -1,4 +1,4 @@
-import EditImageEditingScreen from '@/app/ui/drawing/EditImageEditingScreen';
+import EditImageEditingScreen from '@/app/ui/canvas/EditImageEditingScreen';
 import { Metadata } from 'next';
 
 type EditCanvasPageProps = {

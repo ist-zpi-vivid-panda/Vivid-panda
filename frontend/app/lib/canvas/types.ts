@@ -21,4 +21,5 @@ export enum EditingTool {
   Zoom = 'ZOOM',
   Crop = 'CROP',
   Move = 'MOVE',
+  Filter = 'FILTER',
 }
