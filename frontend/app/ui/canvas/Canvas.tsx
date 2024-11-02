@@ -3,8 +3,8 @@
 import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
+import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
 import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
-import { EditingTool, MouseInfo } from '@/app/lib/canvas/types';
 import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 
@@ -36,6 +36,7 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const cropperRef = useRef<ReactCropperElement | null>(null);
 
     const [imageStr, setImageStr] = useState<string>(passedInImageStr);
+    const [image, setImage] = useState<HTMLImageElement | null>(null); // this is not unnecessary as it seems to be the only way to prevent error 'width undefined'
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
@@ -174,6 +175,12 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       setImageStr(convertImageDataToImageStr(res));
     }, [editingTool, filterType, getImageData]);
 
+    useEffect(() => {
+      const image = new Image();
+      image.src = imageStr;
+      image.onload = () => setImage(image);
+    }, [imageStr]);
+
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
         const res = cropperRef?.current?.cropper?.getCroppedCanvas();
@@ -204,22 +211,24 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
           }}
           ref={parentRef}
         >
-          <Cropper
-            src={imageStr}
-            style={{ width: '100%', height: '100%' }}
-            // begin:: Cropper.js options
-            dragMode="none"
-            viewMode={1}
-            autoCrop={false}
-            toggleDragModeOnDblclick={false}
-            restore={false}
-            guides={false}
-            responsive={true}
-            modal={true}
-            background={true}
-            ref={cropperRef}
-            // end:: Cropper.js options
-          />
+          {image && (
+            <Cropper
+              src={imageStr}
+              style={{ width: '100%', height: '100%' }}
+              // begin:: Cropper.js options
+              dragMode="none"
+              viewMode={1}
+              autoCrop={false}
+              toggleDragModeOnDblclick={false}
+              restore={false}
+              guides={false}
+              responsive={true}
+              modal={true}
+              background={true}
+              ref={cropperRef}
+              // end:: Cropper.js options
+            />
+          )}
         </div>
       </>
     );

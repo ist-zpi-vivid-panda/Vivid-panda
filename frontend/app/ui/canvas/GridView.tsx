@@ -1,6 +1,6 @@
 'use client';
 
-import { EditingTool } from '@/app/lib/canvas/types';
+import { EditingTool } from '@/app/lib/canvas/definitions';
 import { ChildrenProp } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
 

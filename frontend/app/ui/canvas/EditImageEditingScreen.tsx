@@ -3,7 +3,7 @@
 import { ReactNode, useState, useCallback, useEffect, useRef } from 'react';
 
 import { downloadFile, onDownloadFileInfo, useFileData, useUpdateFileDataMutation } from '@/app/lib/api/fileApi';
-import { EditingTool } from '@/app/lib/canvas/types';
+import { EditingTool } from '@/app/lib/canvas/definitions';
 
 import Canvas, { BlobConsumer } from './Canvas';
 import GridView from './GridView';

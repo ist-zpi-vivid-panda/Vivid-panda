@@ -16,21 +16,20 @@ const UserInfo = () => {
   const { data: profilePicture } = useUserProfilePicture().data;
   const router = useRouter();
 
-  const navigateToImages = useCallback(() => {
-    router.push('/files/list');
-  }, [router]);
+  const navigateToImages = useCallback(() => router.push('/files/list'), [router]);
 
-  const navigateToEdit = useCallback(() => {
-    router.push('/canvas/new');
-  }, [router]);
+  const navigateToEdit = useCallback(() => router.push('/canvas/new'), [router]);
+
+  const navigateToLicenses = useCallback(() => router.push('/licenses/list'), [router]);
 
   const dropdownOptions: DropdownItemProps[] = useMemo(
     () => [
       { label: 'Logout', onSelect: logout },
       { label: 'Images', onSelect: navigateToImages },
       { label: 'Edit', onSelect: navigateToEdit },
+      { label: 'Licenses', onSelect: navigateToLicenses },
     ],
-    [logout, navigateToImages, navigateToEdit]
+    [logout, navigateToImages, navigateToEdit, navigateToLicenses]
   );
 
   return (

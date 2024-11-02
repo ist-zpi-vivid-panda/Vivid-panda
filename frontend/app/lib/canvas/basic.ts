@@ -1,4 +1,4 @@
-import { MouseInfo } from './types';
+import { MouseInfo } from './definitions';
 
 type MouseInfoSetterProps = {
   event: React.MouseEvent<HTMLDivElement, MouseEvent>;

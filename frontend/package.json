@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate-licenses": "license-checker --direct --json --customPath additional-license-checker-fields.json --out ./public/licenses.json",
+    "predev": "npm run generate-licenses",
+    "prebuild": "npm run generate-licenses",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -19,6 +22,7 @@
     "ajv-errors": "^3.0.0",
     "ajv-formats": "^3.0.1",
     "dayjs": "^1.11.13",
+    "license-checker": "^25.0.1",
     "next": "^15.0.1",
     "next-auth": "^5.0.0-beta.20",
     "normalize.css": "^8.0.1",

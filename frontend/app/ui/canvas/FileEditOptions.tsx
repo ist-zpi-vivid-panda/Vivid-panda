@@ -9,7 +9,7 @@ import { IoText } from 'react-icons/io5';
 import { IconContext, IconType } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
 
-import { EditingTool } from '../../lib/canvas/types';
+import { EditingTool } from '../../lib/canvas/definitions';
 
 type FileEditListOptionsProps = {
   setEditingTool?: (_: EditingTool | undefined) => void;
