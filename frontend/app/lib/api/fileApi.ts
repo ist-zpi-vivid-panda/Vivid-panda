@@ -9,7 +9,7 @@ import {
   useUpdateMutation,
 } from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
-import { invalidate } from '../storage/getQueryClient';
+import { invalidate, removeQuery } from '../storage/getQueryClient';
 
 export type FileInfoDTO = {
   id: string;
@@ -55,6 +55,8 @@ const getFileUrl = (id: string) => `${FILES_ENDPOINT}/${id}`;
 const getFileDataUrl = (id: string) => `${FILES_ENDPOINT}${DATA_ENDPOINT}/${id}`;
 
 export const invalidateFiles = async (id?: string) => await invalidate(id ? [FILES_QUERY_KEY, id] : [FILES_QUERY_KEY]);
+export const deleteFilesQuery = async (id?: string) =>
+  await removeQuery(id ? [FILES_QUERY_KEY, id] : [FILES_QUERY_KEY]);
 
 export const useFileData = (id: string) => useGetQuery<FileInfo>([FILES_QUERY_KEY, id], getFileUrl(id));
 
@@ -76,7 +78,7 @@ export const useUpdateFileDataMutation = () =>
 export const useUpdateFileMutation = () =>
   useUpdateMutation<FileInfoEditDTO, SuccessStatusResponse>(invalidateFiles, getFileUrl);
 
-export const useDeleteFileMutation = () => useDeleteMutation(invalidateFiles, getFileUrl);
+export const useDeleteFileMutation = () => useDeleteMutation(deleteFilesQuery, getFileUrl);
 
 export const downloadFile = async (id: string) =>
   await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`);

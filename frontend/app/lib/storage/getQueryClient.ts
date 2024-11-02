@@ -40,3 +40,4 @@ export const invalidateAllQueries = async () => getQueryClient().invalidateQueri
 export const removeAllQueries = () => getQueryClient().removeQueries();
 
 export const invalidate = async (queryKey: string[]) => getQueryClient().invalidateQueries({ queryKey });
+export const removeQuery = async (queryKey: string[]) => getQueryClient().removeQueries({ queryKey });

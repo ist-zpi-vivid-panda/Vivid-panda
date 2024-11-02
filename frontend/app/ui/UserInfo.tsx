@@ -9,12 +9,16 @@ import { useRouter } from 'next/navigation';
 import { DropdownItemProps } from './shared/dropdown/DropdownItem';
 import DropdownMenu from './shared/dropdown/DropdownMenu';
 import { useUserInfo, useUserProfilePicture } from '../lib/api/userApi';
+import { TranslationNamespace } from '../lib/internationalization/definitions';
+import useStrings from '../lib/internationalization/useStrings';
 
 const UserInfo = () => {
   const { logout } = useUserData();
   const { email, username } = useUserInfo().data;
   const { data: profilePicture } = useUserProfilePicture().data;
   const router = useRouter();
+
+  const { t } = useStrings(TranslationNamespace.Auth);
 
   const navigateToImages = useCallback(() => router.push('/files/list'), [router]);
 
@@ -24,12 +28,12 @@ const UserInfo = () => {
 
   const dropdownOptions: DropdownItemProps[] = useMemo(
     () => [
-      { label: 'Logout', onSelect: logout },
-      { label: 'Images', onSelect: navigateToImages },
-      { label: 'Edit', onSelect: navigateToEdit },
-      { label: 'Licenses', onSelect: navigateToLicenses },
+      { label: t('files:images'), onSelect: navigateToImages },
+      { label: t('common:edit'), onSelect: navigateToEdit },
+      { label: t('logout'), onSelect: logout },
+      { label: t('licenses:licenses'), onSelect: navigateToLicenses },
     ],
-    [logout, navigateToImages, navigateToEdit, navigateToLicenses]
+    [navigateToImages, navigateToEdit, t, logout, navigateToLicenses]
   );
 
   return (
@@ -38,7 +42,7 @@ const UserInfo = () => {
         <span>{username}</span>
         <span className="font-light">{email}</span>
 
-        <DropdownMenu options={dropdownOptions} text={'Options'} />
+        <DropdownMenu options={dropdownOptions} text={t('common:options')} />
       </div>
 
       <Image

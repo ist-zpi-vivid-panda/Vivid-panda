@@ -1,4 +1,13 @@
 {
     "welcome_header": "Start exploring our app! Play with your imagination!",
-    "submit": "Submit"
+    "submit": "Submit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "download": "Download",
+    "loading": "Loading",
+    "all_loaded": "All loaded",
+    "edit": "Edit",
+    "something_went_wrong": "Something went wrong",
+    "options": "Options"
 }

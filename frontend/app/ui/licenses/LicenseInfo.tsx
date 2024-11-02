@@ -1,3 +1,5 @@
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { License } from '@/app/lib/licenses/definitions';
 
 type LicenseInfoProps = {
@@ -5,15 +7,17 @@ type LicenseInfoProps = {
 };
 
 const LicenseInfo = ({ license }: LicenseInfoProps) => {
+  const { t } = useStrings(TranslationNamespace.Licenses);
+
   return (
     <div style={{ flex: 2, padding: '1rem' }}>
-      <h2>License Information</h2>
+      <h2>{t('license_details')}:</h2>
 
       <div>
         {license ? (
           <>
             <p>
-              <strong>License:</strong> {license.licenses}
+              <strong>{t('license')}: </strong> {license.licenses}
             </p>
 
             <p>
@@ -24,16 +28,16 @@ const LicenseInfo = ({ license }: LicenseInfoProps) => {
             </p>
 
             <p>
-              <strong>Copyright: </strong>
+              <strong>{t('copyright')}: </strong>
               {license.copyright}
             </p>
 
             <br />
 
-            <p>{license.licenseText || 'No license text available.'}</p>
+            <p>{license.licenseText || t('no_license_text')}</p>
           </>
         ) : (
-          <p>No license is chosen</p>
+          <p>{t('no_license_chosen')}</p>
         )}
       </div>
     </div>

@@ -3,6 +3,8 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { FileInfo, onDownloadFileInfo, useDeleteFileMutation, useFilesData } from '@/app/lib/api/fileApi';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import Grid from '@mui/material/Grid2';
 import { useRouter } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,6 +16,9 @@ import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {
   const router = useRouter();
+
+  const { t } = useStrings(TranslationNamespace.Files);
+
   const deleteFile = useDeleteFileMutation();
 
   const { data, fetchNextPage, hasNextPage } = useFilesData();
@@ -26,11 +31,11 @@ const FilesList = () => {
   const onDeleteImage = useCallback(
     (fileInfo: FileInfo) =>
       prompt({
-        title: 'Do you want to delete the image?',
-        actions: [{ text: 'Delete ', onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
+        title: t('delete_image_details'),
+        actions: [{ text: t('common:delete'), onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
         cancelable: true,
       }),
-    [deleteFile, prompt]
+    [deleteFile, prompt, t]
   );
 
   const onEditPhotoClick = useCallback((fileInfo: FileInfo) => router.push(`/canvas/edit/${fileInfo.id}`), [router]);
@@ -47,10 +52,10 @@ const FilesList = () => {
         dataLength={files.length}
         next={fetchNextPage}
         hasMore={hasNextPage}
-        loader={<h4>Loading...</h4>}
+        loader={<h4>{t('common:loading')}</h4>}
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>Yay! You have seen it all</b>
+            <b>{t('common:all_loaded')}</b>
           </p>
         }
       >

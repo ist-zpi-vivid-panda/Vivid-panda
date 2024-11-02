@@ -1,17 +1,18 @@
 'use client';
 
 import { EditingTool } from '@/app/lib/canvas/definitions';
-import { ChildrenProp } from '@/app/lib/definitions';
+import { Children } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
 
-import ActionsMenu from '../ActionsMenu';
+import ActionsMenu from './ActionsMenu';
 import FileEditListOptions from './FileEditOptions';
 
-type GridViewProps = ChildrenProp & {
+type GridViewProps = {
   setEditingTool?: (_: EditingTool | undefined) => void;
   onSaveClick: () => void;
   onDeleteClick: () => void;
   onDownloadClick: () => void;
+  children?: Children;
 };
 
 const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick, children }: GridViewProps) => {

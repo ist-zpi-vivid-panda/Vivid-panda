@@ -55,6 +55,7 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
     setEditingTool?.(currentEditingTool);
   }, [currentEditingTool, setEditingTool]);
 
+  // maybe change names to icons with tooltips
   return (
     <div
       style={{

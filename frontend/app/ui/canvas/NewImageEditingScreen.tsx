@@ -26,7 +26,7 @@ const NewImageEditingScreen = () => {
   );
 
   return (
-    <GridView>
+    <GridView onSaveClick={() => {}} onDeleteClick={() => {}} onDownloadClick={() => {}}>
       <ImageUpload onImageUpload={handleImageUpload} />
     </GridView>
   );

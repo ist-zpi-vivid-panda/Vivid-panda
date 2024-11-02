@@ -3,6 +3,8 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { ChildrenProp } from '@/app/lib/definitions';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { Card, Modal } from '@mui/material';
 
 type PromptActionProps = {
@@ -27,6 +29,8 @@ const PromptAction = ({ text, onPress }: PromptActionProps) => <button onClick={
 const ActionPromptContext = createContext<ActionPromptProps>({ prompt: () => {} });
 
 export const ActionPrompt = ({ children }: ChildrenProp) => {
+  const { t } = useStrings(TranslationNamespace.Common);
+
   const [overlayState, setOverlayState] = useState<PromptProps>({});
   const [isVisible, setVisible] = useState<boolean>(false);
 
@@ -61,13 +65,13 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
       cancelable
         ? [
             {
-              text: 'Cancel',
+              text: t('cancel'),
               isCancelStyled: true,
             },
             ...actions,
           ]
         : actions,
-    [actions, cancelable]
+    [actions, cancelable, t]
   );
 
   return (
@@ -88,7 +92,7 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
 
           {(!actionsWithAdditional || actionsWithAdditional.length === 0) && (
             <div>
-              <PromptAction text="Ok" onPress={hideOverlay} />
+              <PromptAction text={t('ok')} onPress={hideOverlay} />
             </div>
           )}
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { FaSave, FaDownload } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { IconContext, IconType } from 'react-icons/lib';
@@ -30,6 +32,8 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
 );
 
 const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMenuProps) => {
+  const { t } = useStrings(TranslationNamespace.Common);
+
   const iconColor = '#006444';
 
   return (
@@ -43,24 +47,24 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         marginTop: '25px',
       }}
     >
-      <ActionsMenuPresentation name={'Save'} color={iconColor} Icon={() => <FaSave />} onToolSelect={onSaveClick} />
+      <ActionsMenuPresentation name={t('save')} color={iconColor} Icon={() => <FaSave />} onToolSelect={onSaveClick} />
 
       <ActionsMenuPresentation
-        name={'Cleaning'}
+        name={'Cleaning'} // change to a go forwards and backwards icon button
         color={iconColor}
         Icon={() => <MdOutlineCleaningServices />}
         onToolSelect={() => {}}
       />
 
       <ActionsMenuPresentation
-        name={'Delete'}
+        name={t('delete')}
         color={iconColor}
         Icon={() => <FaDeleteLeft />}
         onToolSelect={onDeleteClick}
       />
 
       <ActionsMenuPresentation
-        name={'Download'}
+        name={t('download')}
         color={iconColor}
         Icon={() => <FaDownload />}
         onToolSelect={onDownloadClick}

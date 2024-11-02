@@ -47,7 +47,7 @@ const Register = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">Register</span>
+      <span className="text-2xl m-auto">{t('register')}</span>
 
       <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
 

@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { readLicenses } from '@/app/lib/licenses/licenseReader';
 
 import LicenseInfo from './LicenseInfo';
@@ -9,12 +11,14 @@ import LicenseInfo from './LicenseInfo';
 const licenses = readLicenses();
 
 const LicenseList = () => {
+  const { t } = useStrings(TranslationNamespace.Licenses);
+
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <>
+    <div style={{ display: 'flex', height: '100vh' }}>
       <div style={{ flex: 1, overflowY: 'scroll', borderRight: '1px solid #ddd', padding: '1rem' }}>
-        <h2>Packages</h2>
+        <h2>{t('licenses')}</h2>
 
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {licenses.map((license, index) => (
@@ -39,7 +43,7 @@ const LicenseList = () => {
       </div>
 
       <LicenseInfo license={selectedIndex !== null ? licenses[selectedIndex] : undefined} />
-    </>
+    </div>
   );
 };
 
