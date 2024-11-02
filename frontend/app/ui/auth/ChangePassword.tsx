@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 
 import { ChangePasswordProps, changePassword } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
@@ -16,11 +18,12 @@ const ChangePassword = () => {
   const token = searchParams.get('token');
   const userId = searchParams.get('user_id');
 
+  const { t } = useStrings(TranslationNamespace.Auth);
+
   const {
     control,
     handleSubmit,
-    setError,
-    formState: { errors, isDirty, isSubmitting, isSubmitted },
+    formState: { errors },
   } = useConfiguredForm({ schemaName: SchemaNames.ResetPasswordSchema });
 
   const onSubmit = useCallback(
@@ -30,6 +33,7 @@ const ChangePassword = () => {
           password: values.password,
           password_repeated: values.password_repeated,
         };
+
         changePassword(changePasswordData, token as string, userId as string);
       }
 
@@ -39,14 +43,14 @@ const ChangePassword = () => {
   );
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">Change password</span>
+      <span className="text-2xl m-auto">{t('change_password')}</span>
 
-      <ControlledCustomPasswordInput control={control} errors={errors} label="Password" name="password" required />
+      <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
       <ControlledCustomPasswordInput
         control={control}
         errors={errors}
-        label="Repeat password"
+        label={t('repeat_password')}
         name="password_repeated"
         required
       />
