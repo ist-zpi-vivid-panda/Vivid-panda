@@ -5,9 +5,10 @@ const nextConfig = {
   //     ppr: 'incremental',
   // },
   reactStrictMode: false,
-  experimental: {
-    typedRoutes: true,
-  },
+  // typed routes is not usable since we use [locale] which is problematic
+  // experimental: {
+  //   typedRoutes: true,
+  // },
 };
 
 export default nextConfig;
