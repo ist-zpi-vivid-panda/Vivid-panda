@@ -1,22 +1,15 @@
-import { FilterImageProps, getGrayScaleLuminance } from '../filter';
+import { applyToEachPixel, FilterImageProps, getGrayScaleLuminance, RGBData } from '../filter';
 
-const greyscale = ({ imageData, startPointX, startPointY, endPointX, endPointY }: FilterImageProps) => {
-  const { data, width } = imageData;
+const pixelTransformFn = ({ r, g, b }: RGBData): RGBData => {
+  const rValue = getGrayScaleLuminance(r, g, b);
 
-  for (let y = startPointY; y < endPointY; ++y) {
-    for (let x = startPointX; x < endPointX; ++x) {
-      const index = (y * width + x) * 4;
-
-      const rValue = getGrayScaleLuminance(data[index], data[index + 1], data[index + 2]);
-
-      data[index] = rValue;
-      data[index + 1] = rValue;
-      data[index + 2] = rValue;
-      // Alpha remains the same
-    }
-  }
-
-  return imageData;
+  return {
+    r: rValue,
+    g: rValue,
+    b: rValue,
+  };
 };
+
+const greyscale = (props: FilterImageProps) => applyToEachPixel({ ...props, pixelTransformFn });
 
 export default greyscale;

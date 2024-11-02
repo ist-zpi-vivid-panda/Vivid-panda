@@ -1,20 +1,11 @@
-import { FilterImageProps } from '../filter';
+import { applyToEachPixel, FilterImageProps, RGBData } from '../filter';
 
-const inversion = ({ imageData, startPointX, startPointY, endPointX, endPointY }: FilterImageProps) => {
-  const { data, width } = imageData;
+const pixelTransformFn = ({ r, g, b }: RGBData): RGBData => ({
+  r: 255 - r,
+  g: 255 - g,
+  b: 255 - b,
+});
 
-  for (let y = startPointY; y < endPointY; ++y) {
-    for (let x = startPointX; x < endPointX; ++x) {
-      const index = (y * width + x) * 4;
-
-      data[index] = 255 - data[index];
-      data[index + 1] = 255 - data[index + 1];
-      data[index + 2] = 255 - data[index + 2];
-      // Alpha remains the same
-    }
-  }
-
-  return imageData;
-};
+const inversion = (props: FilterImageProps) => applyToEachPixel({ ...props, pixelTransformFn });
 
 export default inversion;
