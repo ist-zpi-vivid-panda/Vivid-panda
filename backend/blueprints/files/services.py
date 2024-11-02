@@ -16,6 +16,10 @@ except Exception as e:
     print(f"Error: {e}")
 
 
+def count_user_files(user_id: str):
+    return file_info_collection.count_documents({"owner_id": ObjectId(user_id)})
+
+
 class FileInfoService(BaseCRUDService[FileInfoModel]):
     def get_collection(self) -> Collection[Mapping[str, Any]]:
         return file_info_collection
