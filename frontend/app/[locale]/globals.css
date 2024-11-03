@@ -107,6 +107,30 @@ body {
   background-repeat: no-repeat;
 }
 
+@media (min-width: 1280px) {
+  .logoBackground {
+    background-size: 80%; /* Large screens */
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .logoBackground {
+    background-size: 60%; /* Medium screens */
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .logoBackground {
+    background-size: 40%; /* Small screens */
+  }
+}
+
+@media (max-width: 639px) {
+  .logoBackground {
+    background-size: 120%; /* Extra small screens */
+  }
+}
+
 textarea:focus, input:focus{
   outline: none;
 }
