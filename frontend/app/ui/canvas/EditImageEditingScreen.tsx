@@ -63,10 +63,10 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
         actions: [
           {
             text: t('common:delete'),
-            onPress: () => {
+            onPress: async () => {
               router.replace('/canvas/new');
 
-              deleteFile.mutateAsync(fileInfo.id);
+              await deleteFile.mutateAsync(fileInfo.id);
             },
           },
         ],

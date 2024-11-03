@@ -1,5 +1,6 @@
 'use client';
 
+import { FileInfo } from '@/app/lib/api/fileApi';
 import { EditingTool } from '@/app/lib/canvas/definitions';
 import { Children } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
@@ -19,7 +20,7 @@ const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick,
   return (
     <Grid container direction="column">
       <Grid size={{ xs: 1, sm: 1, md: 12 }} sx={{ padding: 1, display: 'flex', justifyContent: 'center' }}>
-        <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
+        Here you can find options of selected tool!
       </Grid>
 
       <Grid
@@ -55,7 +56,7 @@ const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick,
         </Grid>
 
         <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>
-          Hi, I am your AI assistant
+          <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
         </Grid>
       </Grid>
     </Grid>

@@ -7,6 +7,7 @@ from werkzeug.datastructures import FileStorage
 
 import grid_fs_service
 from blueprints.files.models import FileInfoModel
+from blueprints.files.services import count_user_files
 from blueprints.user.models import UserModel
 from grid_fs_service import (
     add_thumbnail,
@@ -27,6 +28,7 @@ from utils.request_utils import doc_endpoint, error_dict, success_dict
 
 files_blueprint = Blueprint("files", __name__)
 tags = ["Files"]
+MAX_NUMBER_OF_FILES = 3
 
 
 @files_blueprint.route("/", methods=["GET"])
@@ -84,10 +86,19 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
         uploaded_at=datetime.now(),
         last_update_at=datetime.now(),
         owner_id=user.uid,
-        grid_fs_id=file_id_grid_fs,
+        grid_fs_id=file_id_grid_fs
     )
 
     file_id = file_service.insert(file_info)
+    # Count the number of files for the user
+    number_of_user_files = count_user_files(user.uid)
+
+    print(number_of_user_files)
+
+    if number_of_user_files > MAX_NUMBER_OF_FILES:
+        delete_file_from_grid_fs(file_id_grid_fs)
+        delete_file(file_id)
+        return error_dict(f'Maximum number of files you can upload is {MAX_NUMBER_OF_FILES}'), 400
 
     if file_id is None:
         return error_dict("File info not saved"), 400
