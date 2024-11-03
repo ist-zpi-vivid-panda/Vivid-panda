@@ -2,11 +2,20 @@
 
 import { ReactNode, useState, useCallback, useEffect, useRef } from 'react';
 
-import { downloadFile, onDownloadFileInfo, useFileData, useUpdateFileDataMutation } from '@/app/lib/api/fileApi';
+import {
+  downloadFile,
+  FileInfo,
+  onDownloadFileInfo,
+  useDeleteFileMutation,
+  useFileData,
+  useUpdateFileDataMutation,
+} from '@/app/lib/api/fileApi';
 import { EditingTool } from '@/app/lib/canvas/definitions';
+import { useRouter } from 'next/navigation';
 
 import Canvas, { BlobConsumer } from './Canvas';
 import GridView from './GridView';
+import useActionPrompt from '../utilities/ActionPrompt';
 
 type EditImageEditingScreenProps = {
   id: string;
@@ -14,6 +23,9 @@ type EditImageEditingScreenProps = {
 
 const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const blobRef = useRef<BlobConsumer | null>(null);
+  const { prompt } = useActionPrompt();
+  const deleteFile = useDeleteFileMutation();
+  const router = useRouter();
 
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
@@ -52,14 +64,29 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
     }
   }, [fileInfo.id, isLoadingFileInfo]);
 
+  const handleDelete = useCallback(() => {
+    if (fileInfo) {
+      prompt({
+        title: 'Do you want to delete the image?',
+        actions: [
+          {
+            text: 'Delete',
+            onPress: async () => {
+              await deleteFile.mutateAsync(fileInfo.id);
+              router.push('/canvas/new');
+            },
+          },
+        ],
+        cancelable: true,
+      });
+    }
+  }, [deleteFile, fileInfo, prompt, router]);
   return (
     <>
       <GridView
         setEditingTool={setEditingTool}
         onSaveClick={handleSave}
-        onDeleteClick={function (): void {
-          throw new Error('Function not implemented.');
-        }}
+        onDeleteClick={handleDelete}
         onDownloadClick={handleDownload}
       >
         {!!uploadedImage && (

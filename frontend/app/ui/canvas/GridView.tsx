@@ -1,5 +1,6 @@
 'use client';
 
+import { FileInfo } from '@/app/lib/api/fileApi';
 import { EditingTool } from '@/app/lib/canvas/definitions';
 import { ChildrenProp } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
