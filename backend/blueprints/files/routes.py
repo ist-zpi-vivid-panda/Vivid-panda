@@ -73,6 +73,12 @@ def get_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     location="files",
 )
 def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
+
+    number_of_user_files = count_user_files(user.uid)
+
+    if number_of_user_files >= MAX_NUMBER_OF_FILES:
+        return error_dict(f'Maximum number of files you can upload is {MAX_NUMBER_OF_FILES}'), 400
+
     file_id_grid_fs = put_file_on_grid_fs(file)
 
     if file_id_grid_fs is None or user.uid is None or file.filename is None:
@@ -90,16 +96,6 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     )
 
     file_id = file_service.insert(file_info)
-    # Count the number of files for the user
-    number_of_user_files = count_user_files(user.uid)
-
-    print(number_of_user_files)
-
-    if number_of_user_files > MAX_NUMBER_OF_FILES:
-        delete_file_from_grid_fs(file_id_grid_fs)
-        delete_file(file_id)
-        return error_dict(f'Maximum number of files you can upload is {MAX_NUMBER_OF_FILES}'), 400
-
     if file_id is None:
         return error_dict("File info not saved"), 400
 
