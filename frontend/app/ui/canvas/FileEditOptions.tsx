@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import { Box } from '@mui/material'; // Import MUI's Box component
 import { FaScissors, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
 import { IoText } from 'react-icons/io5';
-import { IconContext, IconType } from 'react-icons/lib';
+import { IconContext } from 'react-icons/lib';
 import { LuEraser } from 'react-icons/lu';
 
 import { EditingTool } from '../../lib/canvas/definitions';
@@ -19,14 +20,22 @@ type EditToolPresentationProps = {
   name: string;
   color: string;
   onToolSelect: () => void;
-  Icon: IconType;
+  Icon: React.ElementType;
 };
+
 const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
-  <IconContext.Provider value={{ color, size: '25px' }}>
+  <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
+    {' '}
+    {/* Responsive icon size */}
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <button
         onClick={onToolSelect}
-        style={{ display: 'flex', gap: '10px', flexDirection: 'row', alignItems: 'center' }}
+        style={{
+          display: 'flex',
+          gap: '10px',
+          flexDirection: 'row',
+          fontSize: 'clamp(16px, 1.5vw, 40px)',
+        }}
       >
         {name}
         <Icon />
@@ -41,13 +50,7 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
 
   const toggleEditingTool = useCallback(
     (editingTool: EditingTool) =>
-      setCurrentEditingTool((prevTool) => {
-        if (editingTool === prevTool) {
-          return;
-        }
-
-        return editingTool;
-      }),
+      setCurrentEditingTool((prevTool) => (editingTool === prevTool ? undefined : editingTool)),
     []
   );
 
@@ -56,67 +59,61 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
   }, [currentEditingTool, setEditingTool]);
 
   return (
-    <div
-      style={{
-        padding: 10,
-        fontSize: '24px',
+    <Box
+      sx={{
+        padding: 2,
         display: 'flex',
-        gap: '20px',
+        flexDirection: 'column',
+        gap: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column',
       }}
     >
       <EditingToolPresentation
         name={'Scissors'}
         color={iconColor}
-        Icon={() => <FaScissors />}
+        Icon={FaScissors}
         onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
       />
 
-      <EditingToolPresentation
-        name={'Wand'}
-        color={iconColor}
-        Icon={() => <FaWandSparkles />}
-        onToolSelect={() => {}}
-      />
+      <EditingToolPresentation name={'Wand'} color={iconColor} Icon={FaWandSparkles} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Bucket'} color={iconColor} Icon={() => <FaBucket />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Bucket'} color={iconColor} Icon={FaBucket} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Brightness'} color={iconColor} Icon={() => <FaSun />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Brightness'} color={iconColor} Icon={FaSun} onToolSelect={() => {}} />
 
       <EditingToolPresentation
         name={'Move'}
-        color={'cyan'}
-        Icon={() => <IoIosMove />}
+        color={iconColor}
+        Icon={IoIosMove}
         onToolSelect={() => toggleEditingTool(EditingTool.Move)}
       />
 
       <EditingToolPresentation
         name={'Resize'}
         color={iconColor}
-        Icon={() => <GiResize />}
+        Icon={GiResize}
         onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
       />
 
-      <EditingToolPresentation name={'Eraser'} color={iconColor} Icon={() => <LuEraser />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Eraser'} color={iconColor} Icon={LuEraser} onToolSelect={() => {}} />
 
-      <EditingToolPresentation name={'Text'} color={iconColor} Icon={() => <IoText />} onToolSelect={() => {}} />
+      <EditingToolPresentation name={'Text'} color={iconColor} Icon={IoText} onToolSelect={() => {}} />
 
       <EditingToolPresentation
         name={'Filter'}
         color={iconColor}
-        Icon={() => <IoIosColorFilter />}
+        Icon={IoIosColorFilter}
         onToolSelect={() => toggleEditingTool(EditingTool.Filter)}
       />
 
       <EditingToolPresentation
         name={'Rotate'}
         color={iconColor}
-        Icon={() => <FaArrowRotateRight />}
+        Icon={FaArrowRotateRight}
         onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
       />
-    </div>
+    </Box>
   );
 };
 

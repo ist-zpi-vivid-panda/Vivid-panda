@@ -74,7 +74,10 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
             ref={inputRef}
           />
 
-          <p className={`${dragActive ? 'primaryBackgroundActive' : 'primaryBackground'} p-24 rounded-xl border-0`}>
+          <p
+            className={`${dragActive ? 'primaryBackgroundActive' : 'primaryBackground'} p-24 rounded-xl border-0`}
+            style={{ fontSize: 'clamp(10px, 1.5vw, 20px)' }}
+          >
             Drag & Drop files or{' '}
             <PressableSpan onClick={openFileExplorer}>
               <u>Select files</u>
