@@ -20,12 +20,16 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
           <BackArrow size={40} />
         </Link>
       </div>
-
-      <div className="flex px-20 py-10 pb-40 absolute inset-y-0 right-0 items-center flex-col">
-        <form className={`${cardClassName} p-10 gap-5 shadow-2xl`} onSubmit={onSubmit}>
-          <span className="text-6xl p-10">Vivid Panda</span>
-          {children}
-        </form>
+      <div className="flex justify-end items-center min-h-screen w-full">
+        <div className="flex flex-col justify-center items-center w-full md:w-1/3 lg:w-1/4 px-5 py-5 mr-40">
+          <form
+            className={`${cardClassName} p-10 gap-5 shadow-2xl flex flex-col items-center w-full`}
+            onSubmit={onSubmit}
+          >
+            <span className="text-6xl p-5 text-center">Vivid Panda</span>
+            {children}
+          </form>
+        </div>
       </div>
     </>
   );
