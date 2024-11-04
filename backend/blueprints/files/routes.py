@@ -123,15 +123,14 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
 )
 def delete_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
-
-    if file is None or (file is not None and file.owner_id != user.uid):
+    if file is None or file.owner_id != user.uid:
         return jsonify(error_dict("File doesn't exist")), 400
+
+    delete_file_from_grid_fs(file.grid_fs_id)
 
     is_file_info_deleted = file_service.delete(file)
     if not is_file_info_deleted:
         return jsonify(error_dict("File wasn't deleted")), 400
-
-    delete_file_from_grid_fs(file_id)
 
     return jsonify(success_dict(True))
 
