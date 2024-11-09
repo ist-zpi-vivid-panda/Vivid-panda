@@ -8,6 +8,8 @@ from schemas.pagination import BasePaginationSchema
 
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
+ALLOWED_MIME_TYPES = {"image/jpeg", "image/png"}
+
 
 def validate_file_size(file: FileStorage):
     if file.content_length > MAX_CONTENT_LENGTH:
@@ -21,7 +23,17 @@ def validate_file_extension(file: FileStorage):
     _, ext = os.path.splitext(file.filename)
 
     if ext is None or ext.lower() not in ALLOWED_EXTENSIONS:
-        raise ValidationError(f"Invalid file extension. Only ${ALLOWED_EXTENSIONS} are allowed.")
+        raise ValidationError(f"Invalid file extension. Only ${','.join(ALLOWED_EXTENSIONS)} are allowed.")
+
+
+def validate_mime_type(file: FileStorage):
+    if file.mimetype is None:
+        raise ValidationError("No MIME type detected. Please upload a valid file.")
+
+    if file.mimetype not in ALLOWED_MIME_TYPES:
+        raise ValidationError(
+            f"Invalid MIME type. Only {', '.join(ALLOWED_MIME_TYPES)} are allowed."
+        )
 
 
 class FileInfoEditSchema(Schema):
