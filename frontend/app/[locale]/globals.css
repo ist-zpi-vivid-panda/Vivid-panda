@@ -127,7 +127,7 @@ body {
 
 @media (max-width: 639px) {
   .logoBackground {
-    background-size: 120%; /* Extra small screens */
+    background-size: 20%; /* Extra small screens */
   }
 }
 

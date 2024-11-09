@@ -20,6 +20,16 @@ def count_user_files(user_id: str):
     return file_info_collection.count_documents({"owner_id": ObjectId(user_id)})
 
 
+def get_total_file_size_in_mb(user_id: str) -> float:
+    result = file_info_collection.aggregate([
+        {"$match": {"owner_id": ObjectId(user_id)}},
+        {"$group": {"_id": None, "total_size_bytes": {"$sum": "$file_size"}}}
+    ])
+    total_size_bytes = next(result, {"total_size_bytes": 0})["total_size_bytes"]
+    total_size_mb = total_size_bytes / (1024 * 1024)
+    return total_size_mb
+
+
 class FileInfoService(BaseCRUDService[FileInfoModel]):
     def get_collection(self) -> Collection[Mapping[str, Any]]:
         return file_info_collection
