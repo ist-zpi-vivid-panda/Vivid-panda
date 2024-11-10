@@ -84,7 +84,7 @@ export const apiCallNoAutoConfig = async <T extends object>(
 
     if ('validation_errors' in responseBody) {
       for (const error in responseBody.validation_errors) {
-        toast.error(`${error}: ${responseBody.validation_errors[error]}`);
+        toast.error(`${error}: ${JSON.stringify(responseBody.validation_errors[error])}`);
       }
 
       throw new Error(JSON.stringify(responseBody.validation_errors));
