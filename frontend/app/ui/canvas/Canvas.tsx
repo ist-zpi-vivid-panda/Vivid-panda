@@ -1,6 +1,15 @@
 'use client';
 
-import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
@@ -34,9 +43,10 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
   ({ imageStr: passedInImageStr, editingTool, setCurrentEditComponent }, blobConsumer) => {
     const parentRef = useRef<HTMLDivElement | null>(null);
     const cropperRef = useRef<ReactCropperElement | null>(null);
+    const [maskImage, setMaskImage] = useState<string | null>(null);
 
     const [imageStr, setImageStr] = useState<string>(passedInImageStr);
-    const [image, setImage] = useState<HTMLImageElement | null>(null); // this is not unnecessary as it seems to be the only way to prevent error 'width undefined'
+    const [image, setImage] = useState<HTMLImageElement | null>(null);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
@@ -44,15 +54,76 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [maskCanvas, setMaskCanvas] = useState<HTMLCanvasElement | null>(null);
 
-    const mouseListener = useCallback(
-      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo }),
-      []
+    const [isMaskDrawing, setIsMaskDrawing] = useState<boolean>(false);
+
+    // Function to draw the mask on the maskCanvas
+    const drawMask = useCallback(
+      (x: number, y: number) => {
+        if (!maskCanvas) return;
+        const ctx = maskCanvas.getContext('2d');
+        if (!ctx) return;
+
+        // Set the stroke style for freehand drawing (mask drawing)
+        ctx.lineWidth = 5; // Adjust line width as needed
+        ctx.strokeStyle = 'rgba(0, 0, 0, 1)'; // Full black to represent the mask area
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        // Draw the path if the user is dragging
+        if (isDragging) {
+          ctx.lineTo(x, y); // Draw a continuous line
+          ctx.stroke();
+        } else {
+          // Begin a new path when the user first starts dragging
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        }
+      },
+      [maskCanvas, isDragging]
     );
 
-    const handleMouseDown = useCallback(() => setIsDragging(true), []);
-    const handleMouseUp = useCallback(() => setIsDragging(false), []);
+    const mouseListener = useCallback(
+      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo });
+
+        // Draw mask if dragging
+        if (isDragging && isMaskDrawing) {
+          const rect = parentRef.current?.getBoundingClientRect();
+          if (rect) {
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            drawMask(x, y);
+          }
+        }
+      },
+      [drawMask, isDragging, isMaskDrawing]
+    );
+
+    useEffect(() => {
+      // Wait for image and cropper to be fully loaded before initializing maskCanvas
+      if (cropperRef.current && cropperRef.current.cropper) {
+        const cropperCanvas = cropperRef.current.cropper.getCroppedCanvas();
+
+        if (cropperCanvas) {
+          const canvas = document.createElement('canvas');
+          canvas.width = cropperCanvas.width;
+          canvas.height = cropperCanvas.height;
+          console.log(canvas);
+          setMaskCanvas(canvas); // Initialize maskCanvas with correct size
+        }
+      }
+    }, [imageStr, cropperRef.current]); // Re-run when image or cropperRef changes
+
+    const handleMouseDown = useCallback(() => {
+      setIsDragging(true);
+      setIsMaskDrawing(true);
+    }, []);
+    const handleMouseUp = useCallback(() => {
+      setIsDragging(false);
+      setIsMaskDrawing(false);
+    }, []);
 
     const rotate = useCallback((angle: number) => setRotationValue(angle), []);
 
@@ -138,7 +209,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // zoom
     useEffect(() => {
-      // for some reason only zoomTo has a problem with width not being initialized
       if (
         !cropperRef! ||
         !cropperRef.current ||
@@ -193,15 +263,54 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       },
     }));
 
+    const generateMask = () => {
+      if (maskCanvas) {
+        console.log('generate');
+        const size = maskCanvas.width;
+        const ctx = maskCanvas.getContext('2d');
+
+        if (!ctx) {
+          return;
+        }
+
+        // Retrieve the image data from the maskCanvas (the drawn mask)
+        const imageData = ctx.getImageData(0, 0, size, size);
+
+        // Create a new image data array for the binary mask
+        const binaryMaskData = ctx.createImageData(size, size);
+
+        // Process the image data to convert it to a binary mask
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          // Check if the pixel is "drawn" (non-transparent)
+          const alpha = imageData.data[i + 3]; // Alpha channel
+          const bitValue = alpha > 0 ? 255 : 0; // Black if drawn, white if not
+
+          // Set the binary mask pixel
+          binaryMaskData.data[i] = bitValue; // Red channel
+          binaryMaskData.data[i + 1] = bitValue; // Green channel
+          binaryMaskData.data[i + 2] = bitValue; // Blue channel
+          binaryMaskData.data[i + 3] = 255; // Full opacity (alpha channel)
+        }
+
+        // Put the processed binary mask image data back into the canvas
+        ctx.putImageData(binaryMaskData, 0, 0);
+
+        // Convert the mask canvas to a URL and save it in state
+        setMaskImage(maskCanvas.toDataURL()); // Now this is just the drawn mask
+      }
+    };
+
+    const toggleMaskEditor = () => {
+      setIsMaskDrawing((prev) => !prev);
+    };
+
     return (
       <>
         <div
-          // begin :: listeners
           onPointerDown={handleMouseDown}
           onPointerUp={handleMouseUp}
           onPointerLeave={handleMouseUp}
           onPointerMove={mouseListener}
-          // end :: listeners
           style={{
             display: 'flex',
             width: '100%',
@@ -215,7 +324,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
             <Cropper
               src={imageStr}
               style={{ width: '100%', height: '100%' }}
-              // begin:: Cropper.js options
               dragMode="none"
               viewMode={1}
               autoCrop={false}
@@ -226,10 +334,27 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
               modal={true}
               background={true}
               ref={cropperRef}
-              // end:: Cropper.js options
+            />
+          )}
+          {maskImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={maskImage}
+              alt="Generated Mask"
+              style={{
+                position: 'absolute',
+                top: parentRef.current?.offsetTop ?? 0,
+                left: parentRef.current?.offsetLeft ?? 0,
+                width: parentRef.current?.offsetWidth ?? '100%',
+                height: parentRef.current?.offsetHeight ?? '100%',
+                zIndex: 2, // Make sure it overlays the Cropper image
+                pointerEvents: 'none', // Allows interactions with Cropper behind the mask
+              }}
             />
           )}
         </div>
+        <button onClick={toggleMaskEditor}>{isMaskDrawing ? 'Stop Drawing Mask' : 'Draw Mask'}</button>
+        <button onClick={generateMask}>Generate Mask</button>
       </>
     );
   }
