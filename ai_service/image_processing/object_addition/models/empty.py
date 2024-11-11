@@ -1,12 +1,9 @@
-from image_processing.commands.command import Command
+from image_processing.object_addition.models.model import AddObjectModel
 from PIL import Image
 
 
-class AddObjectCommand(Command):
-    def __init__(self) -> None:
-        pass
-
-    def execute(
+class EmptyAddObjectModel(AddObjectModel):
+    def inpaint(
         self, image: Image.Image, mask: Image.Image, prompt: str
     ) -> Image.Image:
         width, height = 800, 600

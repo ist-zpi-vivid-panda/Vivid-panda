@@ -1,6 +1,7 @@
 from functools import wraps
 from typing import Any, Callable, List, Optional, TypeVar
 
+import torch
 from api.utils import process_image_request
 from flask import Flask
 from image_processing.invoker import Invoker
@@ -51,6 +52,6 @@ def upscale() -> None:
     return
 
 
-if __name__ == "__main__":
-    invoker = Invoker()
-    app.run(port=5003, debug=True)
+print(torch.cuda.is_available())
+invoker = Invoker()
+app.run(port=5001, debug=True)
