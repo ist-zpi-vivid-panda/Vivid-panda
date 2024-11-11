@@ -58,25 +58,21 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     const [isMaskDrawing, setIsMaskDrawing] = useState<boolean>(false);
 
-    // Function to draw the mask on the maskCanvas
     const drawMask = useCallback(
       (x: number, y: number) => {
         if (!maskCanvas) return;
         const ctx = maskCanvas.getContext('2d');
         if (!ctx) return;
 
-        // Set the stroke style for freehand drawing (mask drawing)
-        ctx.lineWidth = 5; // Adjust line width as needed
-        ctx.strokeStyle = 'rgba(0, 0, 0, 1)'; // Full black to represent the mask area
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        // Draw the path if the user is dragging
         if (isDragging) {
-          ctx.lineTo(x, y); // Draw a continuous line
+          ctx.lineTo(x, y);
           ctx.stroke();
         } else {
-          // Begin a new path when the user first starts dragging
           ctx.beginPath();
           ctx.moveTo(x, y);
         }
@@ -88,7 +84,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo });
 
-        // Draw mask if dragging
         if (isDragging && isMaskDrawing) {
           const rect = parentRef.current?.getBoundingClientRect();
           if (rect) {
@@ -102,7 +97,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     );
 
     useEffect(() => {
-      // Wait for image and cropper to be fully loaded before initializing maskCanvas
       if (cropperRef.current && cropperRef.current.cropper) {
         const cropperCanvas = cropperRef.current.cropper.getCroppedCanvas();
 
@@ -110,11 +104,11 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
           const canvas = document.createElement('canvas');
           canvas.width = cropperCanvas.width;
           canvas.height = cropperCanvas.height;
-          console.log(canvas);
-          setMaskCanvas(canvas); // Initialize maskCanvas with correct size
+          setMaskCanvas(canvas);
         }
       }
-    }, [imageStr, cropperRef.current]); // Re-run when image or cropperRef changes
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [imageStr, cropperRef.current]); // It has to be like that, if not maskCanvas is not initalized after reloading
 
     const handleMouseDown = useCallback(() => {
       setIsDragging(true);
@@ -265,7 +259,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     const generateMask = () => {
       if (maskCanvas) {
-        console.log('generate');
         const size = maskCanvas.width;
         const ctx = maskCanvas.getContext('2d');
 
@@ -353,6 +346,8 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
             />
           )}
         </div>
+
+        {editingTool === EditingTool.Crop && <CropTray handleCrop={handleCrop} />}
         <button onClick={toggleMaskEditor}>{isMaskDrawing ? 'Stop Drawing Mask' : 'Draw Mask'}</button>
         <button onClick={generateMask}>Generate Mask</button>
       </>
