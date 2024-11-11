@@ -1,11 +1,12 @@
 from typing import Any, Dict
 
-from image_processing.commands.add_object_command import AddObjectCommand
-from image_processing.commands.colorize_command import ColorizeCommand
-from image_processing.commands.command import Command
-from image_processing.commands.delete_object_command import DeleteObjectCommand
-from image_processing.commands.style_transfer_command import StyleTransferCommand
-from image_processing.commands.upscale_command import UpscaleCommand
+from image_processing.colorization.colorize_command import ColorizeCommand
+from image_processing.command import Command
+from image_processing.object_addition.command import AddObjectCommand
+from image_processing.object_deletion.command import DeleteObjectCommand
+
+# from image_processing.commands.style_transfer_command import StyleTransferCommand
+from image_processing.upscaling.command import UpscaleCommand
 from PIL import Image
 
 
@@ -22,7 +23,7 @@ class Invoker:
             "colorize_image": ColorizeCommand(),
             "delete_object": DeleteObjectCommand(),
             "add_object": AddObjectCommand(),
-            "transfer_style": StyleTransferCommand(),
+            # "transfer_style": StyleTransferCommand(),
             "upscale": UpscaleCommand(),
         }
 
@@ -31,4 +32,7 @@ class Invoker:
         if command:
             return command.execute(**request["params"])
         else:
-            raise ValueError(f"Unknown command type: {request['type']}")
+            raise ValueError(
+                f"Unknown command type: {request['type']}, available commands "
+                f"are {list(self.commands.keys())}"
+            )
