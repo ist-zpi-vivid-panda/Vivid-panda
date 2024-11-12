@@ -39,9 +39,7 @@ def validate_mime_type(file: FileStorage):
         raise ValidationError("No MIME type detected. Please upload a valid file.")
 
     if file.mimetype not in ALLOWED_MIME_TYPES:
-        raise ValidationError(
-            f"Invalid MIME type. Only {', '.join(ALLOWED_MIME_TYPES)} are allowed."
-        )
+        raise ValidationError(f"Invalid MIME type. Only {', '.join(ALLOWED_MIME_TYPES)} are allowed.")
 
 
 class FileInfoEditSchema(Schema):
@@ -85,4 +83,3 @@ class AIMicroserviceSchema(Schema):
         validate=[validate_file_size, validate_file_extension, validate_mime_type],
         description=f"File of type {ALLOWED_EXTENSIONS} up to {MAX_CONTENT_LENGTH}B",
     )
-

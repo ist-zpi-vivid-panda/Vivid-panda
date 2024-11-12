@@ -12,15 +12,10 @@ import React, {
 } from 'react';
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
-import {
-  AI_FUNCTION_REQUIRED_MASK,
-  AI_FUNCTION_REQUIRED_PROMPT,
-  AI_FUNCTION_TO_API_CALL,
-  AI_FUNCTIONS_WITH_MASK,
-} from '@/app/lib/canvas/ai-functions/mappings';
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
 import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
+import useAIImageEditFlow from '@/app/lib/canvas/useAIImageEditFlow';
 import { getFileFromBlob } from '@/app/lib/files/utils';
 import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
@@ -80,7 +75,21 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
     const [isPromptModalVisible, setPromptModalVisible] = useState<boolean>(false);
-    const [prompt, setPrompt] = useState<string>('');
+
+    const openMaskTool = useCallback(() => setEditingTool(EditingTool.Wand), []);
+    const openPrompt = useCallback(() => setPromptModalVisible(true), []);
+    const finishFlow = useCallback(() => {
+      setAiFunction(undefined);
+      setEditingTool(undefined);
+    }, []);
+
+    const { setPrompt, setMaskFile } = useAIImageEditFlow({
+      aiFunction,
+      openMaskTool,
+      openPrompt,
+      cropperRef,
+      finishFlow,
+    });
 
     const mouseListener = useCallback(
       (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
@@ -100,36 +109,19 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       }
     }, []);
 
-    const handleAiFunctionCall = useCallback(() => {
-      if (!aiFunction) {
-        return;
-      }
+    const handleMask = useCallback(
+      () =>
+        maskGenRef?.current?.getBlob((maskBlob) => {
+          if (!maskBlob) {
+            return;
+          }
 
-      if (AI_FUNCTION_REQUIRED_PROMPT[aiFunction] && !prompt) {
-        setPromptModalVisible(true);
-      }
+          const maskFile = getFileFromBlob(maskBlob, 'mask.png');
 
-      if (AI_FUNCTIONS_WITH_MASK.includes(aiFunction)) {
-        maskGenRef.current?.getBlob((maskBlob) =>
-          cropperRef?.current?.cropper?.getCroppedCanvas().toBlob((currBlob) => {
-            if (!maskBlob || !currBlob) {
-              return;
-            }
-
-            const maskFile = getFileFromBlob(maskBlob, 'mask');
-            const originalFile = getFileFromBlob(currBlob, 'curr');
-
-            AI_FUNCTION_TO_API_CALL[aiFunction]({
-              prompt,
-              originalFile,
-              maskFile,
-            });
-          })
-        );
-      }
-
-      setAiFunction(undefined);
-    }, [aiFunction, prompt]);
+          setMaskFile(maskFile);
+        }),
+      [setMaskFile]
+    );
 
     const getImageData = useCallback((): ImageData | undefined => {
       const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
@@ -159,10 +151,10 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
         [EditingTool.Wand]: (
-          <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleAiFunctionCall} />
+          <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleMask} />
         ),
       }),
-      [handleAiFunctionCall, handleCrop, rotationValue, zoomValue]
+      [handleMask, handleCrop, rotationValue, zoomValue]
     );
 
     // change params according to tool
@@ -247,17 +239,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // change ai function on parent change
     useEffect(() => setAiFunction(aiFunctionFromParent), [aiFunctionFromParent]);
-
-    // on ai tool chosen
-    useEffect(() => {
-      if (!aiFunction) {
-        return;
-      }
-
-      if (AI_FUNCTION_REQUIRED_MASK[aiFunction]) {
-        setEditingTool(EditingTool.Wand);
-      }
-    }, [aiFunction]);
 
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {

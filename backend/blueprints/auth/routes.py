@@ -1,7 +1,7 @@
 from typing import Any, Tuple
 
 import requests
-from flask import Blueprint, Response, json, jsonify, redirect, request, url_for
+from flask import Blueprint, Response, json, jsonify, request, url_for
 from flask_apispec import marshal_with
 from flask_jwt_extended import (
     create_access_token,

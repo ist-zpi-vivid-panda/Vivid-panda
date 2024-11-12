@@ -27,7 +27,7 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
   const onSubmit = useCallback(
     async (values: FieldValues) => {
       const prompt: string = values.prompt;
-
+      console.log(prompt);
       setPromptText(prompt);
     },
     [setPromptText]
@@ -36,14 +36,7 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
   return (
     <ActionModal isOpen={isOpen} close={close}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ControlledCustomInput
-          control={control}
-          errors={errors}
-          label={t('email')}
-          type="email"
-          name="email"
-          required
-        />
+        <ControlledCustomInput control={control} errors={errors} label={t('prompt')} name="prompt" required />
 
         <div className="flex justify-end mb-20">
           <SubmitButton />

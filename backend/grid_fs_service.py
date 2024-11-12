@@ -1,6 +1,6 @@
 import base64
 import io
-from typing import Any, Dict, Tuple, List
+from typing import Any, Dict, List, Tuple
 
 import gridfs
 from bson import ObjectId
@@ -14,12 +14,11 @@ from app import grid_fs
 from schemas.file import FileInputDataSchema
 from utils.request_utils import error_dict
 
+SUPPORTED_FILE_FORMATS: List[str] = ["JPEG", "PNG"]
+SUPPORTED_COLOR_SPACES: List[str] = ["RGB", "RGBA"]
 
-SUPPORTED_FILE_FORMATS: List[str] = ['JPEG', 'PNG']
-SUPPORTED_COLOR_SPACES: List[str] = ['RGB', 'RGBA']
-
-DEFAULT_FILE_FORMAT: str = 'PNG'
-DEFAULT_COLORSPACE: str = 'RGB'
+DEFAULT_FILE_FORMAT: str = "PNG"
+DEFAULT_COLORSPACE: str = "RGB"
 
 
 def get_file_grid_fs(file_id: str) -> GridOut | None:

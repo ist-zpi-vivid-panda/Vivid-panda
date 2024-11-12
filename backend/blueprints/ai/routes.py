@@ -5,11 +5,11 @@ from flask import Blueprint, request
 from werkzeug.datastructures import FileStorage
 
 from ai_functions.ai_function_enum import AI_functions
+from blueprints.user.models import UserModel
 from config.env_vars import AI_MICROSERVICE_API_URL
-
 from schemas.file import (
-    FileOutputDataSchema,
     AIMicroserviceSchema,
+    FileOutputDataSchema,
 )
 from schemas.responses import ErrorSchema
 from utils.request_utils import doc_endpoint, success_dict
@@ -27,18 +27,17 @@ tags = ["AI"]
     location="files",
 )
 def call_ai_function(
-        original_file: FileStorage,
-        mask_file: FileStorage,
-        ai_function: str | None,
+    user: UserModel,
+    original_file: FileStorage,
+    mask_file: FileStorage,
+    ai_function: str | None,
 ) -> Tuple[dict, int] | dict:
     prompt: str | None = request.args.get("prompt", None, type=str)
 
     uppercase_ai_function: str = ai_function.upper()
 
     if uppercase_ai_function == AI_functions.COLORIZE_IMAGE.name:
-        files = {
-            "image": original_file
-        }
+        files = {"image": original_file}
         response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.COLORIZE_IMAGE.value[0]}", files=files)
         if response.status_code == 200:
             return files.__dict__
@@ -73,16 +72,16 @@ def call_ai_function(
             "image": original_file,
         }
         data = {"style": prompt}
-        response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.TRANSFER_STYLE.value[0]}", files=files, data=data)
+        response = requests.get(
+            f"{AI_MICROSERVICE_API_URL}{AI_functions.TRANSFER_STYLE.value[0]}", files=files, data=data
+        )
         if response.status_code == 200:
             return files.__dict__
         else:
             return success_dict(True)
 
     if uppercase_ai_function == AI_functions.UPSCALE.name:
-        files = {
-            "image": original_file
-        }
+        files = {"image": original_file}
         response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.UPSCALE.value[0]}", files=files)
         if response.status_code == 200:
             return files.__dict__
@@ -90,4 +89,3 @@ def call_ai_function(
             return success_dict(True)
 
     return success_dict(False), 404
-

@@ -83,7 +83,7 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     if file_id_grid_fs is None or user.uid is None or file.filename is None:
         return error_dict("File not saved"), 400
 
-    file_size = getattr(file_from_grid, 'length', None)
+    file_size = getattr(file_from_grid, "length", None)
     if file_size is None:
         delete_file_from_grid_fs(file_id_grid_fs)
         return error_dict("Unable to retrieve file size"), 400
@@ -96,7 +96,7 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
         uploaded_at=datetime.now(),
         last_update_at=datetime.now(),
         owner_id=user.uid,
-        grid_fs_id=file_id_grid_fs
+        grid_fs_id=file_id_grid_fs,
     )
 
     mb_of_user_files = get_total_file_size_in_mb(user.uid)
@@ -104,7 +104,8 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     if number_of_user_files >= MAX_NUMBER_OF_FILES or mb_of_user_files >= MAX_MB_OF_FILES:
         delete_file_from_grid_fs(file_id_grid_fs)
         return error_dict(
-            f'Maximum number of files you can upload is {MAX_NUMBER_OF_FILES} or {MAX_MB_OF_FILES}MB'), 400
+            f"Maximum number of files you can upload is {MAX_NUMBER_OF_FILES} or {MAX_MB_OF_FILES}MB"
+        ), 400
 
     file_id = file_service.insert(file_info)
     if file_id is None:
