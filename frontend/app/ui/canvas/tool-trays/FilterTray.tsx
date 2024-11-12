@@ -7,10 +7,12 @@ type FilterTrayProps = {
   setFilterType: Dispatch<SetStateAction<FilterType | undefined>>;
 };
 
+const filters = getEnumValues(FilterType);
+
 const FilterTray = ({ setFilterType }: FilterTrayProps) => {
   return (
     <div>
-      {getEnumValues(FilterType).map((filterType) => (
+      {filters.map((filterType) => (
         <button key={filterType} onClick={() => setFilterType(filterType as FilterType)}>
           {filterType}
         </button>

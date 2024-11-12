@@ -1,5 +1,8 @@
 'use client';
 
+import { Dispatch, SetStateAction } from 'react';
+
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
 import { EditingTool } from '@/app/lib/canvas/definitions';
 import { Children } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
@@ -8,14 +11,22 @@ import ActionsMenu from './ActionsMenu';
 import FileEditListOptions from './FileEditOptions';
 
 type GridViewProps = {
-  setEditingTool?: (_: EditingTool | undefined) => void;
+  setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
+  setAiFunction?: Dispatch<SetStateAction<AiFunctionType | undefined>>;
   onSaveClick: () => void;
   onDeleteClick: () => void;
   onDownloadClick: () => void;
   children?: Children;
 };
 
-const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick, children }: GridViewProps) => {
+const GridView = ({
+  setEditingTool,
+  setAiFunction,
+  onSaveClick,
+  onDeleteClick,
+  onDownloadClick,
+  children,
+}: GridViewProps) => {
   return (
     <Grid container direction="column">
       <Grid size={{ xs: 1, sm: 1, md: 12 }} sx={{ padding: 1, display: 'flex', justifyContent: 'center' }}>
@@ -39,7 +50,7 @@ const GridView = ({ setEditingTool, onSaveClick, onDeleteClick, onDownloadClick,
             alignItems: 'center',
           }}
         >
-          <FileEditListOptions setEditingTool={setEditingTool} />
+          <FileEditListOptions setEditingTool={setEditingTool} setAiFunction={setAiFunction} />
         </Grid>
 
         <Grid

@@ -61,3 +61,5 @@ MAIL_DEFAULT_SENDER: str = _read_env_string("MAIL_DEFAULT_SENDER")
 
 SWAGGER_URL: str = _read_env_string("SWAGGER_URL")
 SWAGGER_UI_URL: str = _read_env_string("SWAGGER_UI_URL")
+
+AI_MICROSERVICE_API_URL = _read_env_string("AI_MICROSERVICE_API_URL")

@@ -1,6 +1,6 @@
 'use client';
 
-import { FileInfo } from '@/app/lib/api/fileApi';
+import { FileInfo } from '@/app/lib/files/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { Card } from '@mui/material';

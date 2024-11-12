@@ -1,19 +1,19 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
-import { Box } from '@mui/material'; // Import MUI's Box component
-import { FaScissors, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
+import { Box } from '@mui/material';
+import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
-import { IoText } from 'react-icons/io5';
 import { IconContext } from 'react-icons/lib';
-import { LuEraser } from 'react-icons/lu';
 
 import { EditingTool } from '../../lib/canvas/definitions';
 
 type FileEditListOptionsProps = {
-  setEditingTool?: (_: EditingTool | undefined) => void;
+  setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
+  setAiFunction?: Dispatch<SetStateAction<AiFunctionType | undefined>>;
 };
 
 type EditToolPresentationProps = {
@@ -44,19 +44,18 @@ const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPr
   </IconContext.Provider>
 );
 
-const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
-  const [currentEditingTool, setCurrentEditingTool] = useState<EditingTool | undefined>(undefined);
+const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOptionsProps) => {
   const iconColor = '#006444';
 
   const toggleEditingTool = useCallback(
-    (editingTool: EditingTool) =>
-      setCurrentEditingTool((prevTool) => (editingTool === prevTool ? undefined : editingTool)),
-    []
+    (editingTool: EditingTool) => setEditingTool?.((prev) => (editingTool === prev ? undefined : editingTool)),
+    [setEditingTool]
   );
 
-  useEffect(() => {
-    setEditingTool?.(currentEditingTool);
-  }, [currentEditingTool, setEditingTool]);
+  const toggleAiFunction = useCallback(
+    (aiFunc: AiFunctionType) => setAiFunction?.((prev) => (aiFunc === prev ? undefined : aiFunc)),
+    [setAiFunction]
+  );
 
   // maybe change names to icons with tooltips
   return (
@@ -77,12 +76,6 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
         onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
       />
 
-      <EditingToolPresentation name={'Wand'} color={iconColor} Icon={FaWandSparkles} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Bucket'} color={iconColor} Icon={FaBucket} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Brightness'} color={iconColor} Icon={FaSun} onToolSelect={() => {}} />
-
       <EditingToolPresentation
         name={'Move'}
         color={iconColor}
@@ -97,10 +90,6 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
         onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
       />
 
-      <EditingToolPresentation name={'Eraser'} color={iconColor} Icon={LuEraser} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Text'} color={iconColor} Icon={IoText} onToolSelect={() => {}} />
-
       <EditingToolPresentation
         name={'Filter'}
         color={iconColor}
@@ -113,6 +102,20 @@ const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
         color={iconColor}
         Icon={FaArrowRotateRight}
         onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
+      />
+
+      <EditingToolPresentation
+        name={'Add object'}
+        color={iconColor}
+        Icon={FaWandSparkles}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.AddObject)}
+      />
+
+      <EditingToolPresentation
+        name={'Delete object'}
+        color={iconColor}
+        Icon={FaEraser}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.DeleteObject)}
       />
     </Box>
   );

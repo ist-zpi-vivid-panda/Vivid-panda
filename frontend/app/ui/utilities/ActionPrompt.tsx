@@ -5,7 +5,8 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { ChildrenProp } from '@/app/lib/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { Card, Modal } from '@mui/material';
+
+import ActionModal from './ActionModal';
 
 type PromptActionProps = {
   text: string;
@@ -76,46 +77,38 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
 
   return (
     <ActionPromptContext.Provider value={{ prompt }}>
-      <Modal
-        open={isVisible}
-        onClose={hideOverlay}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="flex flex-auto items-center justify-center mb-32"
-      >
-        <Card>
-          <div style={{ backgroundColor: 'lavender' }}>
-            {title}
+      <ActionModal isOpen={isVisible} close={hideOverlay}>
+        <div style={{ backgroundColor: 'lavender' }}>
+          {title}
 
-            {message}
+          {message}
+        </div>
+
+        {(!actionsWithAdditional || actionsWithAdditional.length === 0) && (
+          <div>
+            <PromptAction text={t('ok')} onPress={hideOverlay} />
           </div>
+        )}
 
-          {(!actionsWithAdditional || actionsWithAdditional.length === 0) && (
-            <div>
-              <PromptAction text={t('ok')} onPress={hideOverlay} />
-            </div>
-          )}
-
-          {actionsWithAdditional && actionsWithAdditional.length > 0 && (
-            <div style={{ backgroundColor: 'lavender' }}>
-              {actionsWithAdditional?.map((action, index) => (
-                <PromptAction
-                  key={index}
-                  text={action?.text}
-                  isCancelStyled={action?.isCancelStyled}
-                  onPress={() =>
-                    hideOverlayWithFn(() => {
-                      if (action?.onPress) {
-                        action?.onPress();
-                      }
-                    })
-                  }
-                />
-              ))}
-            </div>
-          )}
-        </Card>
-      </Modal>
+        {actionsWithAdditional && actionsWithAdditional.length > 0 && (
+          <div style={{ backgroundColor: 'lavender' }}>
+            {actionsWithAdditional?.map((action, index) => (
+              <PromptAction
+                key={index}
+                text={action?.text}
+                isCancelStyled={action?.isCancelStyled}
+                onPress={() =>
+                  hideOverlayWithFn(() => {
+                    if (action?.onPress) {
+                      action?.onPress();
+                    }
+                  })
+                }
+              />
+            ))}
+          </div>
+        )}
+      </ActionModal>
 
       {children}
     </ActionPromptContext.Provider>

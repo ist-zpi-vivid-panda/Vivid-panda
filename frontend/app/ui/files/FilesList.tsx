@@ -2,7 +2,8 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { FileInfo, onDownloadFileInfo, useDeleteFileMutation, useFilesData } from '@/app/lib/api/fileApi';
+import { downloadFileInfo, useDeleteFileMutation, useFilesData } from '@/app/lib/api/fileApi';
+import { FileInfo } from '@/app/lib/files/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import Grid from '@mui/material/Grid2';
@@ -66,7 +67,7 @@ const FilesList = () => {
                 fileInfo={file}
                 onEditClick={setEditedFileInfo}
                 onDeleteClick={onDeleteImage}
-                onDownloadClick={onDownloadFileInfo}
+                onDownloadClick={downloadFileInfo}
                 onEditPhotoClick={onEditPhotoClick}
               />
             </Grid>

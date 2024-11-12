@@ -11,20 +11,32 @@ import React, {
   useState,
 } from 'react';
 
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
+import {
+  AI_FUNCTION_REQUIRED_MASK,
+  AI_FUNCTION_REQUIRED_PROMPT,
+  AI_FUNCTION_TO_API_CALL,
+  AI_FUNCTIONS_WITH_MASK,
+} from '@/app/lib/canvas/ai-functions/mappings';
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
 import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
+import { getFileFromBlob } from '@/app/lib/files/utils';
 import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 
+import ImageMaskGenerator, { MaskConsumer } from './ImageMaskGenerator';
+import PromptModal from './PromptModal';
 import CropTray from './tool-trays/CropTray';
 import FilterTray from './tool-trays/FilterTray';
 import RotationTray from './tool-trays/RotationTray';
+import WandTray from './tool-trays/WandTray';
 import ZoomTray from './tool-trays/ZoomTray';
 
 type CanvasProps = {
   imageStr: string;
   editingTool: EditingTool | undefined;
+  aiFunction: AiFunctionType | undefined;
   setCurrentEditComponent: (_: ReactNode | undefined) => void;
 };
 
@@ -35,91 +47,49 @@ export type BlobConsumer = {
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
 const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 } as const);
+const DEFAULT_CALLBACK = () => {};
 
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
 
 const Canvas = forwardRef<BlobConsumer, CanvasProps>(
-  ({ imageStr: passedInImageStr, editingTool, setCurrentEditComponent }, blobConsumer) => {
+  (
+    {
+      imageStr: passedInImageStr,
+      setCurrentEditComponent,
+      editingTool: editingToolFromParent,
+      aiFunction: aiFunctionFromParent,
+    },
+    blobConsumer
+  ) => {
     const parentRef = useRef<HTMLDivElement | null>(null);
     const cropperRef = useRef<ReactCropperElement | null>(null);
-    const [maskImage, setMaskImage] = useState<string | null>(null);
+    const maskGenRef = useRef<MaskConsumer | null>(null);
+
+    const [editingTool, setEditingTool] = useState<EditingTool | undefined>(editingToolFromParent);
+    const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(aiFunctionFromParent);
+    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
     const [imageStr, setImageStr] = useState<string>(passedInImageStr);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
-    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [maskCanvas, setMaskCanvas] = useState<HTMLCanvasElement | null>(null);
 
-    const [isMaskDrawing, setIsMaskDrawing] = useState<boolean>(false);
-
-    const drawMask = useCallback(
-      (x: number, y: number) => {
-        if (!maskCanvas) return;
-        const ctx = maskCanvas.getContext('2d');
-        if (!ctx) return;
-
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        if (isDragging) {
-          ctx.lineTo(x, y);
-          ctx.stroke();
-        } else {
-          ctx.beginPath();
-          ctx.moveTo(x, y);
-        }
-      },
-      [maskCanvas, isDragging]
-    );
+    const [isPromptModalVisible, setPromptModalVisible] = useState<boolean>(false);
+    const [prompt, setPrompt] = useState<string>('');
 
     const mouseListener = useCallback(
-      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo });
-
-        if (isDragging && isMaskDrawing) {
-          const rect = parentRef.current?.getBoundingClientRect();
-          if (rect) {
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            drawMask(x, y);
-          }
-        }
-      },
-      [drawMask, isDragging, isMaskDrawing]
+      (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+        mouseInfoCalc({ event, parent: parentRef.current, setMouseInfo }),
+      []
     );
 
-    useEffect(() => {
-      if (cropperRef.current && cropperRef.current.cropper) {
-        const cropperCanvas = cropperRef.current.cropper.getCroppedCanvas();
-
-        if (cropperCanvas) {
-          const canvas = document.createElement('canvas');
-          canvas.width = cropperCanvas.width;
-          canvas.height = cropperCanvas.height;
-          setMaskCanvas(canvas);
-        }
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [imageStr, cropperRef.current]); // It has to be like that, if not maskCanvas is not initalized after reloading
-
-    const handleMouseDown = useCallback(() => {
-      setIsDragging(true);
-      setIsMaskDrawing(true);
-    }, []);
-    const handleMouseUp = useCallback(() => {
-      setIsDragging(false);
-      setIsMaskDrawing(false);
-    }, []);
-
-    const rotate = useCallback((angle: number) => setRotationValue(angle), []);
+    const handleMouseDown = useCallback(() => setIsDragging(true), []);
+    const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
     const handleCrop = useCallback(() => {
       const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
@@ -129,6 +99,37 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         setImageStr(croppedImageUrl);
       }
     }, []);
+
+    const handleAiFunctionCall = useCallback(() => {
+      if (!aiFunction) {
+        return;
+      }
+
+      if (AI_FUNCTION_REQUIRED_PROMPT[aiFunction] && !prompt) {
+        setPromptModalVisible(true);
+      }
+
+      if (AI_FUNCTIONS_WITH_MASK.includes(aiFunction)) {
+        maskGenRef.current?.getBlob((maskBlob) =>
+          cropperRef?.current?.cropper?.getCroppedCanvas().toBlob((currBlob) => {
+            if (!maskBlob || !currBlob) {
+              return;
+            }
+
+            const maskFile = getFileFromBlob(maskBlob, 'mask');
+            const originalFile = getFileFromBlob(currBlob, 'curr');
+
+            AI_FUNCTION_TO_API_CALL[aiFunction]({
+              prompt,
+              originalFile,
+              maskFile,
+            });
+          })
+        );
+      }
+
+      setAiFunction(undefined);
+    }, [aiFunction, prompt]);
 
     const getImageData = useCallback((): ImageData | undefined => {
       const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
@@ -157,8 +158,11 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         [EditingTool.Crop]: <CropTray handleCrop={handleCrop} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
+        [EditingTool.Wand]: (
+          <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleAiFunctionCall} />
+        ),
       }),
-      [handleCrop, rotationValue, zoomValue]
+      [handleAiFunctionCall, handleCrop, rotationValue, zoomValue]
     );
 
     // change params according to tool
@@ -181,9 +185,10 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     }, [editingTool]);
 
     // get current change component
-    useEffect(() => {
-      setCurrentEditComponent(editingTool ? editComponents[editingTool] : false);
-    }, [editComponents, editingTool, setCurrentEditComponent]);
+    useEffect(
+      () => setCurrentEditComponent(editingTool ? editComponents[editingTool] : false),
+      [editComponents, editingTool, setCurrentEditComponent]
+    );
 
     // while dragging mouse
     useEffect(() => {
@@ -192,9 +197,9 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       }
 
       if (editingTool === EditingTool.Rotation) {
-        rotate(mouseInfo.angle);
+        setRotationValue(mouseInfo.angle);
       }
-    }, [editingTool, isDragging, mouseInfo.angle, rotate]);
+    }, [editingTool, isDragging, mouseInfo.angle]);
 
     // rotate
     useEffect(() => {
@@ -203,16 +208,6 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // zoom
     useEffect(() => {
-      if (
-        !cropperRef! ||
-        !cropperRef.current ||
-        !cropperRef.current.cropper ||
-        !cropperRef.current.currentSrc ||
-        !cropperRef?.current?.width
-      ) {
-        return;
-      }
-
       cropperRef?.current?.cropper?.zoomTo(zoomValue);
     }, [zoomValue]);
 
@@ -245,6 +240,25 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       image.onload = () => setImage(image);
     }, [imageStr]);
 
+    // change tool on parent change
+    useEffect(() => {
+      setEditingTool(editingToolFromParent);
+    }, [editingToolFromParent]);
+
+    // change ai function on parent change
+    useEffect(() => setAiFunction(aiFunctionFromParent), [aiFunctionFromParent]);
+
+    // on ai tool chosen
+    useEffect(() => {
+      if (!aiFunction) {
+        return;
+      }
+
+      if (AI_FUNCTION_REQUIRED_MASK[aiFunction]) {
+        setEditingTool(EditingTool.Wand);
+      }
+    }, [aiFunction]);
+
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
         const res = cropperRef?.current?.cropper?.getCroppedCanvas();
@@ -257,49 +271,16 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       },
     }));
 
-    const generateMask = () => {
-      if (maskCanvas) {
-        const size = maskCanvas.width;
-        const ctx = maskCanvas.getContext('2d');
-
-        if (!ctx) {
-          return;
-        }
-
-        // Retrieve the image data from the maskCanvas (the drawn mask)
-        const imageData = ctx.getImageData(0, 0, size, size);
-
-        // Create a new image data array for the binary mask
-        const binaryMaskData = ctx.createImageData(size, size);
-
-        // Process the image data to convert it to a binary mask
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          // Check if the pixel is "drawn" (non-transparent)
-          const alpha = imageData.data[i + 3]; // Alpha channel
-          const bitValue = alpha > 0 ? 255 : 0; // Black if drawn, white if not
-
-          // Set the binary mask pixel
-          binaryMaskData.data[i] = bitValue; // Red channel
-          binaryMaskData.data[i + 1] = bitValue; // Green channel
-          binaryMaskData.data[i + 2] = bitValue; // Blue channel
-          binaryMaskData.data[i + 3] = 255; // Full opacity (alpha channel)
-        }
-
-        // Put the processed binary mask image data back into the canvas
-        ctx.putImageData(binaryMaskData, 0, 0);
-
-        // Convert the mask canvas to a URL and save it in state
-        setMaskImage(maskCanvas.toDataURL()); // Now this is just the drawn mask
-      }
-    };
-
-    const toggleMaskEditor = () => {
-      setIsMaskDrawing((prev) => !prev);
-    };
-
     return (
       <>
+        <PromptModal
+          isOpen={isPromptModalVisible}
+          close={() => setPromptModalVisible(false)}
+          setPromptText={setPrompt}
+        />
+
         <div
+          ref={parentRef}
           onPointerDown={handleMouseDown}
           onPointerUp={handleMouseUp}
           onPointerLeave={handleMouseUp}
@@ -311,45 +292,27 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          ref={parentRef}
         >
-          {image && (
-            <Cropper
-              src={imageStr}
-              style={{ width: '100%', height: '100%' }}
-              dragMode="none"
-              viewMode={1}
-              autoCrop={false}
-              toggleDragModeOnDblclick={false}
-              restore={false}
-              guides={false}
-              responsive={true}
-              modal={true}
-              background={true}
-              ref={cropperRef}
-            />
-          )}
-          {maskImage && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={maskImage}
-              alt="Generated Mask"
-              style={{
-                position: 'absolute',
-                top: parentRef.current?.offsetTop ?? 0,
-                left: parentRef.current?.offsetLeft ?? 0,
-                width: parentRef.current?.offsetWidth ?? '100%',
-                height: parentRef.current?.offsetHeight ?? '100%',
-                zIndex: 2, // Make sure it overlays the Cropper image
-                pointerEvents: 'none', // Allows interactions with Cropper behind the mask
-              }}
-            />
-          )}
+          {image &&
+            (editingTool == EditingTool.Wand ? (
+              <ImageMaskGenerator imageStr={imageStr} image={image} parentRef={parentRef} ref={maskGenRef} />
+            ) : (
+              <Cropper
+                src={imageStr}
+                ref={cropperRef}
+                style={{ width: '100%', height: '100%' }}
+                dragMode="none"
+                viewMode={1}
+                autoCrop={false}
+                toggleDragModeOnDblclick={false}
+                restore={false}
+                guides={false}
+                responsive={true}
+                modal={true}
+                background={true}
+              />
+            ))}
         </div>
-
-        {editingTool === EditingTool.Crop && <CropTray handleCrop={handleCrop} />}
-        <button onClick={toggleMaskEditor}>{isMaskDrawing ? 'Stop Drawing Mask' : 'Draw Mask'}</button>
-        <button onClick={generateMask}>Generate Mask</button>
       </>
     );
   }

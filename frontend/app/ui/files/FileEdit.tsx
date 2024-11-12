@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
-import { FileInfo, FileInfoEditDTO, useUpdateFileMutation } from '@/app/lib/api/fileApi';
+import { useUpdateFileMutation } from '@/app/lib/api/fileApi';
+import { FileInfo, FileInfoEditDTO } from '@/app/lib/files/definitions';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';

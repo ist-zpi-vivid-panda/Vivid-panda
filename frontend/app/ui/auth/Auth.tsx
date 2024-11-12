@@ -20,6 +20,7 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
           <BackArrow size={40} />
         </Link>
       </div>
+
       <div className="flex justify-end items-center min-h-screen w-full">
         <div
           className="flex flex-col justify-center items-center w-full md:w-1/3 lg:w-1/4 px-5 py-10 mr-40"

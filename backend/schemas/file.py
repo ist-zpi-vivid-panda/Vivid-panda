@@ -11,6 +11,14 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png"}
 
 
+def get_file():
+    return fields.Field(
+        required=True,
+        validate=[validate_file_size, validate_file_extension, validate_mime_type],
+        description=f"File of type {ALLOWED_EXTENSIONS} up to {MAX_CONTENT_LENGTH}B",
+    )
+
+
 def validate_file_size(file: FileStorage):
     if file.content_length > MAX_CONTENT_LENGTH:
         raise ValidationError(f"File size must not exceed ${MAX_CONTENT_LENGTH}B.")
@@ -51,11 +59,7 @@ class FileInfoSchema(FileInfoEditSchema):
 
 
 class FileInputDataSchema(Schema):
-    file = fields.Field(
-        required=True,
-        validate=[validate_file_size, validate_file_extension],
-        description=f"File of type {ALLOWED_EXTENSIONS} up to {MAX_CONTENT_LENGTH}B",
-    )
+    file = get_file()
 
 
 class FilePaginationSchema(BasePaginationSchema):
@@ -72,3 +76,13 @@ class FileOutputDataSchema(Schema):
     name = fields.Str(
         required=True,
     )
+
+
+class AIMicroserviceSchema(Schema):
+    original_file = get_file()
+    mask_file = fields.Field(
+        required=False,
+        validate=[validate_file_size, validate_file_extension, validate_mime_type],
+        description=f"File of type {ALLOWED_EXTENSIONS} up to {MAX_CONTENT_LENGTH}B",
+    )
+

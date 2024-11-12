@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 import {
   getCall,
   SuccessStatusResponse,
@@ -9,39 +7,9 @@ import {
   useUpdateMutation,
 } from './apiUtils';
 import { createPaginatorFetchFn, standardPaginationEndpointGetter, usePaginator } from './pagination';
+import { FileInfo, FileInfoDTO, FileInfoEditDTO } from '../files/definitions';
+import { convertFileToFormData, parseDTO } from '../files/utils';
 import { invalidate, removeQuery } from '../storage/getQueryClient';
-
-export type FileInfoDTO = {
-  id: string;
-  filename: string;
-  mime_type: string;
-  file_size: number;
-  uploaded_at: string;
-  last_update_at: string;
-  owner_id: string;
-  thumbnail?: string;
-};
-
-export type FileInfo = {
-  id: string;
-  filename: string;
-  mime_type: string;
-  file_size: number;
-  uploaded_at: Date;
-  last_update_at: Date;
-  owner_id: string;
-  thumbnail?: string;
-};
-
-export type FileInfoEditDTO = {
-  filename: string;
-};
-
-export type FileDownloadDTO = {
-  file: string;
-  mime_type: string;
-  name: string;
-};
 
 const FILES_QUERY_KEY = 'files-qk' as const;
 
@@ -83,20 +51,6 @@ export const useDeleteFileMutation = () => useDeleteMutation(deleteFilesQuery, g
 export const downloadFile = async (id: string) =>
   await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`);
 
-export const convertFileToFormData = (image: File) => {
-  const formData = new FormData();
-
-  formData.append('file', image);
-
-  return formData;
-};
-
-export const parseDTO = (dto: FileInfoDTO): FileInfo => ({
-  ...dto,
-  last_update_at: dayjs(dto.last_update_at).toDate(),
-  uploaded_at: dayjs(dto.uploaded_at).toDate(),
-});
-
 export const handleDownloadFileToBrowser = async (idOfPhoto: string, filename: string) => {
   if (!idOfPhoto || !filename) {
     return;
@@ -112,4 +66,4 @@ export const handleDownloadFileToBrowser = async (idOfPhoto: string, filename: s
   window.URL.revokeObjectURL(url);
 };
 
-export const onDownloadFileInfo = (fileInfo: FileInfo) => handleDownloadFileToBrowser(fileInfo.id, fileInfo.filename);
+export const downloadFileInfo = (fileInfo: FileInfo) => handleDownloadFileToBrowser(fileInfo.id, fileInfo.filename);

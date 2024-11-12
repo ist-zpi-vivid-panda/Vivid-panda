@@ -4,12 +4,14 @@ import { ReactNode, useState, useCallback, useEffect, useRef } from 'react';
 
 import {
   downloadFile,
-  onDownloadFileInfo,
+  downloadFileInfo,
   useDeleteFileMutation,
   useFileData,
   useUpdateFileDataMutation,
 } from '@/app/lib/api/fileApi';
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
 import { EditingTool } from '@/app/lib/canvas/definitions';
+import { getFileFromFileInfoAndBlob } from '@/app/lib/files/utils';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { useRouter } from 'next/navigation';
@@ -30,6 +32,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
+  const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(undefined);
 
   const [currentEditComponent, setCurrentEditComponent] = useState<ReactNode>(false);
 
@@ -42,7 +45,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const handleDownload = useCallback(() => {
     if (fileInfo) {
-      onDownloadFileInfo(fileInfo);
+      downloadFileInfo(fileInfo);
     }
   }, [fileInfo]);
 
@@ -52,9 +55,9 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
         return;
       }
 
-      updateDataFile.mutateAsync({ id: fileInfo.id, data: new File([blob], fileInfo.filename, { type: blob.type }) });
+      updateDataFile.mutateAsync({ id: fileInfo.id, data: getFileFromFileInfoAndBlob(blob, fileInfo) });
     });
-  }, [fileInfo.filename, fileInfo.id, updateDataFile]);
+  }, [fileInfo, updateDataFile]);
 
   const handleDelete = useCallback(
     () =>
@@ -91,6 +94,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
     <>
       <GridView
         setEditingTool={setEditingTool}
+        setAiFunction={setAiFunction}
         onSaveClick={handleSave}
         onDeleteClick={handleDelete}
         onDownloadClick={handleDownload}
@@ -99,6 +103,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
           <Canvas
             imageStr={uploadedImage}
             editingTool={editingTool}
+            aiFunction={aiFunction}
             setCurrentEditComponent={setCurrentEditComponent}
             ref={blobRef}
           />
