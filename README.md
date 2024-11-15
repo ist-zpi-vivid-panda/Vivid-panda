@@ -45,7 +45,7 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 ## AI
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
 - [PyTorch](https://pytorch.org/docs/stable/index.html)
-Obróbka grafiki
+## Obróbka grafiki
 - [OpenCV](https://docs.opencv.org/4.x/index.html)
 - [PIL](https://pillow.readthedocs.io/en/stable/)
 - [numpy](https://numpy.org/doc/)
