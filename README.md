@@ -41,6 +41,7 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 - [OpenAPI](https://swagger.io/specification/)
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
 - Baza danych: [Mongo](https://www.mongodb.com/docs/?msockid=201a404f4cd36fe517b852344de46e3e)
+- [Babel](https://babel.pocoo.org/en/latest/)
  
 ## AI
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
@@ -59,44 +60,46 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 
 # Zakres obowiązków każdego z uczestników
 
-Scrum Master: Paweł Dudek
+- Scrum Master: Paweł Dudek
 
-Moduł AI: Katsiaryna Viarenich
+- Moduł AI: Katsiaryna Viarenich
 
-Frontend: Uladzimir Mazaleuski, Paweł Dudek, Karolina Majkowska 
+- Frontend: Uladzimir Mazaleuski, Paweł Dudek, Karolina Majkowska 
 
-Backend: Paweł Dudek, Karolina Majkowska
+- Backend: Paweł Dudek, Karolina Majkowska
 
 
-Osoby wspierające nasz zespół: dr.inż Martin Tabakow, dr inż. Piotr Syga
+- Osoby wspierające nasz zespół: dr.inż Martin Tabakow, dr inż. Piotr Syga
 
 ## Backend
-Moduł związany z obsługą użytkownika: Paweł Dudek, Karolina Majkowska
+- Moduł związany z obsługą użytkownika: Paweł Dudek, Karolina Majkowska
 
-Moduł związany z obsługą plików: Paweł Dudek, Karolina Majkowska
+- Moduł związany z obsługą plików: Paweł Dudek, Karolina Majkowska
 
-Baza danych: Paweł Dudek
+- Baza danych: Paweł Dudek
 
 ## Frontend
-Moduł związny z logowaniem/rejestracją: Paweł Dudek
+- Moduł związny z logowaniem/rejestracją: Paweł Dudek
 
-Moduł związany z odzyskiwaniem hasła: Karolina Majkowska
+- Moduł związany z odzyskiwaniem hasła: Karolina Majkowska
 
-Moduł związany z listą zdjęć: Paweł Dudek
+- Moduł związany z listą zdjęć: Paweł Dudek
 
-Moduł związany z przesyłaniem zdjęć: Karolina Majkowska, Paweł Dudek
+- Moduł związany z przesyłaniem zdjęć: Karolina Majkowska, Paweł Dudek
 
-Moduł związany z widokiem głównym strony: Karolina Majkowska
+- Moduł związany z widokiem głównym strony: Karolina Majkowska
 
-Konfiguracja frontendu w celu poprawienia jego działania: Uladzimir Mazaleuski
+- Konfiguracja frontendu w celu poprawienia jego działania: Karolina Majkowska 
 
-Moduł edycji zdjęć: Uladzimir Mazaleuski, Paweł Dudek, Karolina Majkowska
+- Moduł edycji zdjęć: Paweł Dudek, Karolina Majkowska, Uladzimir Mazaleuski
+
+- Integracja systemu: Paweł Dudek, Karolina Majkowska
 
 ## Testowanie
-Uladzimir Mazaleuski
+- Uladzimir Mazaleuski
 
 ## Moduł AI
-Katsiaryna Viarenich 
+- Katsiaryna Viarenich 
 
 ## DevOps
-Katsiaryna Viarenich
+- Katsiaryna Viarenich
