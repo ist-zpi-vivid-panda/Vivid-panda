@@ -31,7 +31,7 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 - [Material.UI](https://mui.com/material-ui/)
 - [Tanstack Query](https://tanstack.com/query/latest/docs/framework/react/overview)
 - [Zustand](https://www.npmjs.com/package/zustand)
-- [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
+- Walidacja: [Ajv.js](https://www.npmjs.com/package/ajv)
 - [React Hook Forms](https://react-hook-form.com/docs)
 - [Cropperjs](https://github.com/fengyuanchen/cropperjs/blob/main/README.md)
   
@@ -39,8 +39,8 @@ W przyszłości planujemy wprowadzić również model Freemium naszej aplikacji 
 - [Flask](https://flask.palletsprojects.com/en/3.0.x/)  
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
 - [OpenAPI](https://swagger.io/specification/)
+- [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
 - Baza danych: [Mongo](https://www.mongodb.com/docs/?msockid=201a404f4cd36fe517b852344de46e3e)
-- Walidacja: [Ajv.js](https://www.npmjs.com/package/ajv)
  
 ## AI
 - [Python](https://docs.python.org/pl/3.8/reference/index.html#reference-index) 
