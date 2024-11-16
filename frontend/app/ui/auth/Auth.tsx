@@ -30,9 +30,9 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
             className={`${cardClassName} p-10 gap-5 shadow-2xl flex flex-col items-center w-full`}
             onSubmit={onSubmit}
           >
-            <span className="text-6xl p-5 text-center">Vivid Panda</span>
+            <span className="text-center custom-text">Vivid Panda</span>
 
-            <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col custom-gap w-full">
               {React.Children.map(children, (child) => (
                 <div className="w-full">{child}</div>
               ))}
