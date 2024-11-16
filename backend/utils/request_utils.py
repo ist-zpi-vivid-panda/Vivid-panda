@@ -11,6 +11,8 @@ from blueprints.user.models import UserModel
 from config.doc_config import get_security
 from schemas.responses import ErrorSchema
 
+USED_SCHEMAS = []
+
 
 def error_dict(message: str) -> Dict[str, Any]:
     return {"error": message}
@@ -62,6 +64,9 @@ def doc_endpoint(
 
         # adding use_kwargs means that you don't need to jsonify the response!
         if input_schema is not None:
+            if input_schema not in USED_SCHEMAS:
+                USED_SCHEMAS.append(input_schema())
+
             func = use_kwargs(input_schema, location=location)(func)
 
         for schema, code in response_schemas:

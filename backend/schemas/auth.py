@@ -7,12 +7,12 @@ from schemas.generic import get_email_field, get_password_field
 
 class LoginSchema(Schema):
     email = get_email_field()
-    password = fields.Str(required=True, error_messages={"required": gettext(u"Password is required")})
+    password = fields.Str(required=True, error_messages={"required": gettext("Password is required")})
 
 
 class RegisterSchema(Schema):
     email = get_email_field()
-    username = fields.Str(required=False, missing=None, error_messages={"required": gettext(u"Username is required")})
+    username = fields.Str(required=False, missing=None, error_messages={"required": gettext("Username is required")})
     password = get_password_field()
 
 
@@ -26,8 +26,8 @@ class ResetPasswordSchema(Schema):
 
 
 class AccessTokenSchema(Schema):
-    access_token = fields.Str(required=True, error_messages={"required": gettext(u"Access token is required")})
+    access_token = fields.Str(required=True, error_messages={"required": gettext("Access token is required")})
 
 
 class TokensSchema(AccessTokenSchema):
-    refresh_token = fields.Str(required=True, error_messages={"required": gettext(u"Refresh token is required")})
+    refresh_token = fields.Str(required=True, error_messages={"required": gettext("Refresh token is required")})
