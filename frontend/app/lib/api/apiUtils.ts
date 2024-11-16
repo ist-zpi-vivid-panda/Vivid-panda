@@ -32,6 +32,7 @@ type HttpMethod = typeof GET | typeof PATCH | typeof POST | typeof DELETE;
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
 
 const buildHeaders = (isFormData: boolean, token?: string) => ({
+  'Accept-Language': 'pl',
   ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
   ...(token ? { Authorization: `Bearer ${token}` } : null),
 });

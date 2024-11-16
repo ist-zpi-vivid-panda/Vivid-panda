@@ -3,6 +3,7 @@ from typing import Any, Tuple
 import requests
 from flask import Blueprint, Response, json, jsonify, request, url_for
 from flask_apispec import marshal_with
+from flask_babel import gettext
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -62,7 +63,7 @@ def register(email: str, username: str | None, password: str) -> Tuple[dict, int
     result = user_service.insert(user)
 
     if result is None:
-        return error_dict("Email already registered"), 400
+        return error_dict(gettext(u"Email already registered")), 400
 
     return create_tokens(user)
 
@@ -78,10 +79,10 @@ def register(email: str, username: str | None, password: str) -> Tuple[dict, int
 def login(email: str, password: str) -> Tuple[dict, int] | dict:
     user = user_service.get_by_email(email)
     if user is None or not check_password_hash(user.password_hash, password):
-        return error_dict("Invalid username or password"), 401
+        return error_dict(gettext(u"Invalid username or password")), 401
 
     if user.provider != AccountDataProvider.LOCAL:
-        return error_dict("Account already exists for another provider"), 400
+        return error_dict(gettext(u"Account already exists for another provider")), 400
 
     return create_tokens(user)
 
@@ -113,10 +114,10 @@ def request_reset_password(email: str) -> Tuple[dict, int] | dict:
     user = user_service.get_by_email(email)
 
     if user is None:
-        return error_dict("User does not exists"), 400
+        return error_dict(gettext(u"User does not exists")), 400
 
     if user.provider != AccountDataProvider.LOCAL:
-        return error_dict("Cannot reset password for this account provider"), 400
+        return error_dict(gettext(u"Cannot reset password for this account provider")), 400
 
     send_reset_password_email(user)
 
@@ -136,16 +137,16 @@ def reset_password(password: str, password_repeated: str) -> Tuple[dict, int] | 
     user_id = request.args.get("user_id")
 
     if token is None or user_id is None:
-        return error_dict("Missing data"), 400
+        return error_dict(gettext(u"Missing data")), 400
 
     if (user := validate_reset_password_token(token, user_id)) is None:
-        return error_dict("Token expired"), 400
+        return error_dict(gettext(u"Token expired")), 400
 
     if not password == password_repeated:
-        return error_dict("Passwords are not the same"), 400
+        return error_dict(gettext(u"Passwords are not the same")), 400
 
     if user is None or check_password_hash(user.password_hash, password):
-        return error_dict("Passwords cannot be the same as previous password"), 400
+        return error_dict(gettext(u"Passwords cannot be the same as previous password")), 400
 
     user.password_hash = generate_password_hash(password)
     user_service.update(user)
@@ -196,7 +197,7 @@ def callback_google() -> Tuple[Response, int] | Response:
     userinfo = userinfo_response.json()
     if not userinfo.get("email_verified"):
         return jsonify(
-            error_dict("User email not available or not verified by Google"),
+            error_dict(gettext(u"User email not available or not verified by Google")),
             400,
         )
 
@@ -208,6 +209,6 @@ def callback_google() -> Tuple[Response, int] | Response:
         user = UserModel(None, email, username, "", AccountDataProvider.GOOGLE, None)
         user_service.insert(user)
     elif user.provider != AccountDataProvider.GOOGLE:
-        return jsonify(error_dict("Account already exists for another provider")), 400
+        return jsonify(error_dict(gettext(u"Account already exists for another provider"))), 400
 
     return jsonify(create_tokens(user))
