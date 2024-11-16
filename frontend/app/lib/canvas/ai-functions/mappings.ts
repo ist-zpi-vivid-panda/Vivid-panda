@@ -7,8 +7,6 @@ import {
   getUpscaledImage,
 } from '../../api/aiFunctionApi';
 
-export const AI_FUNCTIONS_WITH_MASK = Object.freeze([AiFunctionType.AddObject, AiFunctionType.DeleteObject]);
-
 export const AI_FUNCTION_TO_API_CALL = Object.freeze({
   [AiFunctionType.ColorizeImage]: getColorizedImage,
   [AiFunctionType.DeleteObject]: getDeleteObjectFromImage,

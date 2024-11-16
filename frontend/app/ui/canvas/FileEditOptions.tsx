@@ -8,6 +8,7 @@ import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser } from 'react-
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
 import { IconContext } from 'react-icons/lib';
+import { text } from 'stream/consumers';
 
 import { EditingTool } from '../../lib/canvas/definitions';
 
@@ -19,14 +20,13 @@ type FileEditListOptionsProps = {
 type EditToolPresentationProps = {
   name: string;
   color: string;
+  textColor: string;
   onToolSelect: () => void;
   Icon: React.ElementType;
 };
 
 const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
   <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
-    {' '}
-    {/* Responsive icon size */}
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <button
         onClick={onToolSelect}
@@ -35,9 +35,10 @@ const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPr
           gap: '10px',
           flexDirection: 'row',
           fontSize: 'clamp(16px, 1.5vw, 40px)',
+          alignItems: 'center',
         }}
       >
-        {name}
+        <span style={{ color }}>{name}</span>
         <Icon />
       </button>
     </div>
@@ -45,7 +46,8 @@ const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPr
 );
 
 const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOptionsProps) => {
-  const iconColor = '#006444';
+  const iconColor = '#36065f';
+  const textColor = '#36065f';
 
   const toggleEditingTool = useCallback(
     (editingTool: EditingTool) => setEditingTool?.((prev) => (editingTool === prev ? undefined : editingTool)),
@@ -57,7 +59,6 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
     [setAiFunction]
   );
 
-  // maybe change names to icons with tooltips
   return (
     <Box
       sx={{
@@ -72,6 +73,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Scissors'}
         color={iconColor}
+        textColor={textColor}
         Icon={FaScissors}
         onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
       />
@@ -79,6 +81,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Move'}
         color={iconColor}
+        textColor={textColor}
         Icon={IoIosMove}
         onToolSelect={() => toggleEditingTool(EditingTool.Move)}
       />
@@ -86,6 +89,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Resize'}
         color={iconColor}
+        textColor={textColor}
         Icon={GiResize}
         onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
       />
@@ -93,6 +97,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Filter'}
         color={iconColor}
+        textColor={textColor}
         Icon={IoIosColorFilter}
         onToolSelect={() => toggleEditingTool(EditingTool.Filter)}
       />
@@ -100,6 +105,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Rotate'}
         color={iconColor}
+        textColor={textColor}
         Icon={FaArrowRotateRight}
         onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
       />
@@ -107,6 +113,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Add object'}
         color={iconColor}
+        textColor={textColor}
         Icon={FaWandSparkles}
         onToolSelect={() => toggleAiFunction(AiFunctionType.AddObject)}
       />
@@ -114,6 +121,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       <EditingToolPresentation
         name={'Delete object'}
         color={iconColor}
+        textColor={textColor}
         Icon={FaEraser}
         onToolSelect={() => toggleAiFunction(AiFunctionType.DeleteObject)}
       />
