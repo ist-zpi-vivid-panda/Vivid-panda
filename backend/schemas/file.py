@@ -21,74 +21,72 @@ def get_file():
         description=gettext(
             "File of type %(ext)s up to %(length)s B", ext=ALLOWED_EXTENSIONS_STR, length=MAX_CONTENT_LENGTH
         ),
-        error_messages={"required": gettext(u"File is required")},
+        error_messages={"required": gettext("File is required")},
     )
 
 
 def validate_file_size(file: FileStorage):
     if file.content_length > MAX_CONTENT_LENGTH:
-        raise ValidationError(gettext(u"File size must not exceed %(length)s B", length=MAX_CONTENT_LENGTH))
+        raise ValidationError(gettext("File size must not exceed %(length)s B", length=MAX_CONTENT_LENGTH))
 
 
 def validate_file_extension(file: FileStorage):
     if file.filename is None:
-        raise ValidationError(gettext(u"No file name detected"))
+        raise ValidationError(gettext("No file name detected"))
 
     _, ext = os.path.splitext(file.filename)
 
     if ext is None or ext.lower() not in ALLOWED_EXTENSIONS:
-        raise ValidationError(gettext(u"Invalid file extension. Only %(ext)s are allowed", ext=ALLOWED_EXTENSIONS_STR))
+        raise ValidationError(gettext("Invalid file extension. Only %(ext)s are allowed", ext=ALLOWED_EXTENSIONS_STR))
 
 
 def validate_mime_type(file: FileStorage):
     if file.mimetype is None:
-        raise ValidationError(gettext(u"No MIME type detected. Please upload a valid file"))
+        raise ValidationError(gettext("No MIME type detected. Please upload a valid file"))
 
     if file.mimetype not in ALLOWED_MIME_TYPES:
-        raise ValidationError(
-            gettext(u"Invalid MIME type. Only %(formats)s are allowed", formats=ALLOWED_MIMETYPES_STR)
-        )
+        raise ValidationError(gettext("Invalid MIME type. Only %(formats)s are allowed", formats=ALLOWED_MIMETYPES_STR))
 
 
 class FileInfoEditSchema(Schema):
     filename = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"Filename is required"), "invalid": gettext(u"Invalid filename format")},
+        error_messages={"required": gettext("Filename is required"), "invalid": gettext("Invalid filename format")},
     )
 
 
 class FileInfoSchema(FileInfoEditSchema):
     id = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"File ID is required"), "invalid": gettext(u"Invalid file ID format")},
+        error_messages={"required": gettext("File ID is required"), "invalid": gettext("Invalid file ID format")},
     )
     mime_type = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"MIME type is required"), "invalid": gettext(u"Invalid MIME type format")},
+        error_messages={"required": gettext("MIME type is required"), "invalid": gettext("Invalid MIME type format")},
     )
     file_size = fields.Int(
         required=True,
         error_messages={
-            "required": gettext(u"File size is required"),
-            "invalid": gettext(u"File size must be an integer"),
+            "required": gettext("File size is required"),
+            "invalid": gettext("File size must be an integer"),
         },
     )
     uploaded_at = fields.DateTime(
         required=True,
-        error_messages={"required": gettext(u"Upload date is required"), "invalid": gettext(u"Invalid date format")},
+        error_messages={"required": gettext("Upload date is required"), "invalid": gettext("Invalid date format")},
     )
     last_update_at = fields.DateTime(
         required=True,
         error_messages={
-            "required": gettext(u"Last update date is required"),
-            "invalid": gettext(u"Invalid date format"),
+            "required": gettext("Last update date is required"),
+            "invalid": gettext("Invalid date format"),
         },
     )
     owner_id = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"Owner ID is required"), "invalid": gettext(u"Invalid owner ID format")},
+        error_messages={"required": gettext("Owner ID is required"), "invalid": gettext("Invalid owner ID format")},
     )
-    thumbnail = fields.Str(error_messages={"invalid": gettext(u"Invalid thumbnail format")})
+    thumbnail = fields.Str(error_messages={"invalid": gettext("Invalid thumbnail format")})
 
 
 class FileInputDataSchema(Schema):
@@ -100,8 +98,8 @@ class FilePaginationSchema(BasePaginationSchema):
         fields.Nested(FileInfoSchema),
         required=True,
         error_messages={
-            "required": gettext(u"File collection is required"),
-            "invalid": gettext(u"Invalid format for file collection"),
+            "required": gettext("File collection is required"),
+            "invalid": gettext("Invalid format for file collection"),
         },
     )
 
@@ -109,15 +107,15 @@ class FilePaginationSchema(BasePaginationSchema):
 class FileOutputDataSchema(Schema):
     file = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"File path is required"), "invalid": gettext(u"Invalid file path format")},
+        error_messages={"required": gettext("File path is required"), "invalid": gettext("Invalid file path format")},
     )
     mime_type = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"MIME type is required"), "invalid": gettext(u"Invalid MIME type format")},
+        error_messages={"required": gettext("MIME type is required"), "invalid": gettext("Invalid MIME type format")},
     )
     name = fields.Str(
         required=True,
-        error_messages={"required": gettext(u"File name is required"), "invalid": gettext(u"Invalid file name format")},
+        error_messages={"required": gettext("File name is required"), "invalid": gettext("Invalid file name format")},
     )
 
 
@@ -129,5 +127,5 @@ class AIMicroserviceSchema(Schema):
         description=gettext(
             "File of type %(ext)s up to %(length)s B", ext=ALLOWED_EXTENSIONS_STR, length=MAX_CONTENT_LENGTH
         ),
-        error_messages={"invalid": gettext(u"Invalid mask file format")},
+        error_messages={"invalid": gettext("Invalid mask file format")},
     )

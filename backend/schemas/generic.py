@@ -21,7 +21,7 @@ def get_password_field() -> String:
                 ),
             )
         ],
-        error_messages={"required": gettext(u"Password is required")},
+        error_messages={"required": gettext("Password is required")},
     )
 
 
@@ -29,6 +29,9 @@ def get_password_field() -> String:
 def get_email_field() -> String:
     return fields.Str(
         required=True,
-        validate=[validate.Regexp(EMAIL_REGEX, error=gettext(u"Invalid email address format"))],
-        error_messages={"required": gettext(u"Email is required")},
+        validate=[validate.Regexp(EMAIL_REGEX, error=gettext("Invalid email address format"))],
+        error_messages={
+            "required": gettext("Email is required"),
+            "pattern": gettext("Invalid email address format"),
+        },
     )

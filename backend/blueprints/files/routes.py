@@ -44,7 +44,7 @@ def get_files(user: UserModel) -> Tuple[Response, int] | Response:
     per_page: int = request.args.get("per_page", 10, type=int)
 
     if user.uid is None:
-        return jsonify(error_dict(gettext(u"Incorrect user"))), 400
+        return jsonify(error_dict(gettext("Incorrect user"))), 400
 
     files = file_service.get_paginated_by_owner_id(user.uid, page, per_page)
 
@@ -61,7 +61,7 @@ def get_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
-        return jsonify(error_dict(gettext(u"File doesn't exist"))), 400
+        return jsonify(error_dict(gettext("File doesn't exist"))), 400
 
     return jsonify(file.get_dto())
 
@@ -82,12 +82,12 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
 
     # Ensure that `file_from_grid.length` is accessed properly to get the file size in bytes
     if file_id_grid_fs is None or user.uid is None or file.filename is None:
-        return error_dict(gettext(u"File not saved")), 400
+        return error_dict(gettext("File not saved")), 400
 
     file_size = getattr(file_from_grid, "length", None)
     if file_size is None:
         delete_file_from_grid_fs(file_id_grid_fs)
-        return error_dict(gettext(u"Unable to retrieve file size")), 400
+        return error_dict(gettext("Unable to retrieve file size")), 400
 
     file_info = FileInfoModel(
         file_id=None,
@@ -115,7 +115,7 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     file_id = file_service.insert(file_info)
     if file_id is None:
         delete_file_from_grid_fs(file_id_grid_fs)
-        return error_dict(gettext(u"File info not saved")), 400
+        return error_dict(gettext("File info not saved")), 400
 
     file_info.file_id = file_id
     return add_thumbnail(obj_dict=file_info.get_dto(), grid_fs_id=file_id_grid_fs)
@@ -130,13 +130,13 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
 def delete_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
     if file is None or file.owner_id != user.uid:
-        return jsonify(error_dict(gettext(u"File doesn't exist"))), 400
+        return jsonify(error_dict(gettext("File doesn't exist"))), 400
 
     delete_file_from_grid_fs(file.grid_fs_id)
 
     is_file_info_deleted = file_service.delete(file)
     if not is_file_info_deleted:
-        return jsonify(error_dict(gettext(u"File wasn't deleted"))), 400
+        return jsonify(error_dict(gettext("File wasn't deleted"))), 400
 
     return jsonify(success_dict(True))
 
@@ -155,14 +155,14 @@ def update_file_info(file_id: str, user: UserModel, filename: str) -> Tuple[dict
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
-        return error_dict(gettext(u"File doesn't exist")), 400
+        return error_dict(gettext("File doesn't exist")), 400
 
     file.filename = filename
 
     updated_file_info_id: str | None = file_service.update(file)
 
     if updated_file_info_id is None:
-        return error_dict(gettext(u"File not updated")), 400
+        return error_dict(gettext("File not updated")), 400
 
     return success_dict(True)
 
@@ -178,22 +178,22 @@ def update_file_info(file_id: str, user: UserModel, filename: str) -> Tuple[dict
 def update_file_data(file_id: str, user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     file_info: FileInfoModel | None = file_service.get_by_id(file_id)
     if file_info is None or file_info.owner_id != user.uid:
-        return error_dict(gettext(u"File doesn't exist")), 400
+        return error_dict(gettext("File doesn't exist")), 400
 
     new_file_id_grid_fs = update_file_on_grid_fs(file, file_info.grid_fs_id)
 
     if new_file_id_grid_fs is None:
-        return error_dict(gettext(u"Couldn't update file")), 400
+        return error_dict(gettext("Couldn't update file")), 400
 
     file_info.grid_fs_id = new_file_id_grid_fs
 
     if new_file_id_grid_fs is None:
-        return error_dict(gettext(u"File not updated")), 400
+        return error_dict(gettext("File not updated")), 400
 
     updated_file_info: str | None = file_service.update(file_info)
 
     if updated_file_info is None:
-        return error_dict(gettext(u"File not updated")), 400
+        return error_dict(gettext("File not updated")), 400
 
     return success_dict(True)
 
@@ -208,12 +208,12 @@ def get_file_data(file_id: str, user: UserModel) -> Tuple[Response, int] | Respo
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
-        return jsonify(error_dict(gettext(u"File data doesn't exist"))), 400
+        return jsonify(error_dict(gettext("File data doesn't exist"))), 400
 
     file_from_grid = grid_fs_service.get_file_grid_fs(file.grid_fs_id)
 
     if file_from_grid is None:
-        return jsonify(error_dict(gettext(u"File doesn't exist"))), 400
+        return jsonify(error_dict(gettext("File doesn't exist"))), 400
 
     return send_file(
         io.BytesIO(file_from_grid.read()),

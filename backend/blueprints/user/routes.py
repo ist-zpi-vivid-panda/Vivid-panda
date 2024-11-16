@@ -58,6 +58,6 @@ def upsert_user_profile_picture(user: UserModel, file: FileStorage) -> Tuple[dic
     )
 
     if file_id_grid_fs is None:
-        return error_dict(gettext(u"File not saved")), 400
+        return error_dict(gettext("File not saved")), 400
 
     return success_dict(True)

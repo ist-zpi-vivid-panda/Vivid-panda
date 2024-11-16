@@ -245,7 +245,7 @@ msgstr ""
 
 #: schemas/generic.py:32
 msgid "Invalid email address format"
-msgstr ""
+msgstr "Niepoprawny format adresu email"
 
 #: schemas/generic.py:33
 msgid "Email is required"

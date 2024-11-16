@@ -10,7 +10,7 @@ from oauthlib.oauth2 import WebApplicationClient
 from config.babel_config import create_babel_config
 from config.cors_config import create_cors_config
 from config.database import create_db_connection
-from config.doc_config import DocConfig
+from config.doc_config import create_doc_config
 from config.env_vars import (
     APP_SECRET,
     GOOGLE_CLIENT_ID,
@@ -64,7 +64,7 @@ def create_app() -> Flask:
     app.register_blueprint(users_blueprint, url_prefix="/users")
 
     # Swagger
-    DocConfig(app, api_spec)
+    create_doc_config(app, api_spec)
     create_validation_config(app)
 
     return app
