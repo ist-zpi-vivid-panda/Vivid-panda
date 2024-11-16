@@ -1,6 +1,7 @@
 from typing import Tuple
 
 from flask import Blueprint, Response, jsonify
+from flask_babel import gettext
 from werkzeug.datastructures.file_storage import FileStorage
 
 from blueprints.user.models import UserModel
@@ -57,6 +58,6 @@ def upsert_user_profile_picture(user: UserModel, file: FileStorage) -> Tuple[dic
     )
 
     if file_id_grid_fs is None:
-        return error_dict("File not saved"), 400
+        return error_dict(gettext(u"File not saved")), 400
 
     return success_dict(True)
