@@ -9,8 +9,8 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
   */
-  --background-rgb: 132, 140, 188;
-  --primary-rgb: 151, 255, 222;
+  --background-rgb: 218, 192, 240;
+  --primary-rgb: 54, 6, 95;
   --primary-active-rgb: 213, 255, 242;
   --danger: 179, 38, 30;
   --warning: 255, 190, 60;
@@ -28,8 +28,8 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
     */
-    --background-rgb: 132, 140, 188;
-    --primary-rgb: 0, 100, 68;
+    --background-rgb: 218, 192, 240;
+    --primary-rgb: 54, 6, 95;
     --primary-active-rgb: 91, 255, 203;
     --danger: 179, 38, 30;
     --warning: 255, 190, 60;
@@ -109,19 +109,19 @@ body {
 
 @media (min-width: 1280px) {
   .logoBackground {
-    background-size: 80%; /* Large screens */
+    background-size: 75%; /* Large screens */
   }
 }
 
 @media (min-width: 1024px) and (max-width: 1279px) {
   .logoBackground {
-    background-size: 60%; /* Medium screens */
+    background-size: 55%; /* Medium screens */
   }
 }
 
 @media (min-width: 640px) and (max-width: 1023px) {
   .logoBackground {
-    background-size: 40%; /* Small screens */
+    background-size: 35%; /* Small screens */
   }
 }
 
@@ -150,6 +150,82 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.custom-input {
+  color: black;
+}
+
+.custom-margin {
+  margin-bottom: 10px;
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-margin {
+    margin-bottom: 15px;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-margin {
+    margin-bottom: 50px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-margin {
+    margin-bottom: 100px;
+  }
+}
+
+.custom-gap {
+  gap: 8px; 
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-gap {
+    gap: 8px; 
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-gap {
+    gap: 30px; 
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-gap {
+    gap: 55px;
+  }
+}
+
+.custom-text {
+  font-size: 2rem; 
+  padding: 10px;   
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-text {
+    font-size: 3rem; 
+    padding: 15px;   
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-text {
+    font-size: 4rem; 
+    padding: 20px;   
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-text {
+    font-size: 5rem; 
+    padding: 38px;   
+  }
+}
+
+
 .loading-circle {
   width: 10vw; 
   height: 10vw; 

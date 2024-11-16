@@ -16,6 +16,7 @@ type ActionsMenuProps = {
 type ActionsMenuPresentationProps = {
   name: string;
   color: string;
+  textColor: string;
   onToolSelect: () => void;
   Icon: IconType;
 };
@@ -33,7 +34,7 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
           fontSize: 'clamp(16px, 1.5vw, 40px)',
         }}
       >
-        {name}
+        <span style={{ color }}>{name}</span>
         <Icon />
       </button>
     </div>
@@ -43,7 +44,8 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
 const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMenuProps) => {
   const { t } = useStrings(TranslationNamespace.Common);
 
-  const iconColor = '#006444';
+  const iconColor = '#36065f';
+  const textColor = '#36065f';
 
   return (
     <div
@@ -57,11 +59,18 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         flexDirection: 'column',
       }}
     >
-      <ActionsMenuPresentation name={t('save')} color={iconColor} Icon={() => <FaSave />} onToolSelect={onSaveClick} />
+      <ActionsMenuPresentation
+        name={t('save')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={() => <FaSave />}
+        onToolSelect={onSaveClick}
+      />
 
       <ActionsMenuPresentation
         name={'Cleaning'} // change to a go forwards and backwards icon button
         color={iconColor}
+        textColor={textColor}
         Icon={() => <MdOutlineCleaningServices />}
         onToolSelect={() => {}}
       />
@@ -69,6 +78,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
       <ActionsMenuPresentation
         name={'Revert change'}
         color={iconColor}
+        textColor={textColor}
         Icon={() => <FaArrowLeft />}
         onToolSelect={() => {}}
       />
@@ -76,6 +86,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
       <ActionsMenuPresentation
         name={t('delete')}
         color={iconColor}
+        textColor={textColor}
         Icon={() => <FaDeleteLeft />}
         onToolSelect={onDeleteClick}
       />
@@ -83,6 +94,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
       <ActionsMenuPresentation
         name={t('download')}
         color={iconColor}
+        textColor={textColor}
         Icon={() => <FaDownload />}
         onToolSelect={onDownloadClick}
       />

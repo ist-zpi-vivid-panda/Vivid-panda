@@ -28,11 +28,11 @@ export const mouseInfoCalc = ({ event, parent, setMouseInfo }: MouseInfoSetterPr
   setMouseInfo({ x, y, angle });
 };
 
-export const getImageSizes = (imageWidth: number, imageHeight: number, canvasWidth: number, canvasHeight: number) => {
+export const getImageSizes = (imageWidth: number, imageHeight: number, parentWidth: number, parentHeight: number) => {
   const aspectRatio = imageWidth / imageHeight;
 
-  let newWidth = Math.min(canvasWidth, imageWidth);
-  let newHeight = Math.min(canvasHeight, imageHeight);
+  let newWidth = parentWidth;
+  let newHeight = parentHeight;
 
   if (newWidth / newHeight > aspectRatio) {
     newWidth = newHeight * aspectRatio;

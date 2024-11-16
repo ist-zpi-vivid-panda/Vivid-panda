@@ -55,7 +55,7 @@ const FilesList = () => {
         hasMore={hasNextPage}
         loader={<h4>{t('common:loading')}</h4>}
         endMessage={
-          <p style={{ textAlign: 'center' }}>
+          <p style={{ textAlign: 'center', color: 'black' }}>
             <b>{t('common:all_loaded')}</b>
           </p>
         }
