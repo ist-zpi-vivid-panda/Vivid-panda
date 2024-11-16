@@ -38,9 +38,9 @@ def call_ai_function(
 
     if uppercase_ai_function == AI_functions.COLORIZE_IMAGE.name:
         files = {"image": original_file}
-        response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.COLORIZE_IMAGE.value[0]}", files=files)
+        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AI_functions.COLORIZE_IMAGE.value[0]}", files=files)
         if response.status_code == 200:
-            return files.__dict__
+            return files
         else:
             return success_dict(True)
 
@@ -49,9 +49,9 @@ def call_ai_function(
             "image": original_file,
             "mask": mask_file,
         }
-        response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.DELETE_OBJECT.value[0]}", files=files)
+        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AI_functions.DELETE_OBJECT.value[0]}", files=files)
         if response.status_code == 200:
-            return files.__dict__
+            return files
         else:
             return success_dict(True)
 
@@ -61,9 +61,9 @@ def call_ai_function(
             "mask": mask_file,
         }
         data = {"prompt": prompt}
-        response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.ADD_OBJECT.value[0]}", files=files, data=data)
+        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AI_functions.ADD_OBJECT.value[0]}", files=files, data=data)
         if response.status_code == 200:
-            return files.__dict__
+            return files
         else:
             return success_dict(True)
 
@@ -72,19 +72,19 @@ def call_ai_function(
             "image": original_file,
         }
         data = {"style": prompt}
-        response = requests.get(
+        response = requests.post(
             f"{AI_MICROSERVICE_API_URL}{AI_functions.TRANSFER_STYLE.value[0]}", files=files, data=data
         )
         if response.status_code == 200:
-            return files.__dict__
+            return files
         else:
             return success_dict(True)
 
     if uppercase_ai_function == AI_functions.UPSCALE.name:
         files = {"image": original_file}
-        response = requests.get(f"{AI_MICROSERVICE_API_URL}{AI_functions.UPSCALE.value[0]}", files=files)
+        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AI_functions.UPSCALE.value[0]}", files=files)
         if response.status_code == 200:
-            return files.__dict__
+            return files
         else:
             return success_dict(True)
 
