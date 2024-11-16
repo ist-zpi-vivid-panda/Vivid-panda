@@ -1,4 +1,8 @@
 import { useValidationData } from '@/app/lib/api/validationApi';
+import { JSONSchemaType } from 'ajv';
+import { useTranslation } from 'react-i18next';
+
+import { SupportedLocale } from '../internationalization/definitions';
 
 export enum SchemaNames {
   // auth
@@ -12,14 +16,50 @@ export enum SchemaNames {
   FileDataSchema = 'FileData',
 }
 
+type FieldProps = {
+  type?: string;
+  errorMessage?: Record<string, never>;
+  [key: string]: unknown;
+};
+
+const enhanceSchemaWithErrorMessages = (
+  schema: JSONSchemaType<unknown>,
+  locale: SupportedLocale
+): JSONSchemaType<unknown> => {
+  if (!schema.properties) {
+    return schema;
+  }
+
+  for (const [, fieldProps] of Object.entries(schema.properties)) {
+    const field = fieldProps as FieldProps;
+
+    if (field.errorMessage && field.errorMessage?.[locale]) {
+      field.errorMessage = field.errorMessage[locale];
+    }
+  }
+
+  console.log(schema);
+
+  return schema;
+};
+
 export const useSchema = (schemaName: string) => {
   const { data, isLoading } = useValidationData();
+  const { i18n } = useTranslation();
 
   if (isLoading) {
     return;
   }
 
-  return data?.components?.schemas?.[schemaName];
+  const currentLocale = i18n.language as SupportedLocale;
+
+  const schema = data?.components?.schemas?.[schemaName];
+
+  if (!schema) {
+    return;
+  }
+
+  return enhanceSchemaWithErrorMessages(schema, currentLocale);
 };
 
 export const setFieldErrors =

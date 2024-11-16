@@ -33,7 +33,7 @@ def enhance_schemas_with_translations(app: Flask, api_spec: APISpec):
 
     for schema_name, schema in api_spec.components.schemas.items():
         if "properties" not in schema:
-            break
+            continue
 
         for field_name, field_props in schema["properties"].items():
             for marshmallow_schema in USED_SCHEMAS:
@@ -43,11 +43,12 @@ def enhance_schemas_with_translations(app: Flask, api_spec: APISpec):
                 # (i.e. most of them that aren't automatically added)
                 # don't need their field errors mapped
                 if not marshmallow_schema or full_schema_name != schema_name + "Schema":
-                    break
+                    continue
+
                 field = marshmallow_schema.declared_fields.get(field_name)
 
                 if field and hasattr(field, "error_messages"):
-                    field_props["errorMessages"] = get_translations_for_field(field, locales)
+                    field_props["errorMessage"] = get_translations_for_field(field, locales)
 
 
 def create_doc_config(app: Flask, api_spec: APISpec) -> FlaskApiSpec:
