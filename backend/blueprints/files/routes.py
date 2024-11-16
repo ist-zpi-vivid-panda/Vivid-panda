@@ -75,14 +75,18 @@ def get_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
     location="files",
 )
 def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
+    if user.uid is None:
+        return error_dict("Incorrect user"), 401
+
     number_of_user_files = count_user_files(user.uid)
 
     file_id_grid_fs = put_file_on_grid_fs(file)
-    file_from_grid = grid_fs_service.get_file_grid_fs(file_id_grid_fs)
 
     # Ensure that `file_from_grid.length` is accessed properly to get the file size in bytes
     if file_id_grid_fs is None or user.uid is None or file.filename is None:
         return error_dict(gettext("File not saved")), 400
+
+    file_from_grid = grid_fs_service.get_file_grid_fs(file_id_grid_fs)
 
     file_size = getattr(file_from_grid, "length", None)
     if file_size is None:
