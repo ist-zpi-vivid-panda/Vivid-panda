@@ -107,6 +107,17 @@ body {
   background-repeat: no-repeat;
 }
 
+.logoSadBackground {
+  background-image: url("/logosad.png");
+  background-repeat: no-repeat;
+}
+
+.text-large {
+  font-size: 3vw;
+  color: black; 
+  line-height: 1.2;
+}
+
 @media (min-width: 1280px) {
   .logoBackground {
     background-size: 75%; /* Large screens */
