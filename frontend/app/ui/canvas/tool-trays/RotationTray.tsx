@@ -16,12 +16,12 @@ const RotationTray = ({ rotationStep, setRotation, currentRotation, defaultRotat
   const { t } = useStrings(TranslationNamespace.Canvas);
 
   return (
-    <div>
-      <span>
+    <div className="text-large-edit">
+      <span className="text-large-span">
         {t('rotation')}: {currentRotation}
       </span>
 
-      <div className="flex-row">
+      <div className=" text-large-edit-less">
         <button onClick={() => setRotation((prev) => prev + rotationStep)}>
           {t('rotate_by')} {rotationStep}°
         </button>

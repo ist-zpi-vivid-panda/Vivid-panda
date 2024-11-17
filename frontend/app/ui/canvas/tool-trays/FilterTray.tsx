@@ -11,7 +11,7 @@ const filters = getEnumValues(FilterType);
 
 const FilterTray = ({ setFilterType }: FilterTrayProps) => {
   return (
-    <div>
+    <div className="text-large-edit">
       {filters.map((filterType) => (
         <button key={filterType} onClick={() => setFilterType(filterType as FilterType)}>
           {filterType}

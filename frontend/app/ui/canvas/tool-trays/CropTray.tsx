@@ -7,7 +7,7 @@ const CropTray = ({ handleCrop }: CropTrayProps) => {
   const { t } = useStrings(TranslationNamespace.Canvas);
 
   return (
-    <div>
+    <div className="text-large-edit">
       <button onClick={handleCrop}>{t('crop')}</button>
     </div>
   );

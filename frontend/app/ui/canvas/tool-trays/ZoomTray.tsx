@@ -16,12 +16,12 @@ const ZoomTray = ({ zoomStep, setZoom, currentZoom, defaultZoom }: ZoomTrayProps
   const { t } = useStrings(TranslationNamespace.Canvas);
 
   return (
-    <div>
-      <span>
-        {t('zoom')}: {currentZoom}
+    <div className="text-large-edit">
+      <span className="text-large-span">
+        {t('zoom')}: {currentZoom.toFixed(1)}
       </span>
 
-      <div className="flex-row">
+      <div className="text-large-edit-less flex-row">
         <button onClick={() => setZoom((prev) => prev + zoomStep)}>+</button>
 
         <button onClick={() => setZoom(defaultZoom)}>{t('reset')}</button>
