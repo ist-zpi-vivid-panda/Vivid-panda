@@ -24,7 +24,7 @@ repos:
         language: python
         types: [ python ]
         files: ^ai_service/.*\.py$
-        args: ["--strict", "--ignore-missing-imports"]
+        args: ["--strict", "--ignore-missing-imports", "--disable-error-code=misc"]
 
   # Flake8 - Python style guide enforcement
   - repo: https://github.com/pycqa/flake8

@@ -1,4 +1,4 @@
-import { apiCallNoAutoToken, POST, postCall } from '@/app/lib/api/apiUtils';
+import { apiCallNoAutoToken, HttpMethod, postCall } from '@/app/lib/api/apiUtils';
 import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
 import { toast } from 'react-toastify';
 
@@ -88,7 +88,7 @@ export const refreshToken = async () => {
   const { refreshToken, login, ...restOfLoginProps } = useUserData.getState();
 
   const apiResult = await apiCallNoAutoToken<AccessTokenResult>(
-    POST,
+    HttpMethod.POST,
     AUTH_ENDPOINT + REFRESH_TOKENS_ENDPOINT,
     refreshToken
   );

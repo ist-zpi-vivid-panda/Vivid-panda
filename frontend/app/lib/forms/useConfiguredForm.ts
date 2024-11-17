@@ -3,8 +3,8 @@ import { ajvResolver } from '@hookform/resolvers/ajv';
 import { fullFormats } from 'ajv-formats/dist/formats';
 import { FieldPath, FieldPathValue, FieldValues, SetValueConfig, useForm, UseFormProps } from 'react-hook-form';
 
-const useConfiguredForm = ({ schemaName, ...restOfProps }: UseFormProps & { schemaName: SchemaNames }) => {
-  const schema = useSchema(schemaName);
+const useConfiguredForm = ({ schemaName, ...restOfProps }: UseFormProps & { schemaName?: SchemaNames }) => {
+  const schema = useSchema(schemaName ?? '');
 
   const formHook = useForm({
     ...restOfProps,

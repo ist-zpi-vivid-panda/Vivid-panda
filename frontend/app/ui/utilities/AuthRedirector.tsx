@@ -3,14 +3,16 @@
 import { useEffect, useMemo } from 'react';
 
 import { ChildrenProp } from '@/app/lib/definitions';
+import usePathnameWithoutLocale from '@/app/lib/internationalization/usePathnameWithoutLocale';
 import useUserData from '@/app/lib/storage/useUserData';
-import { usePathname, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 const PREAUTH_ALLOWED_PATH_PARTS = ['/auth'] as const;
 const PREAUTH_ALLOWED_PATHS = ['/' /* dashboard */];
 
 const AuthRedirector = ({ children }: ChildrenProp) => {
-  const pathname = usePathname();
+  const pathname = usePathnameWithoutLocale();
+
   const { accessToken } = useUserData();
 
   const isPreAuthPath = useMemo(
@@ -29,7 +31,7 @@ const AuthRedirector = ({ children }: ChildrenProp) => {
     }
   }, [accessToken, isPreAuthPath, pathname]);
 
-  return <>{children}</>;
+  return children;
 };
 
 export default AuthRedirector;

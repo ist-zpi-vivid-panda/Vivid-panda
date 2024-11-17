@@ -1,4 +1,4 @@
-import { CanvasAction } from './types';
+import { CanvasAction } from './definitions';
 
 export const drawRotated = ({ canvas, ctx, image, angle }: CanvasAction) => {
   const { width: imgWidth, height: imgHeight } = image;

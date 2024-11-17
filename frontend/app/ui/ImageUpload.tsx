@@ -4,6 +4,9 @@ import { ChangeEvent, useRef, useState, DragEvent } from 'react';
 
 import PressableSpan from '@/app/ui/shared/PressableSpan';
 
+import { TranslationNamespace } from '../lib/internationalization/definitions';
+import useStrings from '../lib/internationalization/useStrings';
+
 type ImageUploadProps = {
   onImageUpload: (image: File) => void;
 };
@@ -12,6 +15,8 @@ const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
 // const MAX_SIZE = 16 * 1024 * 1024; // 16MB
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
+  const { t } = useStrings(TranslationNamespace.Files);
+
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -74,12 +79,15 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
             ref={inputRef}
           />
 
-          <p className={`${dragActive ? 'primaryBackgroundActive' : 'primaryBackground'} p-24 rounded-xl border-0`}>
-            Drag & Drop files or{' '}
+          <p
+            className={`${dragActive ? 'primaryBackgroundActive' : 'primaryBackground'} p-24 rounded-xl border-0`}
+            style={{ fontSize: 'clamp(10px, 1.5vw, 20px)' }}
+          >
+            {`${t('drag_and_drop_or')} `}
             <PressableSpan onClick={openFileExplorer}>
-              <u>Select files</u>
-            </PressableSpan>{' '}
-            to upload
+              <u>{t('select_file')}</u>
+            </PressableSpan>
+            {`, ${t('to_upload')}`}
           </p>
         </div>
       </form>

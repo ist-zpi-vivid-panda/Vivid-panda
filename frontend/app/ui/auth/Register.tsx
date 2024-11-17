@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 
 import { RegisterProps, registerUser } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import useUserData from '@/app/lib/storage/useUserData';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
@@ -17,11 +19,12 @@ const Register = () => {
   const router = useRouter();
   const { login } = useUserData();
 
+  const { t } = useStrings(TranslationNamespace.Auth);
+
   const {
     control,
     handleSubmit,
-    setError,
-    formState: { errors, isDirty, isSubmitting, isSubmitted },
+    formState: { errors },
   } = useConfiguredForm({ schemaName: SchemaNames.RegisterSchema });
 
   const onSubmit = useCallback(
@@ -44,20 +47,20 @@ const Register = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">Register</span>
+      <span className="text-2xl m-auto">{t('register')}</span>
 
-      <ControlledCustomInput control={control} errors={errors} label="Email" type="email" name="email" required />
+      <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
 
-      <ControlledCustomInput control={control} errors={errors} label="Username" name="username" />
+      <ControlledCustomInput control={control} errors={errors} label={t('username')} name="username" />
 
-      <ControlledCustomPasswordInput control={control} errors={errors} label="Password" name="password" required />
+      <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
-      <div className="flex justify-end mb-20">
+      <div className="flex justify-end custom-margin">
         <SubmitButton />
       </div>
 
       <Link href="/auth/login">
-        <span className="text-sm font-light">Already have an account? Login</span>
+        <span className="text-sm font-light">{t('already_have_an_account')}</span>
       </Link>
     </Auth>
   );

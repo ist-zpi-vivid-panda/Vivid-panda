@@ -77,7 +77,7 @@ const CustomInput = forwardRef(
         <div
           className={`${disabled && 'disabled'} ${isFocused && 'primaryBorder'} ${error && 'dangerBorder'} border-gray-500 textBackground overflow-hidden rounded-md p-2`}
         >
-          <div className="flex flex-row">
+          <div className="flex flex-row custom-input">
             <div className="flex-1 justify-center">
               {!isEmpty && label && (
                 <div className="flex flex-1 flex-row gap-1">
@@ -86,7 +86,7 @@ const CustomInput = forwardRef(
                 </div>
               )}
 
-              <div className={`${isEmpty && 'py-2'} flex flex-row items-center relative`}>
+              <div className={`${isEmpty && 'py-2'} flex flex-row items-center relative custom-input`}>
                 {isEmpty && (
                   <div className="pointer-events-none absolute gap-1 flex flex-row">
                     <span>{placeholder || label}</span>

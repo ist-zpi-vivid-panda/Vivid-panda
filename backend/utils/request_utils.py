@@ -8,7 +8,7 @@ from flask_jwt_extended import get_current_user, jwt_required, verify_jwt_in_req
 from marshmallow import Schema
 
 from blueprints.user.models import UserModel
-from config.doc_config import get_security
+from config.doc_config import USED_SCHEMAS, get_security
 from schemas.responses import ErrorSchema
 
 
@@ -62,6 +62,8 @@ def doc_endpoint(
 
         # adding use_kwargs means that you don't need to jsonify the response!
         if input_schema is not None:
+            USED_SCHEMAS.append(input_schema())
+
             func = use_kwargs(input_schema, location=location)(func)
 
         for schema, code in response_schemas:

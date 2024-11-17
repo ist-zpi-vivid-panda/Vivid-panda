@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Mapping, TypeVar, Generic
+from typing import Any, Dict, Generic, List, Mapping, TypeVar
 
 from bson.objectid import ObjectId
 from pymongo.collection import Collection

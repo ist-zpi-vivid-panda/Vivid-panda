@@ -1,6 +1,6 @@
 import base64
 import io
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 import gridfs
 from bson import ObjectId
@@ -13,6 +13,12 @@ from werkzeug.datastructures.file_storage import FileStorage
 from app import grid_fs
 from schemas.file import FileInputDataSchema
 from utils.request_utils import error_dict
+
+SUPPORTED_FILE_FORMATS: List[str] = ["JPEG", "PNG"]
+SUPPORTED_COLOR_SPACES: List[str] = ["RGB", "RGBA"]
+
+DEFAULT_FILE_FORMAT: str = "PNG"
+DEFAULT_COLORSPACE: str = "RGB"
 
 
 def get_file_grid_fs(file_id: str) -> GridOut | None:
@@ -45,26 +51,26 @@ def get_image_thumbnail(file_id: str) -> str:
     if grid_out is None:
         return ""
 
-    image_bytes = grid_out.read()
-    img = Image.open(io.BytesIO(image_bytes))
+    try:
+        image_bytes = grid_out.read()
 
-    img.thumbnail((150, 150))
-    thumb_io = io.BytesIO()
-    img.save(thumb_io, format=img.format)
-    thumb_io.seek(0)
+        img = Image.open(io.BytesIO(image_bytes))
 
-    return base64.b64encode(thumb_io.getvalue()).decode()
+        if img.mode not in SUPPORTED_COLOR_SPACES:
+            img = img.convert(DEFAULT_COLORSPACE)
 
+        img.thumbnail((150, 150))
 
-def get_image(file_id: str) -> str:
-    grid_out = get_file_grid_fs(file_id)
+        thumb_io = io.BytesIO()
 
-    if grid_out is None:
+        save_format = img.format if img.format in SUPPORTED_FILE_FORMATS else DEFAULT_FILE_FORMAT
+        img.save(thumb_io, format=save_format)
+        thumb_io.seek(0)
+
+        return base64.b64encode(thumb_io.getvalue()).decode()
+
+    except (Exception,):
         return ""
-
-    image_bytes = grid_out.read()
-
-    return base64.b64encode(image_bytes).decode()
 
 
 def validate_file_data(request: Request) -> Tuple[dict, int] | FileStorage:

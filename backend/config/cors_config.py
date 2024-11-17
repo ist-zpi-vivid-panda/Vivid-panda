@@ -10,5 +10,5 @@ def create_cors_config(app: Flask) -> None:
         methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
         supports_credentials=True,
         origins=FRONTEND_URL,
-        allow_headers=["Content-Type", "Authorization"],
+        allow_headers=["Content-Type", "Authorization", "Accept-Language"],
     )
