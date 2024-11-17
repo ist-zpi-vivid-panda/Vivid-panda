@@ -27,7 +27,6 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
   const onSubmit = useCallback(
     async (values: FieldValues) => {
       const prompt: string = values.prompt;
-      console.log(prompt);
       setPromptText(prompt);
     },
     [setPromptText]

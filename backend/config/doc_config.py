@@ -30,7 +30,7 @@ def get_translations_for_field(field, locales):
 
 def enhance_schemas_with_translations(app: Flask, api_spec: APISpec):
     locales = app.config["BABEL_SUPPORTED_LOCALES"]
-    
+
     for schema_name, schema in api_spec.components.schemas.items():
         if "properties" not in schema:
             continue

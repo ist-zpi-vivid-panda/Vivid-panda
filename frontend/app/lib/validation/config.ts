@@ -40,8 +40,6 @@ const enhanceSchemaWithErrorMessages = (
     }
   }
 
-  console.log(schema);
-
   return schema;
 };
 
@@ -52,7 +50,7 @@ export const useSchema = (schemaName: string) => {
   const schema = useMemo(() => data?.components?.schemas?.[schemaName], [data?.components?.schemas, schemaName]);
   const currentLocale = useMemo(() => i18n.language as SupportedLocale, [i18n.language]);
 
-  if (!schema || !isLoading) {
+  if (!schema || isLoading) {
     return;
   }
 
