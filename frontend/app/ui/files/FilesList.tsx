@@ -12,7 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
-import UserInfo from '../UserInfo';
+import UserInfo from '../navigation/UserInfo';
 import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {

@@ -1,11 +1,14 @@
 'use client';
 
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 import { Children } from '@/app/lib/definitions';
 import BackArrow from '@/app/ui/shared/BackArrow';
 import { cardClassName } from '@/app/ui/shared/Card';
 import Link from 'next/link';
+
+import LocaleChangeButton from '../locale/LocaleChangeButton';
+import LocaleChanger from '../locale/LocaleChanger';
 
 type AuthPageProps = {
   onSubmit: (props: FormEvent) => void;
@@ -13,12 +16,18 @@ type AuthPageProps = {
 };
 
 const Auth = ({ onSubmit, children }: AuthPageProps) => {
+  const [anchorElLang, setAnchorElLang] = useState<null | HTMLElement>(null);
+
   return (
     <>
-      <div className="p-10">
+      <LocaleChanger anchorEl={anchorElLang} setAnchorEl={setAnchorElLang} />
+
+      <div className="px-10 py-4 flex flex-row justify-between">
         <Link href="/">
           <BackArrow size={40} />
         </Link>
+
+        <LocaleChangeButton setAnchorEl={setAnchorElLang} />
       </div>
 
       <div className="flex justify-end items-center min-h-screen w-full">

@@ -1,13 +1,6 @@
 import { ChildrenProp } from '@/app/lib/definitions';
-import UserInfo from '@/app/ui/UserInfo';
+import TopAppBarLayout from '@/app/ui/layouts/TopAppBarLayout';
 
-const CanvasLayout = ({ children }: ChildrenProp) => (
-  <div className="min-h-screen flex flex-col">
-    <nav>
-      <UserInfo />
-    </nav>
-    {children}
-  </div>
-);
+const CanvasLayout = (props: ChildrenProp) => <TopAppBarLayout {...props} />;
 
 export default CanvasLayout;

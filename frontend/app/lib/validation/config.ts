@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useValidationData } from '@/app/lib/api/validationApi';
 import { JSONSchemaType } from 'ajv';
 import { useTranslation } from 'react-i18next';
@@ -47,15 +49,10 @@ export const useSchema = (schemaName: string) => {
   const { data, isLoading } = useValidationData();
   const { i18n } = useTranslation();
 
-  if (isLoading) {
-    return;
-  }
+  const schema = useMemo(() => data?.components?.schemas?.[schemaName], [data?.components?.schemas, schemaName]);
+  const currentLocale = useMemo(() => i18n.language as SupportedLocale, [i18n.language]);
 
-  const currentLocale = i18n.language as SupportedLocale;
-
-  const schema = data?.components?.schemas?.[schemaName];
-
-  if (!schema) {
+  if (!schema || !isLoading) {
     return;
   }
 

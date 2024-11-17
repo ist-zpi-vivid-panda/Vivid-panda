@@ -8,7 +8,6 @@ import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser } from 'react-
 import { GiResize } from 'react-icons/gi';
 import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
 import { IconContext } from 'react-icons/lib';
-import { text } from 'stream/consumers';
 
 import { EditingTool } from '../../lib/canvas/definitions';
 
