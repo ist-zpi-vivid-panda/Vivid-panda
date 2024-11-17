@@ -3,10 +3,13 @@
 import { Dispatch, SetStateAction, useCallback } from 'react';
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { Box } from '@mui/material';
-import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser } from 'react-icons/fa6';
+import { CgStyle } from 'react-icons/cg';
+import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser, FaAnglesUp } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
-import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
+import { IoIosColorFilter, IoIosMove, IoMdColorPalette } from 'react-icons/io';
 import { IconContext } from 'react-icons/lib';
 
 import { EditingTool } from '../../lib/canvas/definitions';
@@ -48,6 +51,8 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
   const iconColor = '#36065f';
   const textColor = '#36065f';
 
+  const { t } = useStrings(TranslationNamespace.Canvas);
+
   const toggleEditingTool = useCallback(
     (editingTool: EditingTool) => setEditingTool?.((prev) => (editingTool === prev ? undefined : editingTool)),
     [setEditingTool]
@@ -70,7 +75,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       }}
     >
       <EditingToolPresentation
-        name={'Scissors'}
+        name={t('scissors')}
         color={iconColor}
         textColor={textColor}
         Icon={FaScissors}
@@ -78,7 +83,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Move'}
+        name={t('move')}
         color={iconColor}
         textColor={textColor}
         Icon={IoIosMove}
@@ -86,7 +91,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Resize'}
+        name={t('resize')}
         color={iconColor}
         textColor={textColor}
         Icon={GiResize}
@@ -94,7 +99,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Filter'}
+        name={t('filter')}
         color={iconColor}
         textColor={textColor}
         Icon={IoIosColorFilter}
@@ -102,7 +107,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Rotate'}
+        name={t('rotate')}
         color={iconColor}
         textColor={textColor}
         Icon={FaArrowRotateRight}
@@ -110,7 +115,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Add object'}
+        name={t('addObject')}
         color={iconColor}
         textColor={textColor}
         Icon={FaWandSparkles}
@@ -118,11 +123,35 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={'Delete object'}
+        name={t('deleteObject')}
         color={iconColor}
         textColor={textColor}
         Icon={FaEraser}
         onToolSelect={() => toggleAiFunction(AiFunctionType.DeleteObject)}
+      />
+
+      <EditingToolPresentation
+        name={t('upscalling')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={FaAnglesUp}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.Upscale)}
+      />
+
+      <EditingToolPresentation
+        name={t('styleTransfer')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={CgStyle}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.TransferStyle)}
+      />
+
+      <EditingToolPresentation
+        name={t('colorizeImage')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={IoMdColorPalette}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.ColorizeImage)}
       />
     </Box>
   );

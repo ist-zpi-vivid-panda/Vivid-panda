@@ -4,5 +4,15 @@
     "rotate_by": "Rotate by",
     "zoom": "Zoom",
     "reset": "Reset",
-    "prompt": "Prompt"
+    "prompt": "Prompt",
+    "scissors": "Scissors",
+    "move": "Move",
+    "rotate": "Rotate",
+    "resize": "Resize",
+    "filter": "Add filter",
+    "addObject": "Add object",
+    "deleteObject" : "Delete object",
+    "upscalling": "Upscalling",
+    "colorizeImage": "Colorize image",
+    "styleTransfer": "Style transfer"
 }
