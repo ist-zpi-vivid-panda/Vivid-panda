@@ -240,6 +240,8 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         endPointY: imageData.height,
       });
 
+      setFilterType(undefined);
+
       setImageStr(convertImageDataToImageStr(res));
     }, [editingTool, filterType, getImageData, setImageStr]);
 

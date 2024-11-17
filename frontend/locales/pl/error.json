@@ -1,5 +1,5 @@
 {
-    "error":"Ooops nie odnaleziono strony!",
+    "error": "Ooops nie odnaleziono strony!",
     "back": "Wróć do poprzedniej strony",
-    "tryAgain": "Spróbuj ponownie"
+    "try_again": "Spróbuj ponownie"
 }

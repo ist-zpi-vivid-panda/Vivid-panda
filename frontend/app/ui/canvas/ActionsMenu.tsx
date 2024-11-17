@@ -73,7 +73,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaArrowLeft />}
-        onToolSelect={() => changeHistoryData.handleUndo}
+        onToolSelect={changeHistoryData.handleUndo}
         disabled={!changeHistoryData.canUndo}
       />
 
@@ -82,7 +82,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaArrowRight />}
-        onToolSelect={() => changeHistoryData.handleRedo}
+        onToolSelect={changeHistoryData.handleRedo}
         disabled={!changeHistoryData.canRedo}
       />
 
