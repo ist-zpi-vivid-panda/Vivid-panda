@@ -29,21 +29,28 @@ const GridView = ({
 }: GridViewProps) => {
   return (
     <Grid container direction="column">
-      <Grid size={{ xs: 1, sm: 1, md: 12 }} sx={{ padding: 1, display: 'flex', justifyContent: 'center' }}>
-        Here you can find options of selected tool!
+      <Grid
+        size={{ xs: 1, sm: 1, md: 12 }}
+        sx={{
+          padding: 0.1, // Reduced padding to minimize space
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
       </Grid>
 
       <Grid
         container
         direction="row"
         justifyContent="center"
-        alignItems="center"
+        alignItems="flex-start" // Align content to the top
         sx={{
           height: '100vh',
         }}
       >
         <Grid
-          size={{ xs: 1, sm: 2, md: 2 }}
+          size={{ xs: 1, sm: 2, md: 3 }}
           sx={{
             display: 'flex',
             justifyContent: 'center',
@@ -65,9 +72,7 @@ const GridView = ({
           {children}
         </Grid>
 
-        <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>
-          <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
-        </Grid>
+        <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}></Grid>
       </Grid>
     </Grid>
   );
