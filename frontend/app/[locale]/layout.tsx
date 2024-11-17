@@ -47,7 +47,7 @@ const RootLayout = async ({ children, params }: RootLayoutProps) => {
   const { resources } = await initTranslations(locale, namespaces);
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={FONT.className}>
         <TranslationsProvider locale={locale} namespaces={namespaces} resources={resources}>
           <Providers>

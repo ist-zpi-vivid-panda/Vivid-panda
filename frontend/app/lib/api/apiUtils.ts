@@ -3,7 +3,8 @@ import API_CONFIG from '@/app/lib/api/config';
 import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import useUserData from '@/app/lib/storage/useUserData';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import i18n from 'i18next';
+import { getI18n } from 'react-i18next';
+
 import { toast } from 'react-toastify';
 
 import { refreshToken } from './authApi';
@@ -34,7 +35,7 @@ export enum HttpMethod {
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
 
 const buildHeaders = (isFormData: boolean, token?: string) => ({
-  'Accept-Language': i18n.language || getDefaultLocale(), // also empty string check!
+  'Accept-Language': getI18n().language || getDefaultLocale(),
   ...(!isFormData && { 'Content-Type': 'application/json' }),
   ...(token && { Authorization: `Bearer ${token}` }),
 });
