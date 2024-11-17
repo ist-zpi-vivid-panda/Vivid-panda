@@ -1,8 +1,10 @@
 'use client';
 
 import React, {
+  Dispatch,
   forwardRef,
   ReactNode,
+  SetStateAction,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -13,6 +15,7 @@ import React, {
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
+import useChangeHistory from '@/app/lib/canvas/change-history/useChangeHistory';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
 import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
 import useAIImageEditFlow from '@/app/lib/canvas/useAIImageEditFlow';
@@ -30,13 +33,17 @@ import ZoomTray from './tool-trays/ZoomTray';
 
 type CanvasProps = {
   imageStr: string;
+  setCanUndo: Dispatch<SetStateAction<boolean>>;
+  setCanRedo: Dispatch<SetStateAction<boolean>>;
   editingTool: EditingTool | undefined;
   aiFunction: AiFunctionType | undefined;
   setCurrentEditComponent: (_: ReactNode | undefined) => void;
 };
 
-export type BlobConsumer = {
+export type CanvasConsumer = {
   getBlob: (callback: (blob: Blob | null) => void, type?: string, quality?: number) => void;
+  undo: () => void;
+  redo: () => void;
 };
 
 const DEFAULT_ZOOM: number = 1 as const;
@@ -46,11 +53,14 @@ const DEFAULT_CALLBACK = () => {};
 
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
+const CHANGE_HISTORY_LENGTH: number = 25 as const;
 
-const Canvas = forwardRef<BlobConsumer, CanvasProps>(
+const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
   (
     {
       imageStr: passedInImageStr,
+      setCanUndo,
+      setCanRedo,
       setCurrentEditComponent,
       editingTool: editingToolFromParent,
       aiFunction: aiFunctionFromParent,
@@ -65,7 +75,14 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(aiFunctionFromParent);
     const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
-    const [imageStr, setImageStr] = useState<string>(passedInImageStr);
+    const {
+      current: imageStr,
+      setCurrent: setImageStr,
+      undo,
+      redo,
+      canUndo,
+      canRedo,
+    } = useChangeHistory(CHANGE_HISTORY_LENGTH, passedInImageStr);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
@@ -100,14 +117,14 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const handleMouseDown = useCallback(() => setIsDragging(true), []);
     const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-    const handleCrop = useCallback(() => {
+    const saveCanvasFromCropper = useCallback(() => {
       const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
       const croppedImageUrl = croppedCanvas?.toDataURL();
 
       if (croppedImageUrl) {
         setImageStr(croppedImageUrl);
       }
-    }, []);
+    }, [setImageStr]);
 
     const handleMask = useCallback(
       () =>
@@ -147,14 +164,14 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         [EditingTool.Zoom]: (
           <ZoomTray zoomStep={ZOOM_STEP} setZoom={setZoomValue} currentZoom={zoomValue} defaultZoom={DEFAULT_ZOOM} />
         ),
-        [EditingTool.Crop]: <CropTray handleCrop={handleCrop} />,
+        [EditingTool.Crop]: <CropTray handleCrop={saveCanvasFromCropper} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
         [EditingTool.Wand]: (
           <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleMask} />
         ),
       }),
-      [handleMask, handleCrop, rotationValue, zoomValue]
+      [handleMask, saveCanvasFromCropper, rotationValue, zoomValue]
     );
 
     // change params according to tool
@@ -201,7 +218,7 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     // zoom
     useEffect(() => {
       cropperRef?.current?.cropper?.zoomTo(zoomValue);
-    }, [zoomValue]);
+    }, [zoomValue, imageStr]);
 
     // filter
     useEffect(() => {
@@ -224,7 +241,7 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       });
 
       setImageStr(convertImageDataToImageStr(res));
-    }, [editingTool, filterType, getImageData]);
+    }, [editingTool, filterType, getImageData, setImageStr]);
 
     useEffect(() => {
       const image = new Image();
@@ -240,6 +257,12 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     // change ai function on parent change
     useEffect(() => setAiFunction(aiFunctionFromParent), [aiFunctionFromParent]);
 
+    // can redo for parent
+    useEffect(() => setCanRedo(canRedo), [canRedo, setCanRedo]);
+
+    // can undo for parent
+    useEffect(() => setCanUndo(canUndo), [canUndo, setCanUndo]);
+
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
         const res = cropperRef?.current?.cropper?.getCroppedCanvas();
@@ -250,6 +273,8 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
           callback(null);
         }
       },
+      undo,
+      redo,
     }));
 
     return (

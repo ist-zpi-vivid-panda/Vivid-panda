@@ -3,11 +3,27 @@
 import { useCallback } from 'react';
 
 import { usePostFileMutation } from '@/app/lib/api/fileApi';
+import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 import GridView from './GridView';
 import ImageUpload from '../ImageUpload';
+
+const VOID_FN = () => {};
+
+const canvasCrudOperations: CanvasCRUDOperations = Object.freeze({
+  handleSave: VOID_FN,
+  handleDelete: VOID_FN,
+  handleDownload: VOID_FN,
+} as const);
+
+const changeHistoryData: ChangeHistory = Object.freeze({
+  handleUndo: VOID_FN,
+  handleRedo: VOID_FN,
+  canUndo: false,
+  canRedo: false,
+} as const);
 
 const NewImageEditingScreen = () => {
   const router = useRouter();
@@ -28,7 +44,7 @@ const NewImageEditingScreen = () => {
   );
 
   return (
-    <GridView onSaveClick={() => {}} onDeleteClick={() => {}} onDownloadClick={() => {}}>
+    <GridView canvasCrudOperations={canvasCrudOperations} changeHistoryData={changeHistoryData}>
       <ImageUpload onImageUpload={handleImageUpload} />
     </GridView>
   );

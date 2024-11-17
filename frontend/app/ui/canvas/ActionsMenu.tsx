@@ -1,16 +1,16 @@
 'use client';
 
+import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { FaSave, FaDownload, FaArrowLeft } from 'react-icons/fa';
+import { FaSave, FaDownload, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { IconContext, IconType } from 'react-icons/lib';
 import { MdOutlineCleaningServices } from 'react-icons/md';
 
 type ActionsMenuProps = {
-  onSaveClick: () => void;
-  onDeleteClick: () => void;
-  onDownloadClick: () => void;
+  canvasCrudOperations: CanvasCRUDOperations;
+  changeHistoryData: ChangeHistory;
 };
 
 type ActionsMenuPresentationProps = {
@@ -19,9 +19,10 @@ type ActionsMenuPresentationProps = {
   textColor: string;
   onToolSelect: () => void;
   Icon: IconType;
+  disabled?: boolean;
 };
 
-const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMenuPresentationProps) => (
+const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon, disabled }: ActionsMenuPresentationProps) => (
   <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
     {/* Responsive icon size */}
     <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -33,6 +34,7 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
           flexDirection: 'row',
           fontSize: 'clamp(16px, 1.5vw, 40px)',
         }}
+        disabled={disabled}
       >
         <span style={{ color }}>{name}</span>
         <Icon />
@@ -41,7 +43,7 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon }: ActionsMen
   </IconContext.Provider>
 );
 
-const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMenuProps) => {
+const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuProps) => {
   const { t } = useStrings(TranslationNamespace.Common);
 
   const iconColor = '#36065f';
@@ -56,7 +58,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: '25px',
-        flexDirection: 'column',
+        flexDirection: 'row',
       }}
     >
       <ActionsMenuPresentation
@@ -64,7 +66,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaSave />}
-        onToolSelect={onSaveClick}
+        onToolSelect={canvasCrudOperations.handleSave}
       />
 
       <ActionsMenuPresentation
@@ -80,7 +82,17 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaArrowLeft />}
-        onToolSelect={() => {}}
+        onToolSelect={() => changeHistoryData.handleUndo}
+        disabled={!changeHistoryData.canUndo}
+      />
+
+      <ActionsMenuPresentation
+        name={'Revert change'}
+        color={iconColor}
+        textColor={textColor}
+        Icon={() => <FaArrowRight />}
+        onToolSelect={() => changeHistoryData.handleRedo}
+        disabled={!changeHistoryData.canRedo}
       />
 
       <ActionsMenuPresentation
@@ -88,7 +100,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaDeleteLeft />}
-        onToolSelect={onDeleteClick}
+        onToolSelect={canvasCrudOperations.handleDelete}
       />
 
       <ActionsMenuPresentation
@@ -96,7 +108,7 @@ const ActionsMenu = ({ onSaveClick, onDeleteClick, onDownloadClick }: ActionsMen
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaDownload />}
-        onToolSelect={onDownloadClick}
+        onToolSelect={canvasCrudOperations.handleDownload}
       />
     </div>
   );

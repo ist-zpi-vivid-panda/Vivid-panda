@@ -28,7 +28,6 @@ const useAIImageEditFlow = ({ aiFunction, openMaskTool, openPrompt, cropperRef, 
   const isPromptRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] : false), [aiFunction]);
 
   useEffect(() => {
-    console.log(isMaskRequired, isPromptRequired);
     if (!aiFunction) {
       return;
     }

@@ -3,7 +3,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
-import { EditingTool } from '@/app/lib/canvas/definitions';
+import { CanvasCRUDOperations, ChangeHistory, EditingTool } from '@/app/lib/canvas/definitions';
 import { Children } from '@/app/lib/definitions';
 import { Grid2 as Grid } from '@mui/material';
 
@@ -13,18 +13,16 @@ import FileEditListOptions from './FileEditOptions';
 type GridViewProps = {
   setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
   setAiFunction?: Dispatch<SetStateAction<AiFunctionType | undefined>>;
-  onSaveClick: () => void;
-  onDeleteClick: () => void;
-  onDownloadClick: () => void;
+  canvasCrudOperations: CanvasCRUDOperations;
+  changeHistoryData: ChangeHistory;
   children?: Children;
 };
 
 const GridView = ({
   setEditingTool,
   setAiFunction,
-  onSaveClick,
-  onDeleteClick,
-  onDownloadClick,
+  canvasCrudOperations,
+  changeHistoryData,
   children,
 }: GridViewProps) => {
   return (
@@ -66,7 +64,7 @@ const GridView = ({
         </Grid>
 
         <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>
-          <ActionsMenu onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} onDownloadClick={onDownloadClick} />
+          <ActionsMenu canvasCrudOperations={canvasCrudOperations} changeHistoryData={changeHistoryData} />
         </Grid>
       </Grid>
     </Grid>

@@ -12,7 +12,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
-import UserInfo from '../navigation/UserInfo';
 import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {
@@ -43,10 +42,6 @@ const FilesList = () => {
 
   return (
     <>
-      <div style={{ padding: '5px 0' }}>
-        <UserInfo />
-      </div>
-
       {editedFileInfo && <FileEdit fileInfo={editedFileInfo} onClose={() => setEditedFileInfo(undefined)} />}
 
       <InfiniteScroll
@@ -60,7 +55,7 @@ const FilesList = () => {
           </p>
         }
       >
-        <Grid container spacing={3}>
+        <Grid paddingTop={3} container spacing={3}>
           {files.map((file) => (
             <Grid key={file.id} size={{ xs: 5, sm: 4, md: 3, lg: 2 }}>
               <FilesListItem
