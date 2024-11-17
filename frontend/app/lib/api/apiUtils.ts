@@ -4,7 +4,6 @@ import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import useUserData from '@/app/lib/storage/useUserData';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { getI18n } from 'react-i18next';
-
 import { toast } from 'react-toastify';
 
 import { refreshToken } from './authApi';

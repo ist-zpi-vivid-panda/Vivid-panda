@@ -1,5 +1,5 @@
 {
-    "error":"Ooops age not found!",
+    "error": "Ooops age not found!",
     "back": "Go back",
-    "tryAgain": "Try again"
+    "try_again": "Try again"
 }

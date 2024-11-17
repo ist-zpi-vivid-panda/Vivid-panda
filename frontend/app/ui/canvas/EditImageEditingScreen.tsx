@@ -92,8 +92,8 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const changeHistoryData: ChangeHistory = useMemo(
     () => ({
-      handleUndo: () => canvasRef?.current?.undo(),
-      handleRedo: () => canvasRef?.current?.redo(),
+      handleUndo: () => canvasRef?.current?.undo?.(),
+      handleRedo: () => canvasRef?.current?.redo?.(),
       canUndo,
       canRedo,
     }),

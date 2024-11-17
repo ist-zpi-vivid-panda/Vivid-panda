@@ -1,22 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+const STARTING_IDX: number = 0 as const;
+
 const useChangeHistory = <T>(historyLength: number, startingValue: T) => {
   const [current, setCurrState] = useState<T>(startingValue);
-  const [currIdx, setCurrIdx] = useState<number>(0);
+  const [currIdx, setCurrIdx] = useState<number>(STARTING_IDX);
 
   const [stateHistory, setStateHistory] = useState<T[]>([startingValue]);
 
   const setCurrent = useCallback(
-    (newState: T) => setStateHistory((arr) => [newState, ...arr.slice(currIdx, currIdx + 1 + historyLength)]),
+    (newState: T) => {
+      setCurrIdx(STARTING_IDX);
+
+      setStateHistory((arr) => [newState, ...arr.slice(currIdx, currIdx + 1 + historyLength)]);
+    },
     [currIdx, historyLength]
   );
 
-  const canUndo = useMemo(() => currIdx < stateHistory.length, [currIdx, stateHistory.length]);
+  const canUndo = useMemo(() => currIdx < stateHistory.length - 1, [currIdx, stateHistory.length]);
 
-  const canRedo = useMemo(() => currIdx < 1, [currIdx]);
+  const canRedo = useMemo(() => currIdx > 0, [currIdx]);
 
   const undo = useCallback(() => {
-    console.log('undo');
     if (canUndo) {
       setCurrIdx((prev) => prev + 1);
     }
@@ -29,10 +34,6 @@ const useChangeHistory = <T>(historyLength: number, startingValue: T) => {
   }, [canRedo]);
 
   useEffect(() => setCurrState(stateHistory[currIdx]), [currIdx, stateHistory]);
-
-  useEffect(() => {
-    console.log('IDX:', currIdx, 'SIZE:', stateHistory.length);
-  }, [currIdx, stateHistory]);
 
   return { current, setCurrent, undo, redo, canUndo, canRedo };
 };
