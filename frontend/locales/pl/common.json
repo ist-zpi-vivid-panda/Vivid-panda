@@ -9,5 +9,8 @@
     "all_loaded": "Wszystko załadowane",
     "edit": "Edytuj",
     "something_went_wrong": "Coś poszło nie tak",
-    "options": "Opcje"
+    "options": "Opcje",
+    "pl": "polski",
+    "en": "angielski",
+    "language": "Język"
 }

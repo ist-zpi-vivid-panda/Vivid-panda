@@ -1,8 +1,8 @@
 'use client';
 
-import initTranslations from '@/app/i18n';
 import { Children } from '@/app/lib/definitions';
 import { SupportedLocale, TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import initTranslations from '@/app/lib/internationalization/i18n';
 import { createInstance, Resource } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 

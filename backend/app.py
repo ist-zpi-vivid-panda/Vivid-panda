@@ -18,7 +18,7 @@ from config.env_vars import (
     MONGO_DB_NAME,
     TEMPLATE_FOLDER,
 )
-from config.mail_config import MailConfig
+from config.mail_config import create_mailer
 from config.validation_config import create_validation_config
 
 marshmallow = Marshmallow()
@@ -50,16 +50,17 @@ def create_app() -> Flask:
     create_cors_config(app)
     create_jwt_config(app)
     marshmallow.init_app(app)
-    MailConfig(app, mail)
+    create_mailer(app, mail)
 
     from blueprints.ai.routes import ai_blueprint
     from blueprints.auth.routes import auth_blueprint
+    from blueprints.base.routes import base_blueprint
     from blueprints.files.routes import files_blueprint
     from blueprints.user.routes import users_blueprint
 
     app.register_blueprint(ai_blueprint, url_prefix="/ai")
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
-    # app.register_blueprint(core_blueprint, url_prefix="/core")
+    app.register_blueprint(base_blueprint, url_prefix="/")
     app.register_blueprint(files_blueprint, url_prefix="/files")
     app.register_blueprint(users_blueprint, url_prefix="/users")
 

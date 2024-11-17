@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import initTranslations from '../i18n';
 import { LocaleParamProps, TranslationNamespace } from '../lib/internationalization/definitions';
+import initTranslations from '../lib/internationalization/i18n';
 import { cardClassName } from '../ui/shared/Card';
 
 const Home = async ({ params }: LocaleParamProps) => {

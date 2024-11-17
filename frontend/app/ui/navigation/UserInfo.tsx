@@ -7,9 +7,9 @@ import { Menu, MenuItem, Button } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-import { useUserInfo, useUserProfilePicture } from '../lib/api/userApi';
-import { TranslationNamespace } from '../lib/internationalization/definitions';
-import useStrings from '../lib/internationalization/useStrings';
+import { useUserInfo, useUserProfilePicture } from '../../lib/api/userApi';
+import { TranslationNamespace } from '../../lib/internationalization/definitions';
+import useStrings from '../../lib/internationalization/useStrings';
 
 const UserInfo = () => {
   const { logout } = useUserData();
@@ -21,33 +21,29 @@ const UserInfo = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleOpenMenu = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), []);
 
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+  const handleCloseMenu = useCallback(() => setAnchorEl(null), []);
 
   const navigateToImages = useCallback(() => {
     handleCloseMenu();
     router.push('/files/list');
-  }, [router]);
+  }, [handleCloseMenu, router]);
 
   const navigateToEdit = useCallback(() => {
     handleCloseMenu();
     router.push('/canvas/new');
-  }, [router]);
+  }, [handleCloseMenu, router]);
 
   const navigateToLicenses = useCallback(() => {
     handleCloseMenu();
     router.push('/licenses/list');
-  }, [router]);
+  }, [handleCloseMenu, router]);
 
   const handleLogout = useCallback(() => {
     handleCloseMenu();
     logout();
-  }, [logout]);
+  }, [handleCloseMenu, logout]);
 
   const dropdownOptions = useMemo(
     () => [
@@ -65,7 +61,9 @@ const UserInfo = () => {
         <span>{username}</span>
         <span className="font-light">{email}</span>
 
-        <Button onClick={handleOpenMenu}>{t('common:options')}</Button>
+        <Button onClick={handleOpenMenu} aria-haspopup="true" aria-expanded={open ? 'true' : undefined}>
+          {t('common:options')}
+        </Button>
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           {dropdownOptions.map((option, index) => (

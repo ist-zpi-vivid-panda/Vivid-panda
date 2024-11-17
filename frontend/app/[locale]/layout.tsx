@@ -8,9 +8,9 @@ import SEO_KEYWORDS from '@/constants/SEOKeywords';
 import type { Metadata, Viewport } from 'next';
 import { ToastContainer } from 'react-toastify';
 
-import initTranslations from '../i18n';
 import { Children } from '../lib/definitions';
 import { LocaleParamProps, TranslationNamespace } from '../lib/internationalization/definitions';
+import initTranslations from '../lib/internationalization/i18n';
 import { getEnumValues } from '../lib/utilities/enums';
 import TranslationsProvider from '../ui/utilities/TranslationsProvider';
 

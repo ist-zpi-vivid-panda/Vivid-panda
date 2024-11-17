@@ -34,6 +34,9 @@ def call_ai_function(
 ) -> Tuple[dict, int] | dict:
     prompt: str | None = request.args.get("prompt", None, type=str)
 
+    if ai_function is None:
+        return success_dict(False), 404
+
     uppercase_ai_function: str = ai_function.upper()
 
     if uppercase_ai_function == AI_functions.COLORIZE_IMAGE.name:
