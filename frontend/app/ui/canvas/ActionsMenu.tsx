@@ -6,7 +6,6 @@ import useStrings from '@/app/lib/internationalization/useStrings';
 import { FaSave, FaDownload, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import { IconContext, IconType } from 'react-icons/lib';
-import { MdOutlineCleaningServices } from 'react-icons/md';
 
 type ActionsMenuProps = {
   canvasCrudOperations: CanvasCRUDOperations;
@@ -70,15 +69,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
       />
 
       <ActionsMenuPresentation
-        name={'Cleaning'} // change to a go forwards and backwards icon button
-        color={iconColor}
-        textColor={textColor}
-        Icon={() => <MdOutlineCleaningServices />}
-        onToolSelect={() => {}}
-      />
-
-      <ActionsMenuPresentation
-        name={'Revert change'}
+        name={t('undo')}
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaArrowLeft />}
@@ -87,7 +78,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
       />
 
       <ActionsMenuPresentation
-        name={'Revert change'}
+        name={t('redo')}
         color={iconColor}
         textColor={textColor}
         Icon={() => <FaArrowRight />}

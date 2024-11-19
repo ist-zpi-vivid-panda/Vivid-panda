@@ -5,6 +5,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "download": "Download",
+    "undo": "Undo",
+    "redo": "Redo",
     "loading": "Loading",
     "all_loaded": "All loaded",
     "edit": "Edit",

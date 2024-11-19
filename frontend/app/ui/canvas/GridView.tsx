@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
 import { CanvasCRUDOperations, ChangeHistory, EditingTool } from '@/app/lib/canvas/definitions';
@@ -16,6 +16,7 @@ type GridViewProps = {
   canvasCrudOperations: CanvasCRUDOperations;
   changeHistoryData: ChangeHistory;
   children?: Children;
+  currentEditComponent: ReactNode;
 };
 
 const GridView = ({
@@ -24,6 +25,7 @@ const GridView = ({
   canvasCrudOperations,
   changeHistoryData,
   children,
+  currentEditComponent,
 }: GridViewProps) => {
   return (
     <Grid container direction="column">
@@ -70,7 +72,9 @@ const GridView = ({
           {children}
         </Grid>
 
-        <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}></Grid>
+        <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>
+          {currentEditComponent}
+        </Grid>
       </Grid>
     </Grid>
   );

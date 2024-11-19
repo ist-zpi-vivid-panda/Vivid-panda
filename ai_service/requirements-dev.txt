@@ -1,7 +1,4 @@
 // Content: List of packages required for developers (jupyter-notebooks, visualization, etc.)
-matplotlib==3.6.2
-seaborn==0.12.1
-
 jupyter==1.0.0
 ipython==8.5.0
 ipykernel==6.17.0

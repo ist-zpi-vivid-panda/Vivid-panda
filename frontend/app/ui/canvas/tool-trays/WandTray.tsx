@@ -7,10 +7,12 @@ type WandTrayProps = {
 
 const WandTray = ({ clearMask, acceptMask }: WandTrayProps) => {
   return (
-    <div>
-      <button onClick={clearMask}>{<FaX />}</button>
+    <div className="text-large-edit">
+      <div className="text-large-edit-less">
+        <button onClick={clearMask}>{<FaX />}</button>
 
-      <button onClick={acceptMask}>{<FaCheck />}</button>
+        <button onClick={acceptMask}>{<FaCheck />}</button>
+      </div>
     </div>
   );
 };

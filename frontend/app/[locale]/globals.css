@@ -118,6 +118,56 @@ body {
   line-height: 1.2;
 }
 
+.text-large-span {
+  font-size: 2vw;
+  color: black; 
+  line-height: 1.2;
+}
+
+.text-large-edit {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 10px; 
+  margin: 10px; 
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.text-large-edit-less {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 10px; 
+  margin: 10px; 
+}
+
+.text-large-edit button {
+  background-color: #36065f; 
+  color: white; 
+  font-size:12px; 
+  padding: 15px 2em; 
+  border: none; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s, transform 0.2s; 
+  white-space: normal; 
+  word-wrap: break-word; 
+  max-width: 90%; 
+  text-align: center;
+}
+
+.text-large-edit button:hover {
+  background-color: #36065f; 
+  transform: scale(1.05); 
+}
+
+.text-large-edit button:active {
+  background-color: #36065f; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(0.98);
+}
+
+
 @media (min-width: 1280px) {
   .logoBackground {
     background-size: 75%; /* Large screens */

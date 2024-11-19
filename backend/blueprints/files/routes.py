@@ -29,8 +29,8 @@ from utils.request_utils import doc_endpoint, error_dict, success_dict
 
 files_blueprint = Blueprint("files", __name__)
 tags = ["Files"]
-MAX_NUMBER_OF_FILES = 100
-MAX_MB_OF_FILES = 100
+MAX_NUMBER_OF_FILES = 5
+MAX_MB_OF_FILES = 20
 
 
 @files_blueprint.route("/", methods=["GET"])

@@ -119,6 +119,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
         setAiFunction={setAiFunction}
         canvasCrudOperations={canvasCrudOperations}
         changeHistoryData={changeHistoryData}
+        currentEditComponent={currentEditComponent}
       >
         {!!uploadedImage && (
           <Canvas
@@ -132,8 +133,6 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
           />
         )}
       </GridView>
-
-      {currentEditComponent}
     </>
   );
 };
