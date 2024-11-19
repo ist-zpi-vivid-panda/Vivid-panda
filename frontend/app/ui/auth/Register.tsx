@@ -47,7 +47,7 @@ const Register = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">Register</span>
+      <span className="text-2xl m-auto">{t('register')}</span>
 
       <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
 
@@ -55,7 +55,7 @@ const Register = () => {
 
       <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
-      <div className="flex justify-end mb-20">
+      <div className="flex justify-end custom-margin">
         <SubmitButton />
       </div>
 

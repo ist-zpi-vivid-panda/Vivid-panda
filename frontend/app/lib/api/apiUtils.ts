@@ -3,9 +3,11 @@ import API_CONFIG from '@/app/lib/api/config';
 import { getQueryClient } from '@/app/lib/storage/getQueryClient';
 import useUserData from '@/app/lib/storage/useUserData';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { getI18n } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { refreshToken } from './authApi';
+import { getDefaultLocale } from '../internationalization/utils';
 
 export type ErrorApiResponse = { error: string };
 
@@ -22,18 +24,19 @@ type UpdateData<T> = {
 
 export type SuccessStatusResponse = { success: boolean };
 
-export const GET = 'GET' as const;
-export const PATCH = 'PATCH' as const;
-export const POST = 'POST' as const;
-export const DELETE = 'DELETE' as const;
-
-type HttpMethod = typeof GET | typeof PATCH | typeof POST | typeof DELETE;
+export enum HttpMethod {
+  GET = 'GET',
+  PATCH = 'PATCH',
+  POST = 'POST',
+  DELETE = 'DELETE',
+}
 
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
 
 const buildHeaders = (isFormData: boolean, token?: string) => ({
-  ...(!isFormData ? { 'Content-Type': 'application/json' } : null),
-  ...(token ? { Authorization: `Bearer ${token}` } : null),
+  'Accept-Language': getI18n().language || getDefaultLocale(),
+  ...(!isFormData && { 'Content-Type': 'application/json' }),
+  ...(token && { Authorization: `Bearer ${token}` }),
 });
 
 export const apiCallNoAutoConfig = async <T extends object>(
@@ -48,7 +51,7 @@ export const apiCallNoAutoConfig = async <T extends object>(
 
   const headers = buildHeaders(isFormData, token);
 
-  const body = method !== GET && data ? (isFormData ? data : JSON.stringify(data)) : undefined;
+  const body = method !== HttpMethod.GET && data ? (isFormData ? data : JSON.stringify(data)) : undefined;
 
   console.log(method, fullUri, '\nHEADERS:', headers, '\nBODY:', body);
 
@@ -84,7 +87,7 @@ export const apiCallNoAutoConfig = async <T extends object>(
 
     if ('validation_errors' in responseBody) {
       for (const error in responseBody.validation_errors) {
-        toast.error(`${error}: ${responseBody.validation_errors[error]}`);
+        toast.error(`${error}: ${JSON.stringify(responseBody.validation_errors[error])}`);
       }
 
       throw new Error(JSON.stringify(responseBody.validation_errors));
@@ -118,13 +121,15 @@ export const apiCall = async <T extends object>(method: HttpMethod, resourcePath
   return apiCallNoAutoToken<T>(method, resourcePath, accessToken, data);
 };
 
-export const getCall = async <T extends object>(requestUri: string) => apiCall<T>(GET, requestUri);
+export const getCall = async <T extends object>(requestUri: string) => apiCall<T>(HttpMethod.GET, requestUri);
 
-export const postCall = async <T extends object>(requestUri: string, data: any) => apiCall<T>(POST, requestUri, data);
+export const postCall = async <T extends object>(requestUri: string, data: any) =>
+  apiCall<T>(HttpMethod.POST, requestUri, data);
 
-export const deleteCall = async <T extends object>(requestUri: string) => apiCall<T>(DELETE, requestUri);
+export const deleteCall = async <T extends object>(requestUri: string) => apiCall<T>(HttpMethod.DELETE, requestUri);
 
-export const patchCall = async <T extends object>(requestUri: string, data: any) => apiCall<T>(PATCH, requestUri, data);
+export const patchCall = async <T extends object>(requestUri: string, data: any) =>
+  apiCall<T>(HttpMethod.PATCH, requestUri, data);
 
 // onSuccess invalidates all queryKeys that start with value of queryKey (even ones with id)
 export const useInvalidationMutation = <T, R extends object>(

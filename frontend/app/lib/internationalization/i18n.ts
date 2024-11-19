@@ -3,7 +3,7 @@ import { createInstance, i18n, Resource } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { initReactI18next } from 'react-i18next/initReactI18next';
 
-import { SupportedLocale, TranslationNamespace } from './lib/internationalization/definitions';
+import { SupportedLocale, TranslationNamespace } from './definitions';
 
 const initTranslations = async (
   locale: SupportedLocale,

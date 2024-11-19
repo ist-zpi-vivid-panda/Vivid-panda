@@ -3,11 +3,27 @@
 import { useCallback } from 'react';
 
 import { usePostFileMutation } from '@/app/lib/api/fileApi';
+import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 import GridView from './GridView';
 import ImageUpload from '../ImageUpload';
+
+const VOID_FN = () => {};
+
+const canvasCrudOperations: CanvasCRUDOperations = Object.freeze({
+  handleSave: VOID_FN,
+  handleDelete: VOID_FN,
+  handleDownload: VOID_FN,
+} as const);
+
+const changeHistoryData: ChangeHistory = Object.freeze({
+  handleUndo: VOID_FN,
+  handleRedo: VOID_FN,
+  canUndo: false,
+  canRedo: false,
+} as const);
 
 const NewImageEditingScreen = () => {
   const router = useRouter();
@@ -20,18 +36,7 @@ const NewImageEditingScreen = () => {
         router.replace(`/canvas/edit/${response.id}`);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          toast.error(error.message || 'An unexpected error occurred.');
-        } else if (typeof error === 'object' && error !== null && 'response' in error) {
-          const errorResponse = error as { response?: { status?: number; data?: { message?: string } } };
-
-          if (errorResponse.response && errorResponse.response.status === 400) {
-            const errorMessage = errorResponse.response.data?.message || 'An error occurred while uploading the file.';
-            toast.error(errorMessage);
-          } else {
-            toast.error('An unexpected error occurred. Please try again later.');
-          }
-        } else {
-          toast.error('An unexpected error occurred. Please try again later.');
+          toast.error(error.message);
         }
       }
     },
@@ -39,7 +44,7 @@ const NewImageEditingScreen = () => {
   );
 
   return (
-    <GridView>
+    <GridView canvasCrudOperations={canvasCrudOperations} changeHistoryData={changeHistoryData}>
       <ImageUpload onImageUpload={handleImageUpload} />
     </GridView>
   );

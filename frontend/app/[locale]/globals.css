@@ -9,8 +9,8 @@
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
   */
-  --background-rgb: 132, 140, 188;
-  --primary-rgb: 151, 255, 222;
+  --background-rgb: 218, 192, 240;
+  --primary-rgb: 54, 6, 95;
   --primary-active-rgb: 213, 255, 242;
   --danger: 179, 38, 30;
   --warning: 255, 190, 60;
@@ -28,8 +28,8 @@
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
     */
-    --background-rgb: 132, 140, 188;
-    --primary-rgb: 0, 100, 68;
+    --background-rgb: 218, 192, 240;
+    --primary-rgb: 54, 6, 95;
     --primary-active-rgb: 91, 255, 203;
     --danger: 179, 38, 30;
     --warning: 255, 190, 60;
@@ -107,6 +107,91 @@ body {
   background-repeat: no-repeat;
 }
 
+.logoSadBackground {
+  background-image: url("/logosad.png");
+  background-repeat: no-repeat;
+}
+
+.text-large {
+  font-size: 3vw;
+  color: black; 
+  line-height: 1.2;
+}
+
+.text-large-span {
+  font-size: 2vw;
+  color: black; 
+  line-height: 1.2;
+}
+
+.text-large-edit {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 10px; 
+  margin: 10px; 
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.text-large-edit-less {
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 10px; 
+  margin: 10px; 
+}
+
+.text-large-edit button {
+  background-color: #36065f; 
+  color: white; 
+  font-size:12px; 
+  padding: 15px 2em; 
+  border: none; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s, transform 0.2s; 
+  white-space: normal; 
+  word-wrap: break-word; 
+  max-width: 90%; 
+  text-align: center;
+}
+
+.text-large-edit button:hover {
+  background-color: #36065f; 
+  transform: scale(1.05); 
+}
+
+.text-large-edit button:active {
+  background-color: #36065f; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(0.98);
+}
+
+
+@media (min-width: 1280px) {
+  .logoBackground {
+    background-size: 75%; /* Large screens */
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .logoBackground {
+    background-size: 55%; /* Medium screens */
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .logoBackground {
+    background-size: 35%; /* Small screens */
+  }
+}
+
+@media (max-width: 639px) {
+  .logoBackground {
+    background-size: 20%; /* Extra small screens */
+  }
+}
+
 textarea:focus, input:focus{
   outline: none;
 }
@@ -126,32 +211,114 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.custom-input {
+  color: black;
+}
+
+.custom-margin {
+  margin-bottom: 10px;
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-margin {
+    margin-bottom: 15px;
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-margin {
+    margin-bottom: 50px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-margin {
+    margin-bottom: 100px;
+  }
+}
+
+.custom-gap {
+  gap: 8px; 
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-gap {
+    gap: 8px; 
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-gap {
+    gap: 30px; 
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-gap {
+    gap: 55px;
+  }
+}
+
+.custom-text {
+  font-size: 2rem; 
+  padding: 10px;   
+}
+
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .custom-text {
+    font-size: 3rem; 
+    padding: 15px;   
+  }
+}
+
+@media (min-width: 1920px) and (max-width: 2560px) {
+  .custom-text {
+    font-size: 4rem; 
+    padding: 20px;   
+  }
+}
+
+@media (min-width: 2560px) {
+  .custom-text {
+    font-size: 5rem; 
+    padding: 38px;   
+  }
+}
+
+
 .loading-circle {
-  width: 200px; /* Width of the circle */
-  height: 200px; /* Height of the circle */
-  position: absolute; /* Positioning the loading circle */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Centering adjustment */
-  display: flex; /* Use flexbox to center loading text */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  font-size: 2rem; /* Increase font size for visibility */
-  color: rgb(204, 24, 84); /* Change text color for better visibility */
+  width: 10vw; 
+  height: 10vw; 
+  max-width: 200px;
+  max-height: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2vw; 
+  color: rgb(204, 24, 84);
 }
 
 .loading-circle::before {
   content: "";
   position: absolute;
-  width: 390%; /* Full width of the loading circle */
-  height: 390%; /* Full height of the loading circle */
-  border-radius: 50%; /* Make it circular */
-  border: 60px solid rgb(204, 24, 84); /* Outer border color */
-  border-top-color: transparent; /* Make the top border transparent for the spinning effect */
-  animation: spin 2s linear infinite; /* Spin animation */
+  width: 350%; 
+  height: 350%; 
+  border-radius: 50%;
+  border: 3vw solid rgb(204, 24, 84); 
+  border-top-color: transparent;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

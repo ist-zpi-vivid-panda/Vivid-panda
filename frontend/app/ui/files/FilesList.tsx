@@ -2,18 +2,23 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
-import { FileInfo, onDownloadFileInfo, useDeleteFileMutation, useFilesData } from '@/app/lib/api/fileApi';
+import { downloadFileInfo, useDeleteFileMutation, useFilesData } from '@/app/lib/api/fileApi';
+import { FileInfo } from '@/app/lib/files/definitions';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import Grid from '@mui/material/Grid2';
 import { useRouter } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import FileEdit from './FileEdit';
 import FilesListItem from './FilesListItem';
-import UserInfo from '../UserInfo';
 import useActionPrompt from '../utilities/ActionPrompt';
 
 const FilesList = () => {
   const router = useRouter();
+
+  const { t } = useStrings(TranslationNamespace.Files);
+
   const deleteFile = useDeleteFileMutation();
 
   const { data, fetchNextPage, hasNextPage } = useFilesData();
@@ -26,42 +31,38 @@ const FilesList = () => {
   const onDeleteImage = useCallback(
     (fileInfo: FileInfo) =>
       prompt({
-        title: 'Do you want to delete the image?',
-        actions: [{ text: 'Delete ', onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
+        title: t('delete_image_details'),
+        actions: [{ text: t('common:delete'), onPress: () => deleteFile.mutateAsync(fileInfo.id) }],
         cancelable: true,
       }),
-    [deleteFile, prompt]
+    [deleteFile, prompt, t]
   );
 
   const onEditPhotoClick = useCallback((fileInfo: FileInfo) => router.push(`/canvas/edit/${fileInfo.id}`), [router]);
 
   return (
     <>
-      <div style={{ padding: '5px 0' }}>
-        <UserInfo />
-      </div>
-
       {editedFileInfo && <FileEdit fileInfo={editedFileInfo} onClose={() => setEditedFileInfo(undefined)} />}
 
       <InfiniteScroll
         dataLength={files.length}
         next={fetchNextPage}
         hasMore={hasNextPage}
-        loader={<h4>Loading...</h4>}
+        loader={<h4>{t('common:loading')}</h4>}
         endMessage={
-          <p style={{ textAlign: 'center' }}>
-            <b>Yay! You have seen it all</b>
+          <p style={{ textAlign: 'center', color: 'black' }}>
+            <b>{t('common:all_loaded')}</b>
           </p>
         }
       >
-        <Grid container spacing={3}>
+        <Grid paddingTop={3} container spacing={3}>
           {files.map((file) => (
             <Grid key={file.id} size={{ xs: 5, sm: 4, md: 3, lg: 2 }}>
               <FilesListItem
                 fileInfo={file}
                 onEditClick={setEditedFileInfo}
                 onDeleteClick={onDeleteImage}
-                onDownloadClick={onDownloadFileInfo}
+                onDownloadClick={downloadFileInfo}
                 onEditPhotoClick={onEditPhotoClick}
               />
             </Grid>

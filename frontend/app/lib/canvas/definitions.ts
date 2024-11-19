@@ -22,4 +22,18 @@ export enum EditingTool {
   Crop = 'CROP',
   Move = 'MOVE',
   Filter = 'FILTER',
+  Wand = 'WAND',
 }
+
+export type ChangeHistory = {
+  handleUndo: () => void;
+  handleRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+};
+
+export type CanvasCRUDOperations = {
+  handleSave: () => void;
+  handleDelete: () => void;
+  handleDownload: () => void;
+};

@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from 'react';
 
-import { FileInfo, FileInfoEditDTO, useUpdateFileMutation } from '@/app/lib/api/fileApi';
+import { useUpdateFileMutation } from '@/app/lib/api/fileApi';
+import { FileInfo, FileInfoEditDTO } from '@/app/lib/files/definitions';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { SchemaNames } from '@/app/lib/validation/config';
 import { Card, Modal } from '@mui/material';
 import { FieldValues } from 'react-hook-form';
@@ -15,6 +18,7 @@ type FileEditProps = {
 };
 
 const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
+  const { t } = useStrings(TranslationNamespace.Files);
   const updateFile = useUpdateFileMutation();
 
   const {
@@ -59,7 +63,7 @@ const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
     >
       <Card className="p-6">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <ControlledCustomInput control={control} name="filename" errors={errors} label="File name" />
+          <ControlledCustomInput control={control} name="filename" errors={errors} label={t('file_name')} />
 
           <div className="flex justify-end mb-20">
             <SubmitButton />

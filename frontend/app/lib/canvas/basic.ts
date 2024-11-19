@@ -6,6 +6,12 @@ type MouseInfoSetterProps = {
   setMouseInfo: (_: MouseInfo) => void;
 };
 
+type ResizeCanvasToParentProps = {
+  canvas: HTMLCanvasElement | null;
+  ctx: CanvasRenderingContext2D | null;
+  image: HTMLImageElement | null;
+};
+
 export const mouseInfoCalc = ({ event, parent, setMouseInfo }: MouseInfoSetterProps) => {
   if (!parent) {
     return;
@@ -20,4 +26,36 @@ export const mouseInfoCalc = ({ event, parent, setMouseInfo }: MouseInfoSetterPr
   const angle = (Math.atan2(deltaY, deltaX) * 180) / Math.PI;
 
   setMouseInfo({ x, y, angle });
+};
+
+export const getImageSizes = (imageWidth: number, imageHeight: number, parentWidth: number, parentHeight: number) => {
+  const aspectRatio = imageWidth / imageHeight;
+
+  let newWidth = parentWidth;
+  let newHeight = parentHeight;
+
+  if (newWidth / newHeight > aspectRatio) {
+    newWidth = newHeight * aspectRatio;
+  } else {
+    newHeight = newWidth / aspectRatio;
+  }
+
+  return { width: newWidth, height: newHeight };
+};
+
+export const resizeCanvasToParent = ({ canvas, ctx, image }: ResizeCanvasToParentProps) => {
+  const parent = canvas?.parentElement;
+
+  if (!ctx || !canvas || !parent || !image) {
+    return;
+  }
+
+  const { clientWidth, clientHeight } = parent;
+
+  const res = getImageSizes(image.width, image.height, clientWidth, clientHeight);
+
+  canvas.width = res.width;
+  canvas.height = res.height;
+
+  return res;
 };

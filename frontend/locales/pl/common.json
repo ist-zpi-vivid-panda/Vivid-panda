@@ -1,4 +1,18 @@
 {
-    "welcome_header": "Sprawdz możliwości aplikacji! Baw się swoją wyobraźnią!",
-    "submit": "Wyślij"
+    "welcome_header": "Sprawdź możliwości aplikacji! Baw się swoją wyobraźnią!",
+    "submit": "Wyślij",
+    "delete": "Usuń",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "download": "Pobierz",
+    "undo": "Cofnij",
+    "redo": "Przywróć",
+    "loading": "Ładowanie",
+    "all_loaded": "Wszystko załadowane",
+    "edit": "Edytuj",
+    "something_went_wrong": "Coś poszło nie tak",
+    "options": "Opcje",
+    "pl": "polski",
+    "en": "angielski",
+    "language": "Język"
 }

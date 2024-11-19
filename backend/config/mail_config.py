@@ -12,16 +12,15 @@ from config.env_vars import (
 )
 
 
-class MailConfig:
-    def __new__(cls, app: Flask, mail: Mail) -> Mail:
-        app.config["MAIL_SERVER"] = MAIL_SERVER
-        app.config["MAIL_PORT"] = MAIL_PORT
-        app.config["MAIL_USE_TLS"] = MAIL_USE_TLS
-        app.config["MAIL_USE_SSL"] = MAIL_USE_SSL
-        app.config["MAIL_USERNAME"] = MAIL_USERNAME
-        app.config["MAIL_PASSWORD"] = MAIL_PASSWORD
-        app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER
+def create_mailer(app: Flask, mail: Mail) -> Mail:
+    app.config["MAIL_SERVER"] = MAIL_SERVER
+    app.config["MAIL_PORT"] = MAIL_PORT
+    app.config["MAIL_USE_TLS"] = MAIL_USE_TLS
+    app.config["MAIL_USE_SSL"] = MAIL_USE_SSL
+    app.config["MAIL_USERNAME"] = MAIL_USERNAME
+    app.config["MAIL_PASSWORD"] = MAIL_PASSWORD
+    app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER
 
-        mail.init_app(app)
+    mail.init_app(app)
 
-        return mail
+    return mail

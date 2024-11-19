@@ -1,122 +1,159 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
-import { FaScissors, FaWandSparkles, FaBucket, FaSun, FaArrowRotateRight } from 'react-icons/fa6';
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
+import { Box } from '@mui/material';
+import { CgStyle } from 'react-icons/cg';
+import { FaScissors, FaWandSparkles, FaArrowRotateRight, FaEraser, FaAnglesUp } from 'react-icons/fa6';
 import { GiResize } from 'react-icons/gi';
-import { IoIosColorFilter, IoIosMove } from 'react-icons/io';
-import { IoText } from 'react-icons/io5';
-import { IconContext, IconType } from 'react-icons/lib';
-import { LuEraser } from 'react-icons/lu';
+import { IoIosColorFilter, IoIosMove, IoMdColorPalette } from 'react-icons/io';
+import { IconContext } from 'react-icons/lib';
 
 import { EditingTool } from '../../lib/canvas/definitions';
 
 type FileEditListOptionsProps = {
-  setEditingTool?: (_: EditingTool | undefined) => void;
+  setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
+  setAiFunction?: Dispatch<SetStateAction<AiFunctionType | undefined>>;
 };
 
 type EditToolPresentationProps = {
   name: string;
   color: string;
+  textColor: string;
   onToolSelect: () => void;
-  Icon: IconType;
+  Icon: React.ElementType;
 };
+
 const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
-  <IconContext.Provider value={{ color, size: '25px' }}>
+  <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <button
         onClick={onToolSelect}
-        style={{ display: 'flex', gap: '10px', flexDirection: 'row', alignItems: 'center' }}
+        style={{
+          display: 'flex',
+          gap: '10px',
+          flexDirection: 'row',
+          fontSize: 'clamp(16px, 1.5vw, 40px)',
+          alignItems: 'center',
+        }}
       >
-        {name}
+        <span style={{ color }}>{name}</span>
         <Icon />
       </button>
     </div>
   </IconContext.Provider>
 );
 
-const FileEditListOptions = ({ setEditingTool }: FileEditListOptionsProps) => {
-  const [currentEditingTool, setCurrentEditingTool] = useState<EditingTool | undefined>(undefined);
-  const iconColor = '#006444';
+const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOptionsProps) => {
+  const iconColor = '#36065f';
+  const textColor = '#36065f';
+
+  const { t } = useStrings(TranslationNamespace.Canvas);
 
   const toggleEditingTool = useCallback(
-    (editingTool: EditingTool) =>
-      setCurrentEditingTool((prevTool) => {
-        if (editingTool === prevTool) {
-          return;
-        }
-
-        return editingTool;
-      }),
-    []
+    (editingTool: EditingTool) => setEditingTool?.((prev) => (editingTool === prev ? undefined : editingTool)),
+    [setEditingTool]
   );
 
-  useEffect(() => {
-    setEditingTool?.(currentEditingTool);
-  }, [currentEditingTool, setEditingTool]);
+  const toggleAiFunction = useCallback(
+    (aiFunc: AiFunctionType) => setAiFunction?.((prev) => (aiFunc === prev ? undefined : aiFunc)),
+    [setAiFunction]
+  );
 
   return (
-    <div
-      style={{
-        padding: 10,
-        fontSize: '24px',
+    <Box
+      sx={{
+        padding: 2,
         display: 'flex',
-        gap: '20px',
+        flexDirection: 'column',
+        gap: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column',
       }}
     >
       <EditingToolPresentation
-        name={'Scissors'}
+        name={t('scissors')}
         color={iconColor}
-        Icon={() => <FaScissors />}
+        textColor={textColor}
+        Icon={FaScissors}
         onToolSelect={() => toggleEditingTool(EditingTool.Crop)}
       />
 
       <EditingToolPresentation
-        name={'Wand'}
+        name={t('move')}
         color={iconColor}
-        Icon={() => <FaWandSparkles />}
-        onToolSelect={() => {}}
-      />
-
-      <EditingToolPresentation name={'Bucket'} color={iconColor} Icon={() => <FaBucket />} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Brightness'} color={iconColor} Icon={() => <FaSun />} onToolSelect={() => {}} />
-
-      <EditingToolPresentation
-        name={'Move'}
-        color={'cyan'}
-        Icon={() => <IoIosMove />}
+        textColor={textColor}
+        Icon={IoIosMove}
         onToolSelect={() => toggleEditingTool(EditingTool.Move)}
       />
 
       <EditingToolPresentation
-        name={'Resize'}
+        name={t('resize')}
         color={iconColor}
-        Icon={() => <GiResize />}
+        textColor={textColor}
+        Icon={GiResize}
         onToolSelect={() => toggleEditingTool(EditingTool.Zoom)}
       />
 
-      <EditingToolPresentation name={'Eraser'} color={iconColor} Icon={() => <LuEraser />} onToolSelect={() => {}} />
-
-      <EditingToolPresentation name={'Text'} color={iconColor} Icon={() => <IoText />} onToolSelect={() => {}} />
-
       <EditingToolPresentation
-        name={'Filter'}
+        name={t('filter')}
         color={iconColor}
-        Icon={() => <IoIosColorFilter />}
+        textColor={textColor}
+        Icon={IoIosColorFilter}
         onToolSelect={() => toggleEditingTool(EditingTool.Filter)}
       />
 
       <EditingToolPresentation
-        name={'Rotate'}
+        name={t('rotate')}
         color={iconColor}
-        Icon={() => <FaArrowRotateRight />}
+        textColor={textColor}
+        Icon={FaArrowRotateRight}
         onToolSelect={() => toggleEditingTool(EditingTool.Rotation)}
       />
-    </div>
+
+      <EditingToolPresentation
+        name={t('addObject')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={FaWandSparkles}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.AddObject)}
+      />
+
+      <EditingToolPresentation
+        name={t('deleteObject')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={FaEraser}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.DeleteObject)}
+      />
+
+      <EditingToolPresentation
+        name={t('upscalling')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={FaAnglesUp}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.Upscale)}
+      />
+
+      <EditingToolPresentation
+        name={t('styleTransfer')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={CgStyle}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.TransferStyle)}
+      />
+
+      <EditingToolPresentation
+        name={t('colorizeImage')}
+        color={iconColor}
+        textColor={textColor}
+        Icon={IoMdColorPalette}
+        onToolSelect={() => toggleAiFunction(AiFunctionType.ColorizeImage)}
+      />
+    </Box>
   );
 };
 

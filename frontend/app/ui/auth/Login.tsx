@@ -49,7 +49,7 @@ const Login = () => {
 
       <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
-      <div className="flex justify-end mb-20">
+      <div className="flex justify-end custom-margin">
         <SubmitButton />
       </div>
 

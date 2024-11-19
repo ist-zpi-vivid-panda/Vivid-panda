@@ -1,0 +1,18 @@
+{
+    "crop": "Przytnij",
+    "rotation": "Obrót",
+    "rotate_by": "Obróć o",
+    "zoom": "Przybliżenie",
+    "reset": "Przywróć",
+    "prompt": "Opisz akcję",
+    "scissors": "Nożyczki",
+    "move": "Przesuń",
+    "rotate": "Obróć",
+    "resize": "Przybliż/oddal",
+    "filter": "Dodaj filtr",
+    "addObject": "Dodaj obiekt",
+    "deleteObject" : "Usuń obiekt",
+    "upscalling": "Poprawa rozdzielczości",
+    "colorizeImage": "Koloryzacja obrazu",
+    "styleTransfer": "Transfer stylu"
+}

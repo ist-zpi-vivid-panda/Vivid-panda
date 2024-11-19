@@ -1,49 +1,112 @@
 'use client';
 
-import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, {
+  Dispatch,
+  forwardRef,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
+import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
+import useChangeHistory from '@/app/lib/canvas/change-history/useChangeHistory';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
 import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
+import useAIImageEditFlow from '@/app/lib/canvas/useAIImageEditFlow';
+import { getFileFromBlob } from '@/app/lib/files/utils';
 import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 
+import ImageMaskGenerator, { MaskConsumer } from './ImageMaskGenerator';
+import PromptModal from './PromptModal';
 import CropTray from './tool-trays/CropTray';
 import FilterTray from './tool-trays/FilterTray';
 import RotationTray from './tool-trays/RotationTray';
+import WandTray from './tool-trays/WandTray';
 import ZoomTray from './tool-trays/ZoomTray';
 
 type CanvasProps = {
   imageStr: string;
+  setCanUndo: Dispatch<SetStateAction<boolean>>;
+  setCanRedo: Dispatch<SetStateAction<boolean>>;
   editingTool: EditingTool | undefined;
+  aiFunction: AiFunctionType | undefined;
   setCurrentEditComponent: (_: ReactNode | undefined) => void;
 };
 
-export type BlobConsumer = {
+export type CanvasConsumer = {
   getBlob: (callback: (blob: Blob | null) => void, type?: string, quality?: number) => void;
+  undo: () => void;
+  redo: () => void;
 };
 
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
 const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 } as const);
+const DEFAULT_CALLBACK = () => {};
 
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
+const CHANGE_HISTORY_LENGTH: number = 25 as const;
 
-const Canvas = forwardRef<BlobConsumer, CanvasProps>(
-  ({ imageStr: passedInImageStr, editingTool, setCurrentEditComponent }, blobConsumer) => {
+const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
+  (
+    {
+      imageStr: passedInImageStr,
+      setCanUndo,
+      setCanRedo,
+      setCurrentEditComponent,
+      editingTool: editingToolFromParent,
+      aiFunction: aiFunctionFromParent,
+    },
+    blobConsumer
+  ) => {
     const parentRef = useRef<HTMLDivElement | null>(null);
     const cropperRef = useRef<ReactCropperElement | null>(null);
+    const maskGenRef = useRef<MaskConsumer | null>(null);
 
-    const [imageStr, setImageStr] = useState<string>(passedInImageStr);
-    const [image, setImage] = useState<HTMLImageElement | null>(null); // this is not unnecessary as it seems to be the only way to prevent error 'width undefined'
+    const [editingTool, setEditingTool] = useState<EditingTool | undefined>(editingToolFromParent);
+    const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(aiFunctionFromParent);
+    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
+
+    const {
+      current: imageStr,
+      setCurrent: setImageStr,
+      undo,
+      redo,
+      canUndo,
+      canRedo,
+    } = useChangeHistory(CHANGE_HISTORY_LENGTH, passedInImageStr);
+    const [image, setImage] = useState<HTMLImageElement | null>(null);
 
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
-    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+
+    const [isPromptModalVisible, setPromptModalVisible] = useState<boolean>(false);
+
+    const openMaskTool = useCallback(() => setEditingTool(EditingTool.Wand), []);
+    const openPrompt = useCallback(() => setPromptModalVisible(true), []);
+    const finishFlow = useCallback(() => {
+      setAiFunction(undefined);
+      setEditingTool(undefined);
+    }, []);
+
+    const { setPrompt, setMaskFile } = useAIImageEditFlow({
+      aiFunction,
+      openMaskTool,
+      openPrompt,
+      cropperRef,
+      finishFlow,
+    });
 
     const mouseListener = useCallback(
       (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
@@ -54,16 +117,28 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     const handleMouseDown = useCallback(() => setIsDragging(true), []);
     const handleMouseUp = useCallback(() => setIsDragging(false), []);
 
-    const rotate = useCallback((angle: number) => setRotationValue(angle), []);
-
-    const handleCrop = useCallback(() => {
+    const saveCanvasFromCropper = useCallback(() => {
       const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
       const croppedImageUrl = croppedCanvas?.toDataURL();
 
       if (croppedImageUrl) {
         setImageStr(croppedImageUrl);
       }
-    }, []);
+    }, [setImageStr]);
+
+    const handleMask = useCallback(
+      () =>
+        maskGenRef?.current?.getBlob((maskBlob) => {
+          if (!maskBlob) {
+            return;
+          }
+
+          const maskFile = getFileFromBlob(maskBlob, 'mask.png');
+
+          setMaskFile(maskFile);
+        }),
+      [setMaskFile]
+    );
 
     const getImageData = useCallback((): ImageData | undefined => {
       const croppedCanvas = cropperRef.current?.cropper?.getCroppedCanvas();
@@ -89,11 +164,14 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         [EditingTool.Zoom]: (
           <ZoomTray zoomStep={ZOOM_STEP} setZoom={setZoomValue} currentZoom={zoomValue} defaultZoom={DEFAULT_ZOOM} />
         ),
-        [EditingTool.Crop]: <CropTray handleCrop={handleCrop} />,
+        [EditingTool.Crop]: <CropTray handleCrop={saveCanvasFromCropper} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
+        [EditingTool.Wand]: (
+          <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleMask} />
+        ),
       }),
-      [handleCrop, rotationValue, zoomValue]
+      [handleMask, saveCanvasFromCropper, rotationValue, zoomValue]
     );
 
     // change params according to tool
@@ -116,9 +194,10 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
     }, [editingTool]);
 
     // get current change component
-    useEffect(() => {
-      setCurrentEditComponent(editingTool ? editComponents[editingTool] : false);
-    }, [editComponents, editingTool, setCurrentEditComponent]);
+    useEffect(
+      () => setCurrentEditComponent(editingTool ? editComponents[editingTool] : false),
+      [editComponents, editingTool, setCurrentEditComponent]
+    );
 
     // while dragging mouse
     useEffect(() => {
@@ -127,9 +206,9 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
       }
 
       if (editingTool === EditingTool.Rotation) {
-        rotate(mouseInfo.angle);
+        setRotationValue(mouseInfo.angle);
       }
-    }, [editingTool, isDragging, mouseInfo.angle, rotate]);
+    }, [editingTool, isDragging, mouseInfo.angle]);
 
     // rotate
     useEffect(() => {
@@ -138,19 +217,8 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
 
     // zoom
     useEffect(() => {
-      // for some reason only zoomTo has a problem with width not being initialized
-      if (
-        !cropperRef! ||
-        !cropperRef.current ||
-        !cropperRef.current.cropper ||
-        !cropperRef.current.currentSrc ||
-        !cropperRef?.current?.width
-      ) {
-        return;
-      }
-
       cropperRef?.current?.cropper?.zoomTo(zoomValue);
-    }, [zoomValue]);
+    }, [zoomValue, imageStr]);
 
     // filter
     useEffect(() => {
@@ -172,14 +240,30 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
         endPointY: imageData.height,
       });
 
+      setFilterType(undefined);
+
       setImageStr(convertImageDataToImageStr(res));
-    }, [editingTool, filterType, getImageData]);
+    }, [editingTool, filterType, getImageData, setImageStr]);
 
     useEffect(() => {
       const image = new Image();
       image.src = imageStr;
       image.onload = () => setImage(image);
     }, [imageStr]);
+
+    // change tool on parent change
+    useEffect(() => {
+      setEditingTool(editingToolFromParent);
+    }, [editingToolFromParent]);
+
+    // change ai function on parent change
+    useEffect(() => setAiFunction(aiFunctionFromParent), [aiFunctionFromParent]);
+
+    // can redo for parent
+    useEffect(() => setCanRedo(canRedo), [canRedo, setCanRedo]);
+
+    // can undo for parent
+    useEffect(() => setCanUndo(canUndo), [canUndo, setCanUndo]);
 
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
@@ -191,17 +275,24 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
           callback(null);
         }
       },
+      undo,
+      redo,
     }));
 
     return (
       <>
+        <PromptModal
+          isOpen={isPromptModalVisible}
+          close={() => setPromptModalVisible(false)}
+          setPromptText={setPrompt}
+        />
+
         <div
-          // begin :: listeners
+          ref={parentRef}
           onPointerDown={handleMouseDown}
           onPointerUp={handleMouseUp}
           onPointerLeave={handleMouseUp}
           onPointerMove={mouseListener}
-          // end :: listeners
           style={{
             display: 'flex',
             width: '100%',
@@ -209,26 +300,26 @@ const Canvas = forwardRef<BlobConsumer, CanvasProps>(
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          ref={parentRef}
         >
-          {image && (
-            <Cropper
-              src={imageStr}
-              style={{ width: '100%', height: '100%' }}
-              // begin:: Cropper.js options
-              dragMode="none"
-              viewMode={1}
-              autoCrop={false}
-              toggleDragModeOnDblclick={false}
-              restore={false}
-              guides={false}
-              responsive={true}
-              modal={true}
-              background={true}
-              ref={cropperRef}
-              // end:: Cropper.js options
-            />
-          )}
+          {image &&
+            (editingTool == EditingTool.Wand ? (
+              <ImageMaskGenerator imageStr={imageStr} image={image} parentRef={parentRef} ref={maskGenRef} />
+            ) : (
+              <Cropper
+                src={imageStr}
+                ref={cropperRef}
+                style={{ width: '100%', height: '100%' }}
+                dragMode="none"
+                viewMode={1}
+                autoCrop={false}
+                toggleDragModeOnDblclick={false}
+                restore={false}
+                guides={false}
+                responsive={true}
+                modal={true}
+                background={true}
+              />
+            ))}
         </div>
       </>
     );

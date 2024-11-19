@@ -1,0 +1,330 @@
+# Polish translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-11-16 09:51+0100\n"
+"PO-Revision-Date: 2024-11-16 09:52+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pl\n"
+"Language-Team: pl <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.15.0\n"
+
+#: blueprints/auth/routes.py:66
+msgid "Email already registered"
+msgstr "Adres email już zarejestrowany"
+
+#: blueprints/auth/routes.py:80 blueprints/auth/routes.py:83
+msgid "Invalid username or password"
+msgstr "Nieprawidłowy email lub hasło"
+
+#: blueprints/auth/routes.py:86 blueprints/auth/routes.py:213
+msgid "Account already exists for another provider"
+msgstr "Konto istnieje dla innego dostawcy"
+
+#: blueprints/auth/routes.py:118
+msgid "User does not exists"
+msgstr "Użytkownik nie istnieje"
+
+#: blueprints/auth/routes.py:121
+msgid "Cannot reset password for this account provider"
+msgstr "Nie można zresetować hasła dla tego dostawcy"
+
+#: blueprints/auth/routes.py:141
+msgid "Missing data"
+msgstr "Brak danych"
+
+#: blueprints/auth/routes.py:144
+msgid "Token expired"
+msgstr "Token przestarzały"
+
+#: blueprints/auth/routes.py:147
+msgid "Passwords are not the same"
+msgstr "Hasła są rózne"
+
+#: blueprints/auth/routes.py:150
+msgid "Passwords cannot be the same as previous password"
+msgstr "Hasło musi być inne od poprzedniego"
+
+#: blueprints/auth/routes.py:201
+msgid "User email not available or not verified by Google"
+msgstr "Adres email niedostępny lub niezweryfikowany przez Google"
+
+#: blueprints/files/routes.py:47
+msgid "Incorrect user"
+msgstr "Niepoprawny użytkownik"
+
+#: blueprints/files/routes.py:64 blueprints/files/routes.py:133
+#: blueprints/files/routes.py:158 blueprints/files/routes.py:181
+#: blueprints/files/routes.py:216
+msgid "File doesn't exist"
+msgstr "Plik nie istnieje"
+
+#: blueprints/files/routes.py:85 blueprints/user/routes.py:61
+msgid "File not saved"
+msgstr "Plik nie został zapisany"
+
+#: blueprints/files/routes.py:90
+msgid "Unable to retrieve file size"
+msgstr "Nie udało się zczytać wielkości pliku"
+
+#: blueprints/files/routes.py:108
+#, python-format
+msgid "Maximum number of files you can upload is %(max_files)s or %(max_mb)s MB"
+msgstr "Maksymalna liczba plików, które możesz wgrać to %(max_files)s or %(max_mb)s MB"
+
+#: blueprints/files/routes.py:118
+msgid "File info not saved"
+msgstr "Dane pliku nie zostały zapisane"
+
+#: blueprints/files/routes.py:139
+msgid "File wasn't deleted"
+msgstr "Plik nie został usunięty"
+
+#: blueprints/files/routes.py:165 blueprints/files/routes.py:191
+#: blueprints/files/routes.py:196
+msgid "File not updated"
+msgstr "Plik nie zaktualizowany"
+
+#: blueprints/files/routes.py:186
+msgid "Couldn't update file"
+msgstr "Nie można było zaktualizować pliku"
+
+#: blueprints/files/routes.py:211
+msgid "File data doesn't exist"
+msgstr "Dane pliku nie istnieją"
+
+#: schemas/auth.py:10 schemas/generic.py:24
+msgid "Password is required"
+msgstr "Hasło jest wymagane"
+
+#: schemas/auth.py:15
+msgid "Username is required"
+msgstr "Nazwa użytkownika jest wymagana"
+
+#: schemas/auth.py:29
+msgid "Access token is required"
+msgstr "Token dostępu jest wymagany"
+
+#: schemas/auth.py:33
+msgid "Refresh token is required"
+msgstr "Token odświeżający jest wymagany"
+
+#: schemas/file.py:21 schemas/file.py:129
+#, python-format
+msgid "File of type %(ext)s up to %(length)s B"
+msgstr "Plik typu $(ext)s do $(length)s B"
+
+#: schemas/file.py:24
+msgid "File is required"
+msgstr "Plik jest wymagany"
+
+#: schemas/file.py:30
+#, python-format
+msgid "File size must not exceed %(length)s B"
+msgstr "Wielkość pliku nie może przekraczać $(length)s B"
+
+#: schemas/file.py:35
+msgid "No file name detected"
+msgstr "Nie znaleziono nazwy pliku"
+
+#: schemas/file.py:40
+#, python-format
+msgid "Invalid file extension. Only %(ext)s are allowed"
+msgstr "Nieprawidłowe rozszerzenie pliku. Jedynie %(ext)s są dozwolone"
+
+#: schemas/file.py:45
+msgid "No MIME type detected. Please upload a valid file"
+msgstr "Brak typu MIME. Proszę wgrać poprawny plik"
+
+#: schemas/file.py:49
+#, python-format
+msgid "Invalid MIME type. Only %(formats)s are allowed"
+msgstr "Nieprawidłowy typ MIME. Jedynie %(formats)s są dozwolone"
+
+#: schemas/file.py:56
+msgid "Filename is required"
+msgstr "Nazwa pliku jest wymagana"
+
+#: schemas/file.py:56
+msgid "Invalid filename format"
+msgstr "Nieprawidłowy format pliku"
+
+#: schemas/file.py:63
+msgid "File ID is required"
+msgstr "ID pliku jest wymagane"
+
+#: schemas/file.py:63
+msgid "Invalid file ID format"
+msgstr "Nieprawidłowy format ID pliku"
+
+#: schemas/file.py:67 schemas/file.py:116
+msgid "MIME type is required"
+msgstr "Typ MIME jest wymagany"
+
+#: schemas/file.py:67 schemas/file.py:116
+msgid "Invalid MIME type format"
+msgstr "Nieprawidłowy typ MIME"
+
+#: schemas/file.py:72
+msgid "File size is required"
+msgstr "Rozmiar pliku jest wymagany"
+
+#: schemas/file.py:73
+msgid "File size must be an integer"
+msgstr "Rozmiar pliku musi być liczbą całkowitą"
+
+#: schemas/file.py:78
+msgid "Upload date is required"
+msgstr "Data wgrania jest wymagana"
+
+#: schemas/file.py:78 schemas/file.py:84
+msgid "Invalid date format"
+msgstr "Nieprawidłowy format daty"
+
+#: schemas/file.py:83
+msgid "Last update date is required"
+msgstr "Data ostatniej aktualizacji jest wymagana"
+
+#: schemas/file.py:89
+msgid "Owner ID is required"
+msgstr "ID właściciela jest wymagane"
+
+#: schemas/file.py:89
+msgid "Invalid owner ID format"
+msgstr "Nieprawidłowy format ID właściciela"
+
+#: schemas/file.py:91
+msgid "Invalid thumbnail format"
+msgstr "Nieprawidłowy format miniaturki"
+
+#: schemas/file.py:103
+msgid "File collection is required"
+msgstr "Kolekcja plików jest wymagana"
+
+#: schemas/file.py:104
+msgid "Invalid format for file collection"
+msgstr "Nieprawidłowy format kolekcji plików"
+
+#: schemas/file.py:112
+msgid "File path is required"
+msgstr "Ścieżka pliku jest wymagana"
+
+#: schemas/file.py:112
+msgid "Invalid file path format"
+msgstr "Nieprawidłowy format ścieżki pliku"
+
+#: schemas/file.py:120
+msgid "File name is required"
+msgstr "Nazwa pliku jest wymagana"
+
+#: schemas/file.py:120
+msgid "Invalid file name format"
+msgstr "Nieprawidłowy format pliku"
+
+#: schemas/file.py:132
+msgid "Invalid mask file format"
+msgstr "Nieprawidłowy format maski"
+
+#: schemas/generic.py:17
+msgid ""
+"Password must be at least 8 characters long, with at least one uppercase "
+"letter, one lowercase letter, and one digit"
+msgstr ""
+"Hasło musi mieć co najmniej 8 znaków, w tym co najmniej jedną wielką "
+"literę, jedną małą literę i jedną cyfrę"
+
+#: schemas/generic.py:32
+msgid "Invalid email address format"
+msgstr "Niepoprawny format adresu email"
+
+#: schemas/generic.py:33
+msgid "Email is required"
+msgstr "Adres email jest wymagany"
+
+#: schemas/pagination.py:10
+msgid "Collection is required"
+msgstr "Kolekcja jest wymagana"
+
+#: schemas/pagination.py:11
+msgid "Invalid format for collection"
+msgstr "Nieprawidłowy format kolekcji"
+
+#: schemas/pagination.py:17
+msgid "Page number is required"
+msgstr "Numer strony jest wymagany"
+
+#: schemas/pagination.py:18
+msgid "Page number must be an integer"
+msgstr "Numer strony musi być liczbą całkowitą"
+
+#: schemas/pagination.py:24
+msgid "Total pages are required"
+msgstr "Całkowita liczba stron jest wymagana"
+
+#: schemas/pagination.py:25
+msgid "Total pages must be an integer"
+msgstr "Całkowita liczba stron musi być liczbą całkowitą"
+
+#: schemas/pagination.py:31
+msgid "Total items count is required"
+msgstr "Całkowita liczba elementów jest wymagana"
+
+#: schemas/pagination.py:32
+msgid "Total items must be an integer"
+msgstr "Całkowita liczba elementów musi być liczbą całkowitą"
+
+#: schemas/responses.py:9
+msgid "Error message is required"
+msgstr "Wiadomość błędu jest wymagana"
+
+#: schemas/responses.py:10
+msgid "Invalid error message format"
+msgstr "Nieprawidłowy format wiadomości błędu"
+
+#: schemas/responses.py:21
+msgid "Validation errors are required"
+msgstr "Błędy walidacji są wymagane"
+
+#: schemas/responses.py:22
+msgid "Invalid format for validation errors"
+msgstr "Nieprawidłowy format błędów walidacji"
+
+#: schemas/responses.py:31
+msgid "Success status is required"
+msgstr "Status sukcesu jest wymagany"
+
+#: schemas/responses.py:32
+msgid "Success status must be a boolean value"
+msgstr "Status sukcesu musi mieć wartość bool'owską"
+
+#: schemas/user.py:14
+msgid "User ID is required"
+msgstr "ID użytkownika jest wymagane"
+
+#: schemas/user.py:14
+msgid "Invalid User ID format"
+msgstr "Nieprawidłowy format ID użytkownika"
+
+#: schemas/user.py:17
+msgid "Invalid username format"
+msgstr "Nieprawidłowy format nazwy użytkownika"
+
+#: schemas/user.py:22
+#, python-format
+msgid "Invalid provider. Accepted values are: %(provider)s"
+msgstr "Nieprawidłowy dostawca. Akceptowane wartości to: %(provider)s"
+
+#: schemas/user.py:31
+msgid "Invalid profile picture data format"
+msgstr "Nieprawidłowy format danych obrazka"
+

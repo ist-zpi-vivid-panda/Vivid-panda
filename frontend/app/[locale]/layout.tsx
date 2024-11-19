@@ -8,9 +8,9 @@ import SEO_KEYWORDS from '@/constants/SEOKeywords';
 import type { Metadata, Viewport } from 'next';
 import { ToastContainer } from 'react-toastify';
 
-import initTranslations from '../i18n';
 import { Children } from '../lib/definitions';
 import { LocaleParamProps, TranslationNamespace } from '../lib/internationalization/definitions';
+import initTranslations from '../lib/internationalization/i18n';
 import { getEnumValues } from '../lib/utilities/enums';
 import TranslationsProvider from '../ui/utilities/TranslationsProvider';
 
@@ -47,7 +47,7 @@ const RootLayout = async ({ children, params }: RootLayoutProps) => {
   const { resources } = await initTranslations(locale, namespaces);
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={FONT.className}>
         <TranslationsProvider locale={locale} namespaces={namespaces} resources={resources}>
           <Providers>
