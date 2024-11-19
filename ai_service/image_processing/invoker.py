@@ -4,6 +4,7 @@ from image_processing.colorization.colorize_command import ColorizeCommand
 from image_processing.command import Command
 from image_processing.object_addition.command import AddObjectCommand
 from image_processing.object_deletion.command import DeleteObjectCommand
+from image_processing.style_transfer.style_transfer_command import StyleTransferCommand
 
 # from image_processing.commands.style_transfer_command import StyleTransferCommand
 from image_processing.upscaling.command import UpscaleCommand
@@ -23,7 +24,7 @@ class Invoker:
             "colorize_image": ColorizeCommand(),
             "delete_object": DeleteObjectCommand(),
             "add_object": AddObjectCommand(),
-            # "transfer_style": StyleTransferCommand(),
+            "transfer_style": StyleTransferCommand(),
             "upscale": UpscaleCommand(),
         }
 

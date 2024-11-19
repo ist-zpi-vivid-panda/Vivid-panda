@@ -12,18 +12,23 @@
 
 ### Locally
 
-If you want to run locally, install the requirements with the following command:
+If you want to run the project locally, install the requirements with the following command:
 
-    ```pip install -r requirements.txt```
+    pip install -r requirements.txt
 
-and download weights from here: https://drive.google.com/drive/folders/1J3Z1ZQ1Q2gJQ6Z0Z1Z8Zzr3JY1ZzZ1Z1?usp=sharing
-and put them in the _models_ folder.
+Then download weights from here:
 
-### Docker
+- image colorization: https://www.dropbox.com/scl/fi/lqpj4methnbmgjd9wlqto/ColorizeStable_gen.pth?rlkey=sj7d54400lq8898wf3s2higco&e=2
+- style transfer: decoder.pth and vgg_normalised.pth from https://github.com/naoto0804/pytorch-AdaIN/releases/tag/v0.0.0
+- image super-resolution: https://github.com/Saafke/EDSR_Tensorflow/blob/master/models/EDSR_x4.pb
+
+And put them in the _models_ folder.
+
+### Docker (na razie nie testowałam)
 
 Alternatively, you can build the docker image with the following command:
 
-    ```docker build -t <image_name> .```
+    docker build -t <image_name> .
 
 All the weights will be downloaded automatically during the build process.
 
@@ -33,11 +38,11 @@ All the weights will be downloaded automatically during the build process.
 
 To run the application locally, run the following command:
 
-    ```python app.py```
+    python app.py
 
 The modul will be exposing on port 5001.
 
-### Docker
+### Docker (na razie nie testowałam)
 
 If you want to run the application in a docker container, run the following command:
 
@@ -45,8 +50,6 @@ If you want to run the application in a docker container, run the following comm
 
 ## Issues
 
-If you are using basicsr, replace functional_tensor to functional.
-
 ## License
 
-All the models used in this project are under the MIT or Apache2.0 license.
+Muszę wspomnieć o tym że modeli należą do innych osób, a nasze części kodu są dostępne na licencji MIT.
