@@ -10,9 +10,9 @@
     "rotate": "Obróć",
     "resize": "Przybliż/oddal",
     "filter": "Dodaj filtr",
-    "addObject": "Dodaj obiekt",
-    "deleteObject" : "Usuń obiekt",
+    "add_object": "Dodaj obiekt",
+    "delete_object": "Usuń obiekt",
     "upscalling": "Poprawa rozdzielczości",
-    "colorizeImage": "Koloryzacja obrazu",
-    "styleTransfer": "Transfer stylu"
+    "colorize_image": "Koloryzacja obrazu",
+    "style_transfer": "Transfer stylu"
 }

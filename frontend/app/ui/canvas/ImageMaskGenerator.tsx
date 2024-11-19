@@ -129,6 +129,10 @@ const ImageMaskGenerator = forwardRef<MaskConsumer, ImageMaskGeneratorProps>(
     return (
       <>
         <div
+          onPointerDown={handleMouseDown}
+          onPointerUp={handleMouseUp}
+          onPointerLeave={handleMouseUp}
+          onPointerMove={mouseListener}
           style={{
             position: 'relative',
             display: 'flex',
@@ -139,17 +143,7 @@ const ImageMaskGenerator = forwardRef<MaskConsumer, ImageMaskGeneratorProps>(
             background: 'black',
           }}
         >
-          <Image
-            ref={imageRef}
-            onPointerDown={handleMouseDown}
-            onPointerUp={handleMouseUp}
-            onPointerLeave={handleMouseUp}
-            onPointerMove={mouseListener}
-            src={imageStr}
-            alt="Mask Background"
-            width={size.width}
-            height={size.height}
-          />
+          <Image ref={imageRef} src={imageStr} alt="Mask Background" width={size.width} height={size.height} />
 
           <canvas
             ref={maskCanvas}

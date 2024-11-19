@@ -49,7 +49,6 @@ export type CanvasConsumer = {
 const DEFAULT_ZOOM: number = 1 as const;
 const DEFAULT_ROTATION: number = 0 as const;
 const DEFAULT_MOUSE_INFO: MouseInfo = Object.freeze({ x: 0, y: 0, angle: 0 } as const);
-const DEFAULT_CALLBACK = () => {};
 
 const ZOOM_STEP: number = 0.1 as const;
 const ROTATION_STEP: number = 45 as const;
@@ -168,9 +167,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         [EditingTool.Crop]: <CropTray handleCrop={saveCanvasFromCropper} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
-        [EditingTool.Wand]: (
-          <WandTray clearMask={maskGenRef.current?.clearMask ?? DEFAULT_CALLBACK} acceptMask={handleMask} />
-        ),
+        [EditingTool.Wand]: <WandTray clearMask={() => maskGenRef.current?.clearMask?.()} acceptMask={handleMask} />,
       }),
       [handleMask, saveCanvasFromCropper, rotationValue, zoomValue]
     );

@@ -10,9 +10,9 @@
     "rotate": "Rotate",
     "resize": "Resize",
     "filter": "Add filter",
-    "addObject": "Add object",
-    "deleteObject" : "Delete object",
+    "add_object": "Add object",
+    "delete_object": "Delete object",
     "upscalling": "Upscalling",
-    "colorizeImage": "Colorize image",
-    "styleTransfer": "Style transfer"
+    "colorize_image": "Colorize image",
+    "style_transfer": "Style transfer"
 }

@@ -115,7 +115,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={t('addObject')}
+        name={t('add_object')}
         color={iconColor}
         textColor={textColor}
         Icon={FaWandSparkles}
@@ -123,7 +123,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={t('deleteObject')}
+        name={t('delete_object')}
         color={iconColor}
         textColor={textColor}
         Icon={FaEraser}
@@ -139,7 +139,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={t('styleTransfer')}
+        name={t('style_transfer')}
         color={iconColor}
         textColor={textColor}
         Icon={CgStyle}
@@ -147,7 +147,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
       />
 
       <EditingToolPresentation
-        name={t('colorizeImage')}
+        name={t('colorize_image')}
         color={iconColor}
         textColor={textColor}
         Icon={IoMdColorPalette}

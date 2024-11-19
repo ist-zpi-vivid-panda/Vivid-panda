@@ -52,5 +52,6 @@ def upscale() -> None:
     return
 
 
-invoker = Invoker()
-app.run(port=5003, debug=True)
+if __name__ == "__main__":
+    invoker = Invoker()
+    app.run(port=5003, debug=True)

@@ -61,16 +61,25 @@ const useAIImageEditFlow = ({
 
       const originalFile = getFileFromBlob(currBlob, 'original_image.png');
 
-      setResult(
-        await AI_FUNCTION_TO_API_CALL[aiFunction]({
-          prompt,
-          originalFile,
-          maskFile: maskFile!,
-        })
-      );
+      const resMaskFile = maskFile!;
+      const resPrompt = prompt;
 
       setMaskFile(undefined);
       setPrompt(START_PROMPT);
+
+      try {
+        const result = await AI_FUNCTION_TO_API_CALL[aiFunction]({
+          prompt: resPrompt,
+          originalFile,
+          maskFile: resMaskFile!,
+        });
+
+        if (result) {
+          setResult(result);
+        }
+      } catch {
+        /* empty */
+      }
     });
   }, [
     aiFunction,
