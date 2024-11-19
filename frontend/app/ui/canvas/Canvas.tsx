@@ -106,6 +106,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       openPrompt,
       cropperRef,
       finishFlow,
+      setResult: (downloadedImageFile) => setImageStr(URL.createObjectURL(downloadedImageFile)),
     });
 
     const mouseListener = useCallback(

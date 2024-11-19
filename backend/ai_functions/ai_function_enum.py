@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class AI_functions(Enum):
+class AiFunctions(Enum):
     COLORIZE_IMAGE = ("colorize_image",)
     DELETE_OBJECT = ("delete_object",)
     ADD_OBJECT = ("add_object",)
