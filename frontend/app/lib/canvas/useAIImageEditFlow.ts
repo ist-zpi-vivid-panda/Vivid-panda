@@ -18,11 +18,21 @@ type UseAIImageEditProps = {
   openMaskTool: () => void;
   openPrompt: () => void;
   finishFlow: () => void;
+  setResult: (_: Blob) => void;
 };
 
-const useAIImageEditFlow = ({ aiFunction, openMaskTool, openPrompt, cropperRef, finishFlow }: UseAIImageEditProps) => {
+const START_PROMPT: string = '' as const;
+
+const useAIImageEditFlow = ({
+  aiFunction,
+  openMaskTool,
+  openPrompt,
+  cropperRef,
+  finishFlow,
+  setResult,
+}: UseAIImageEditProps) => {
   const [maskFile, setMaskFile] = useState<File | undefined>(undefined);
-  const [prompt, setPrompt] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>(START_PROMPT);
 
   const isMaskRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_MASK[aiFunction] : false), [aiFunction]);
   const isPromptRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] : false), [aiFunction]);
@@ -42,7 +52,7 @@ const useAIImageEditFlow = ({ aiFunction, openMaskTool, openPrompt, cropperRef, 
       return;
     }
 
-    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob((currBlob) => {
+    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob(async (currBlob) => {
       finishFlow();
 
       if (!currBlob) {
@@ -51,14 +61,16 @@ const useAIImageEditFlow = ({ aiFunction, openMaskTool, openPrompt, cropperRef, 
 
       const originalFile = getFileFromBlob(currBlob, 'original_image.png');
 
-      AI_FUNCTION_TO_API_CALL[aiFunction]({
-        prompt,
-        originalFile,
-        maskFile: maskFile!,
-      });
+      setResult(
+        await AI_FUNCTION_TO_API_CALL[aiFunction]({
+          prompt,
+          originalFile,
+          maskFile: maskFile!,
+        })
+      );
 
       setMaskFile(undefined);
-      setPrompt('');
+      setPrompt(START_PROMPT);
     });
   }, [
     aiFunction,
@@ -70,6 +82,7 @@ const useAIImageEditFlow = ({ aiFunction, openMaskTool, openPrompt, cropperRef, 
     openMaskTool,
     openPrompt,
     prompt,
+    setResult,
   ]);
 
   return { setPrompt, setMaskFile };
