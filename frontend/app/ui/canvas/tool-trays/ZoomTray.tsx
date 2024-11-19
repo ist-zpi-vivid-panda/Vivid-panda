@@ -17,10 +17,6 @@ const ZoomTray = ({ zoomStep, setZoom, currentZoom, defaultZoom }: ZoomTrayProps
 
   return (
     <div className="text-large-edit">
-      <span className="text-large-span">
-        {t('zoom')}: {currentZoom.toFixed(1)}
-      </span>
-
       <div className="text-large-edit-less flex-row">
         <button onClick={() => setZoom((prev) => prev + zoomStep)}>+</button>
 
