@@ -1,8 +1,23 @@
-torch==2.0.1
-fastai==2.7.12
-
+# colorization
 deoldify==0.0.1
+scipy
+matplotlib
+fastprogress
+accelerate
 
+# object removal
+simple-lama-inpainting==0.1.2
+
+# object addition
+diffusers==0.31.0
+transformers
+
+# upscale
+opencv-contrib-python
+
+# other dependencies
+pandas
+numpy
 flask==2.1.1
 Werkzeug==2.2.2
 pytest
