@@ -5,9 +5,15 @@ import requests
 from flask import Blueprint, Response, request, send_file
 from werkzeug.datastructures import FileStorage
 
-from ai_functions.ai_function_enum import AiFunctions
+from ai_functions.ai_function import AiFunctions
+from blueprints.ai.services import (
+    handle_add_object,
+    handle_colorize_image,
+    handle_delete_object,
+    handle_transfer_style,
+    handle_upscale,
+)
 from blueprints.user.models import UserModel
-from config.env_vars import AI_MICROSERVICE_API_URL
 from schemas.file import (
     AIMicroserviceSchema,
     FileOutputDataSchema,
@@ -45,51 +51,29 @@ def proxy_file(external_response: requests.Response) -> Response:
 def call_ai_function(
     user: UserModel,
     original_file: FileStorage,
-    ai_function: str | None,
+    ai_function: str | None = None,
     mask_file: FileStorage | None = None,
 ) -> Tuple[dict, int] | dict | Response:
-    prompt: str | None = request.args.get("prompt", None, type=str)
+    prompt = request.args.get("prompt", None, type=str)
 
-    if ai_function is None:
+    if not ai_function:
         return success_dict(False), 404
 
+    ai_function_handlers = {
+        AiFunctions.COLORIZE_IMAGE.name: lambda: handle_colorize_image(original_file),
+        AiFunctions.DELETE_OBJECT.name: lambda: handle_delete_object(original_file, mask_file),
+        AiFunctions.ADD_OBJECT.name: lambda: handle_add_object(original_file, mask_file, prompt),
+        AiFunctions.TRANSFER_STYLE.name: lambda: handle_transfer_style(original_file, prompt),
+        AiFunctions.UPSCALE.name: lambda: handle_upscale(original_file),
+    }
+
+    ai_function_upper = ai_function.upper()
     response: requests.Response | None = None
 
-    uppercase_ai_function: str = ai_function.upper()
+    if ai_function_upper in ai_function_handlers:
+        response = ai_function_handlers[ai_function_upper]()
 
-    if uppercase_ai_function == AiFunctions.COLORIZE_IMAGE.name:
-        files = {"image": original_file}
-        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.COLORIZE_IMAGE.value[0]}", files=files)
-
-    elif uppercase_ai_function == AiFunctions.DELETE_OBJECT.name and mask_file is not None:
-        files = {
-            "image": original_file,
-            "mask": mask_file,
-        }
-        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.DELETE_OBJECT.value[0]}", files=files)
-
-    elif uppercase_ai_function == AiFunctions.ADD_OBJECT.name and mask_file is not None:
-        files = {
-            "image": original_file,
-            "mask": mask_file,
-        }
-        data = {"prompt": prompt}
-        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.ADD_OBJECT.value[0]}", files=files, data=data)
-
-    elif uppercase_ai_function == AiFunctions.TRANSFER_STYLE.name:
-        files = {
-            "image": original_file,
-        }
-        data = {"style": prompt}
-        response = requests.post(
-            f"{AI_MICROSERVICE_API_URL}{AiFunctions.TRANSFER_STYLE.value[0]}", files=files, data=data
-        )
-
-    elif uppercase_ai_function == AiFunctions.UPSCALE.name:
-        files = {"image": original_file}
-        response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.UPSCALE.value[0]}", files=files)
-
-    if response is not None and response.status_code == 200:
+    if response and response.status_code == 200:
         return proxy_file(response)
-    else:
-        return success_dict(False), 404
+
+    return success_dict(False), 404
