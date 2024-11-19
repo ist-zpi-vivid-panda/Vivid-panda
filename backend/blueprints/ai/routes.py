@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Tuple
 
 import requests
-from flask import Blueprint, request, send_file, Response
+from flask import Blueprint, Response, request, send_file
 from werkzeug.datastructures import FileStorage
 
 from ai_functions.ai_function_enum import AiFunctions
@@ -23,15 +23,14 @@ def proxy_file(external_response: requests.Response) -> Response:
     file_stream = BytesIO(external_response.content)
 
     # Get the filename from the response headers or provide a default
-    filename = (
-        external_response.headers.get("Content-Disposition", "attachment; filename=downloaded_file")
-        .split("filename=")[-1]
-    )
+    filename = external_response.headers.get("Content-Disposition", "attachment; filename=downloaded_file").split(
+        "filename="
+    )[-1]
 
     return send_file(
         file_stream,
         download_name=filename,
-        mimetype=external_response.headers.get("Content-Type", "application/octet-stream")
+        mimetype=external_response.headers.get("Content-Type", "application/octet-stream"),
     )
 
 
@@ -62,14 +61,14 @@ def call_ai_function(
         files = {"image": original_file}
         response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.COLORIZE_IMAGE.value[0]}", files=files)
 
-    elif uppercase_ai_function == AiFunctions.DELETE_OBJECT.name:
+    elif uppercase_ai_function == AiFunctions.DELETE_OBJECT.name and mask_file is not None:
         files = {
             "image": original_file,
             "mask": mask_file,
         }
         response = requests.post(f"{AI_MICROSERVICE_API_URL}{AiFunctions.DELETE_OBJECT.value[0]}", files=files)
 
-    elif uppercase_ai_function == AiFunctions.ADD_OBJECT.name:
+    elif uppercase_ai_function == AiFunctions.ADD_OBJECT.name and mask_file is not None:
         files = {
             "image": original_file,
             "mask": mask_file,
@@ -93,4 +92,4 @@ def call_ai_function(
     if response is not None and response.status_code == 200:
         return proxy_file(response)
     else:
-        success_dict(False), 404
+        return success_dict(False), 404
