@@ -21,7 +21,14 @@ def get_password_field() -> String:
                 ),
             )
         ],
-        error_messages={"required": gettext("Password is required")},
+        error_messages={
+            "required": gettext("Password is required"),
+            "pattern": gettext(
+                "Password must be at least 8 characters long, "
+                "with at least one uppercase letter, "
+                "one lowercase letter, and one digit"
+            ),
+        },
     )
 
 
