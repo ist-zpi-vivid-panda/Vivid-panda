@@ -8,7 +8,9 @@ const CropTray = ({ handleCrop }: CropTrayProps) => {
 
   return (
     <div className="text-large-edit">
-      <button onClick={handleCrop}>{t('crop')}</button>
+      <div className="text-large-edit-less">
+        <button onClick={handleCrop}>{t('crop')}</button>
+      </div>
     </div>
   );
 };

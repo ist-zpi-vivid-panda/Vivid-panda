@@ -18,7 +18,7 @@ const RotationTray = ({ rotationStep, setRotation, currentRotation, defaultRotat
   return (
     <div className="text-large-edit">
       <span className="text-large-span">
-        {t('rotation')}: {currentRotation}
+        {t('rotation')}: {currentRotation.toFixed(1)}
       </span>
 
       <div className=" text-large-edit-less">
