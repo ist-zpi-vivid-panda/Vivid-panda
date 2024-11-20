@@ -8,6 +8,7 @@ import { AiFunctionType } from './ai-functions/definitions';
 import {
   AI_FUNCTION_REQUIRED_MASK,
   AI_FUNCTION_REQUIRED_PROMPT,
+  AI_FUNCTION_REQUIRED_STYLE,
   AI_FUNCTION_TO_API_CALL,
 } from './ai-functions/mappings';
 import { getFileFromBlob } from '../files/utils';
@@ -36,7 +37,10 @@ const useAIImageEditFlow = ({
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const isMaskRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_MASK[aiFunction] : false), [aiFunction]);
-  const isPromptRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] : false), [aiFunction]);
+  const isPromptRequired = useMemo(
+    () => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] || AI_FUNCTION_REQUIRED_STYLE[aiFunction] : false),
+    [aiFunction]
+  );
 
   useEffect(() => {
     if (!aiFunction) {

@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
+import { AI_FUNCTION_REQUIRED_PROMPT, AI_FUNCTION_REQUIRED_STYLE } from '@/app/lib/canvas/ai-functions/mappings';
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import useChangeHistory from '@/app/lib/canvas/change-history/useChangeHistory';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
@@ -31,6 +32,7 @@ import RotationTray from './tool-trays/RotationTray';
 import WandTray from './tool-trays/WandTray';
 import ZoomTray from './tool-trays/ZoomTray';
 import OverlaySpinner from '../state-indicator/OverlaySpinner';
+import StylesModal from './modals/StylesModal';
 
 type CanvasProps = {
   imageStr: string;
@@ -75,8 +77,6 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     const cropperRef = useRef<ReactCropperElement | null>(null);
     const maskGenRef = useRef<MaskConsumer | null>(null);
 
-    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
-
     const {
       current: imageStr,
       setCurrent: setImageStr,
@@ -85,20 +85,30 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       canUndo,
       canRedo,
     } = useChangeHistory(CHANGE_HISTORY_LENGTH, passedInImageStr);
+
     const [image, setImage] = useState<HTMLImageElement | null>(null);
 
+    const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
     const [zoomValue, setZoomValue] = useState<number>(DEFAULT_ZOOM);
     const [rotationValue, setRotationValue] = useState<number>(DEFAULT_ROTATION);
 
     const [mouseInfo, setMouseInfo] = useState<MouseInfo>(DEFAULT_MOUSE_INFO);
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    const [isPromptModalVisible, setPromptModalVisible] = useState<boolean>(false);
+    const [isModalVisible, setModalVisible] = useState<boolean>(false);
+    const isPromptModalVisible = useMemo(
+      () => !!(isModalVisible && aiFunction && AI_FUNCTION_REQUIRED_PROMPT[aiFunction]),
+      [aiFunction, isModalVisible]
+    );
+    const isStylesModalVisible = useMemo(
+      () => !!(isModalVisible && aiFunction && AI_FUNCTION_REQUIRED_STYLE[aiFunction]),
+      [aiFunction, isModalVisible]
+    );
 
     const openMaskTool = useCallback(() => setEditingTool(EditingTool.Wand), [setEditingTool]);
-    const openPrompt = useCallback(() => setPromptModalVisible(true), []);
+    const openModal = useCallback(() => setModalVisible(true), []);
     const finishFlow = useCallback(() => {
-      setPromptModalVisible(false);
+      setModalVisible(false);
       setAiFunction(undefined);
       setEditingTool(undefined);
     }, [setAiFunction, setEditingTool]);
@@ -106,7 +116,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     const { setPrompt, setMaskFile, isLoading } = useAIImageEditFlow({
       aiFunction,
       openMaskTool,
-      openPrompt,
+      openPrompt: openModal,
       cropperRef,
       finishFlow,
       setResult: (downloadedImageFile) => setImageStr(URL.createObjectURL(downloadedImageFile)),
@@ -171,15 +181,13 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
             defaultRotation={DEFAULT_ROTATION}
           />
         ),
-        [EditingTool.Zoom]: (
-          <ZoomTray zoomStep={ZOOM_STEP} setZoom={setZoomValue} currentZoom={zoomValue} defaultZoom={DEFAULT_ZOOM} />
-        ),
+        [EditingTool.Zoom]: <ZoomTray zoomStep={ZOOM_STEP} setZoom={setZoomValue} defaultZoom={DEFAULT_ZOOM} />,
         [EditingTool.Crop]: <CropTray handleCrop={saveCanvasFromCropper} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
         [EditingTool.Wand]: <WandTray clearMask={clearMask} acceptMask={handleMask} />,
       }),
-      [rotationValue, zoomValue, saveCanvasFromCropper, clearMask, handleMask]
+      [rotationValue, saveCanvasFromCropper, clearMask, handleMask]
     );
 
     // change params according to tool
@@ -194,10 +202,10 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         editingTool === EditingTool.Crop ? 'crop' : editingTool === EditingTool.Move ? 'move' : 'none'
       );
 
-      if (editingTool !== EditingTool.Crop) {
-        cropper.clear();
-      } else {
+      if (editingTool === EditingTool.Crop) {
         cropper.crop();
+      } else {
+        cropper.clear();
       }
     }, [editingTool]);
 
@@ -253,17 +261,18 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       setImageStr(convertImageDataToImageStr(res));
     }, [editingTool, filterType, getImageData, setImageStr]);
 
-    useEffect(() => {
-      const image = new Image();
-      image.src = imageStr;
-      image.onload = () => setImage(image);
-    }, [imageStr]);
-
     // can redo for parent
     useEffect(() => setCanRedo(canRedo), [canRedo, setCanRedo]);
 
     // can undo for parent
     useEffect(() => setCanUndo(canUndo), [canUndo, setCanUndo]);
+
+    // load the image (forces Cropper.js to not throw `undefined width` error)
+    useEffect(() => {
+      const image = new Image();
+      image.src = imageStr;
+      image.onload = () => setImage(image);
+    }, [imageStr]);
 
     useImperativeHandle(blobConsumer, () => ({
       getBlob: (callback, type, quality) => {
@@ -282,8 +291,9 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     return (
       <>
         <OverlaySpinner open={isLoading} />
-        {/* TODO: Add transfer style prompt */}
+
         <PromptModal isOpen={isPromptModalVisible} close={finishFlow} setPromptText={setPrompt} />
+        <StylesModal isOpen={isStylesModalVisible} close={finishFlow} setTransferStyle={setPrompt} />
 
         <div
           ref={parentRef}
