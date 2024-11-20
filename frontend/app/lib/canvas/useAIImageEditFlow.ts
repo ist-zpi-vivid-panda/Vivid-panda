@@ -33,6 +33,7 @@ const useAIImageEditFlow = ({
 }: UseAIImageEditProps) => {
   const [maskFile, setMaskFile] = useState<File | undefined>(undefined);
   const [prompt, setPrompt] = useState<string>(START_PROMPT);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const isMaskRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_MASK[aiFunction] : false), [aiFunction]);
   const isPromptRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] : false), [aiFunction]);
@@ -52,18 +53,19 @@ const useAIImageEditFlow = ({
       return;
     }
 
-    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob(async (currBlob) => {
-      finishFlow();
+    setLoading(true);
 
+    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob(async (currBlob) => {
       if (!currBlob) {
         return;
       }
 
       const originalFile = getFileFromBlob(currBlob, 'original_image.png');
 
-      const resMaskFile = maskFile!;
+      const resMaskFile = maskFile;
       const resPrompt = prompt;
 
+      finishFlow();
       setMaskFile(undefined);
       setPrompt(START_PROMPT);
 
@@ -71,7 +73,7 @@ const useAIImageEditFlow = ({
         const result = await AI_FUNCTION_TO_API_CALL[aiFunction]({
           prompt: resPrompt,
           originalFile,
-          maskFile: resMaskFile!,
+          maskFile: resMaskFile,
         });
 
         if (result) {
@@ -80,6 +82,8 @@ const useAIImageEditFlow = ({
       } catch {
         /* empty */
       }
+
+      setLoading(false);
     });
   }, [
     aiFunction,
@@ -94,7 +98,7 @@ const useAIImageEditFlow = ({
     setResult,
   ]);
 
-  return { setPrompt, setMaskFile };
+  return { setPrompt, setMaskFile, isLoading };
 };
 
 export default useAIImageEditFlow;

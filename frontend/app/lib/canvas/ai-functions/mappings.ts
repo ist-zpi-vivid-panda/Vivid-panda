@@ -7,7 +7,8 @@ import {
   getUpscaledImage,
 } from '../../api/aiFunctionApi';
 
-export const AI_FUNCTION_TO_API_CALL = Object.freeze({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const AI_FUNCTION_TO_API_CALL: Record<AiFunctionType, (...args: any[]) => Promise<Blob>> = Object.freeze({
   [AiFunctionType.ColorizeImage]: getColorizedImage,
   [AiFunctionType.DeleteObject]: getDeleteObjectFromImage,
   [AiFunctionType.AddObject]: getAddObjectToImage,
@@ -19,6 +20,14 @@ export const AI_FUNCTION_REQUIRED_PROMPT: Record<AiFunctionType, boolean> = Obje
   [AiFunctionType.ColorizeImage]: false,
   [AiFunctionType.DeleteObject]: false,
   [AiFunctionType.AddObject]: true,
+  [AiFunctionType.TransferStyle]: false,
+  [AiFunctionType.Upscale]: false,
+} as const);
+
+export const AI_FUNCTION_REQUIRED_STYLE: Record<AiFunctionType, boolean> = Object.freeze({
+  [AiFunctionType.ColorizeImage]: false,
+  [AiFunctionType.DeleteObject]: false,
+  [AiFunctionType.AddObject]: false,
   [AiFunctionType.TransferStyle]: true,
   [AiFunctionType.Upscale]: false,
 } as const);

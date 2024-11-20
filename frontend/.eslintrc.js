@@ -1,7 +1,16 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'import', 'jsx-a11y', 'react', 'react-hooks', 'prettier', '@tanstack/query'],
+  plugins: [
+    '@typescript-eslint',
+    'import',
+    'jsx-a11y',
+    'react',
+    'react-hooks',
+    'prettier',
+    '@tanstack/query',
+    'unused-imports',
+  ],
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -23,9 +32,11 @@ module.exports = {
     },
   },
   rules: {
+    eqeqeq: ['error', 'always', { null: 'ignore' }],
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'unused-imports/no-unused-imports': 'error',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     '@tanstack/query/exhaustive-deps': 'error',
     '@typescript-eslint/no-explicit-any': ['warn'],

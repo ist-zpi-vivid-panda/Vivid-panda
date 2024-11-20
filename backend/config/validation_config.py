@@ -10,9 +10,6 @@ def create_validation_config(app: Flask) -> None:
             return {key: translate_error_messages(value) for key, value in messages.items()}
 
         if isinstance(messages, list):
-            for message in messages:
-                print(gettext(message))
-
             return [gettext(message) for message in messages]
 
         return messages

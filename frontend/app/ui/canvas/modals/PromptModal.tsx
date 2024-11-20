@@ -5,9 +5,9 @@ import { TranslationNamespace } from '@/app/lib/internationalization/definitions
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { FieldValues } from 'react-hook-form';
 
-import ControlledCustomInput from '../shared/CustomInput';
-import SubmitButton from '../shared/SubmitButton';
-import ActionModal from '../utilities/ActionModal';
+import ControlledCustomInput from '../../shared/CustomInput';
+import SubmitButton from '../../shared/SubmitButton';
+import ActionModal from '../../utilities/ActionModal';
 
 type PromptModalProps = {
   isOpen: boolean;
@@ -19,6 +19,7 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useConfiguredForm({});
 
@@ -26,10 +27,10 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
 
   const onSubmit = useCallback(
     async (values: FieldValues) => {
-      const prompt: string = values.prompt;
-      setPromptText(prompt);
+      setPromptText(values.prompt);
+      reset();
     },
-    [setPromptText]
+    [reset, setPromptText]
   );
 
   return (

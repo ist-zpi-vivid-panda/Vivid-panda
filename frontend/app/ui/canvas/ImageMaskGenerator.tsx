@@ -151,7 +151,7 @@ const ImageMaskGenerator = forwardRef<MaskConsumer, ImageMaskGeneratorProps>(
             style={{
               position: 'absolute',
               cursor: 'crosshair',
-              opacity: 0.5,
+              opacity: 0.3,
               background: 'black',
             }}
           />

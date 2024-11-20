@@ -22,6 +22,7 @@
     "ajv-errors": "^3.0.0",
     "ajv-formats": "^3.0.1",
     "dayjs": "^1.11.13",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "i18next": "^23.16.4",
     "i18next-resources-to-backend": "^1.2.1",
     "license-checker": "^25.0.1",

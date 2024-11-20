@@ -24,19 +24,22 @@ import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
 import { Cropper, ReactCropperElement } from 'react-cropper';
 
 import ImageMaskGenerator, { MaskConsumer } from './ImageMaskGenerator';
-import PromptModal from './PromptModal';
+import PromptModal from './modals/PromptModal';
 import CropTray from './tool-trays/CropTray';
 import FilterTray from './tool-trays/FilterTray';
 import RotationTray from './tool-trays/RotationTray';
 import WandTray from './tool-trays/WandTray';
 import ZoomTray from './tool-trays/ZoomTray';
+import OverlaySpinner from '../state-indicator/OverlaySpinner';
 
 type CanvasProps = {
   imageStr: string;
   setCanUndo: Dispatch<SetStateAction<boolean>>;
   setCanRedo: Dispatch<SetStateAction<boolean>>;
   editingTool: EditingTool | undefined;
+  setEditingTool: Dispatch<SetStateAction<EditingTool | undefined>>;
   aiFunction: AiFunctionType | undefined;
+  setAiFunction: Dispatch<SetStateAction<AiFunctionType | undefined>>;
   setCurrentEditComponent: (_: ReactNode | undefined) => void;
 };
 
@@ -61,8 +64,10 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       setCanUndo,
       setCanRedo,
       setCurrentEditComponent,
-      editingTool: editingToolFromParent,
-      aiFunction: aiFunctionFromParent,
+      editingTool,
+      setEditingTool,
+      aiFunction,
+      setAiFunction,
     },
     blobConsumer
   ) => {
@@ -70,8 +75,6 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     const cropperRef = useRef<ReactCropperElement | null>(null);
     const maskGenRef = useRef<MaskConsumer | null>(null);
 
-    const [editingTool, setEditingTool] = useState<EditingTool | undefined>(editingToolFromParent);
-    const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(aiFunctionFromParent);
     const [filterType, setFilterType] = useState<FilterType | undefined>(undefined);
 
     const {
@@ -92,14 +95,15 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
 
     const [isPromptModalVisible, setPromptModalVisible] = useState<boolean>(false);
 
-    const openMaskTool = useCallback(() => setEditingTool(EditingTool.Wand), []);
+    const openMaskTool = useCallback(() => setEditingTool(EditingTool.Wand), [setEditingTool]);
     const openPrompt = useCallback(() => setPromptModalVisible(true), []);
     const finishFlow = useCallback(() => {
+      setPromptModalVisible(false);
       setAiFunction(undefined);
       setEditingTool(undefined);
-    }, []);
+    }, [setAiFunction, setEditingTool]);
 
-    const { setPrompt, setMaskFile } = useAIImageEditFlow({
+    const { setPrompt, setMaskFile, isLoading } = useAIImageEditFlow({
       aiFunction,
       openMaskTool,
       openPrompt,
@@ -151,6 +155,12 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       return ctx.getImageData(0, 0, croppedCanvas.width, croppedCanvas.height);
     }, []);
 
+    const clearMask = useCallback(() => {
+      maskGenRef.current?.clearMask?.();
+
+      finishFlow();
+    }, [finishFlow]);
+
     const editComponents: Record<EditingTool, ReactNode> = useMemo(
       () => ({
         [EditingTool.Rotation]: (
@@ -167,9 +177,9 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         [EditingTool.Crop]: <CropTray handleCrop={saveCanvasFromCropper} />,
         [EditingTool.Move]: false,
         [EditingTool.Filter]: <FilterTray setFilterType={setFilterType} />,
-        [EditingTool.Wand]: <WandTray clearMask={() => maskGenRef.current?.clearMask?.()} acceptMask={handleMask} />,
+        [EditingTool.Wand]: <WandTray clearMask={clearMask} acceptMask={handleMask} />,
       }),
-      [handleMask, saveCanvasFromCropper, rotationValue, zoomValue]
+      [rotationValue, zoomValue, saveCanvasFromCropper, clearMask, handleMask]
     );
 
     // change params according to tool
@@ -249,14 +259,6 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       image.onload = () => setImage(image);
     }, [imageStr]);
 
-    // change tool on parent change
-    useEffect(() => {
-      setEditingTool(editingToolFromParent);
-    }, [editingToolFromParent]);
-
-    // change ai function on parent change
-    useEffect(() => setAiFunction(aiFunctionFromParent), [aiFunctionFromParent]);
-
     // can redo for parent
     useEffect(() => setCanRedo(canRedo), [canRedo, setCanRedo]);
 
@@ -279,11 +281,9 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
 
     return (
       <>
-        <PromptModal
-          isOpen={isPromptModalVisible}
-          close={() => setPromptModalVisible(false)}
-          setPromptText={setPrompt}
-        />
+        <OverlaySpinner open={isLoading} />
+        {/* TODO: Add transfer style prompt */}
+        <PromptModal isOpen={isPromptModalVisible} close={finishFlow} setPromptText={setPrompt} />
 
         <div
           ref={parentRef}
@@ -300,7 +300,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
           }}
         >
           {image &&
-            (editingTool == EditingTool.Wand ? (
+            (editingTool === EditingTool.Wand ? (
               <ImageMaskGenerator imageStr={imageStr} image={image} parentRef={parentRef} ref={maskGenRef} />
             ) : (
               <Cropper
