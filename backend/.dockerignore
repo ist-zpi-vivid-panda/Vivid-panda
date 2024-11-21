@@ -1,0 +1,22 @@
+# cache
+__pycache__
+.idea
+.mypy_cache
+.ruff_cache
+
+# local install files
+.venv
+
+# git
+.git
+.gitignore
+
+# env
+.env.*local
+
+# unnecessary translations files
+messages.pot
+messages.mo
+
+# docs
+*.md
