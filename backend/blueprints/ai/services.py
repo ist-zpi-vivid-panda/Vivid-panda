@@ -1,9 +1,8 @@
 import requests
 from werkzeug.datastructures import FileStorage
 
-from ai_functions.ai_function import AiFunctions
-from ai_functions.style_transfer import StyleTransfer
 from config.env_vars import AI_MICROSERVICE_API_URL
+from utils.ai_functions_utils import AiFunctions, StyleTransfer
 from utils.enum_utils import is_valid_enum_value
 
 

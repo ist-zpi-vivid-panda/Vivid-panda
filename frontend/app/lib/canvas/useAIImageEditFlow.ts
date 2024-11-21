@@ -1,5 +1,3 @@
-'use client';
-
 import { MutableRefObject, useEffect, useMemo, useState } from 'react';
 
 import { ReactCropperElement } from 'react-cropper';

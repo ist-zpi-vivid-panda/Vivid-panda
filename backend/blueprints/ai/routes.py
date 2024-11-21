@@ -5,7 +5,6 @@ import requests
 from flask import Blueprint, Response, request, send_file
 from werkzeug.datastructures import FileStorage
 
-from ai_functions.ai_function import AiFunctions
 from blueprints.ai.services import (
     handle_add_object,
     handle_colorize_image,
@@ -19,6 +18,7 @@ from schemas.file import (
     FileOutputDataSchema,
 )
 from schemas.responses import ErrorSchema
+from utils.ai_functions_utils import AiFunctions
 from utils.request_utils import doc_endpoint, success_dict
 
 ai_blueprint = Blueprint("ai", __name__)

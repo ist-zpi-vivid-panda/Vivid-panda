@@ -1,6 +1,13 @@
 from enum import Enum
 
 
+class StyleTransfer(Enum):
+    VAN_GOGH = "vangogh"
+    MONDRIAN = "mondrian"
+    MATISSE = "matisse"
+    SKETCH = "sketch"
+
+
 class AiFunctions(Enum):
     COLORIZE_IMAGE = "colorize_image"
     DELETE_OBJECT = "delete_object"

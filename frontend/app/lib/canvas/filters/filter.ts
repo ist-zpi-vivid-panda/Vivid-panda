@@ -38,7 +38,7 @@ export enum FilterType {
   OnlyBlue = 'ONLY_BLUE',
 }
 
-export const filterTypeToFilterFn: Record<FilterType, (_: FilterImageProps) => ImageData> = Object.freeze({
+export const FILTER_TYPE_TO_FILTER_FN: Record<FilterType, (_: FilterImageProps) => ImageData> = Object.freeze({
   [FilterType.LaplacianEdgeDetection]: laplacianEdgeDetection,
   [FilterType.RobertsCrossEdgeDetection]: robertsCrossEdgeDetection,
   [FilterType.ScharrEdgeDetection]: scharrEdgeDetection,

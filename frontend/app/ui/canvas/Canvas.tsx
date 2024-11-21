@@ -18,7 +18,7 @@ import { AI_FUNCTION_REQUIRED_PROMPT, AI_FUNCTION_REQUIRED_STYLE } from '@/app/l
 import { mouseInfoCalc } from '@/app/lib/canvas/basic';
 import useChangeHistory from '@/app/lib/canvas/change-history/useChangeHistory';
 import { EditingTool, MouseInfo } from '@/app/lib/canvas/definitions';
-import { FilterType, filterTypeToFilterFn } from '@/app/lib/canvas/filters/filter';
+import { FilterType, FILTER_TYPE_TO_FILTER_FN } from '@/app/lib/canvas/filters/filter';
 import useAIImageEditFlow from '@/app/lib/canvas/useAIImageEditFlow';
 import { getFileFromBlob } from '@/app/lib/files/utils';
 import { convertImageDataToImageStr } from '@/app/lib/utilities/image';
@@ -234,7 +234,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     // zoom
     useEffect(() => {
       cropperRef?.current?.cropper?.zoomTo(zoomValue);
-    }, [zoomValue, imageStr]);
+    }, [zoomValue]);
 
     // filter
     useEffect(() => {
@@ -248,7 +248,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         return;
       }
 
-      const res = filterTypeToFilterFn[filterType]({
+      const res = FILTER_TYPE_TO_FILTER_FN[filterType]({
         imageData,
         startPointX: 0,
         startPointY: 0,
@@ -307,6 +307,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
             height: '100%',
             justifyContent: 'center',
             alignItems: 'center',
+            border: '3px dashed #660066',
           }}
         >
           {image &&
