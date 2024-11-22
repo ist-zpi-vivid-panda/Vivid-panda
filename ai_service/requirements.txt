@@ -21,3 +21,10 @@ numpy
 flask==2.1.1
 Werkzeug==2.2.2
 pytest
+
+Pillow~=9.5.0
+python-dotenv~=1.0.1
+opencv-python~=4.10.0.84
+torch~=2.5.1
+torchvision~=0.20.1
+PyJWT~=2.10.0

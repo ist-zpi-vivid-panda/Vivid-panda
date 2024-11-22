@@ -18,7 +18,7 @@ from schemas.file import (
     FileOutputDataSchema,
 )
 from schemas.responses import ErrorSchema
-from utils.ai_functions_utils import AiFunctions
+from utils.ai_functions_utils import AiFunction
 from utils.request_utils import doc_endpoint, success_dict
 
 ai_blueprint = Blueprint("ai", __name__)
@@ -60,11 +60,11 @@ def call_ai_function(
         return success_dict(False), 404
 
     ai_function_handlers = {
-        AiFunctions.COLORIZE_IMAGE.name: lambda: handle_colorize_image(original_file),
-        AiFunctions.DELETE_OBJECT.name: lambda: handle_delete_object(original_file, mask_file),
-        AiFunctions.ADD_OBJECT.name: lambda: handle_add_object(original_file, mask_file, prompt),
-        AiFunctions.TRANSFER_STYLE.name: lambda: handle_transfer_style(original_file, prompt),
-        AiFunctions.UPSCALE.name: lambda: handle_upscale(original_file),
+        AiFunction.COLORIZE_IMAGE.name: lambda: handle_colorize_image(original_file),
+        AiFunction.DELETE_OBJECT.name: lambda: handle_delete_object(original_file, mask_file),
+        AiFunction.ADD_OBJECT.name: lambda: handle_add_object(original_file, mask_file, prompt),
+        AiFunction.TRANSFER_STYLE.name: lambda: handle_transfer_style(original_file, prompt),
+        AiFunction.UPSCALE.name: lambda: handle_upscale(original_file),
     }
 
     ai_function_upper = ai_function.upper()

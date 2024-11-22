@@ -16,6 +16,7 @@ if not SECRET_KEY:
 
 F = TypeVar("F", bound=Callable[..., Any])
 
+
 def validate_jwt_token(token: str) -> None:
     """
     Validates a static JWT token.

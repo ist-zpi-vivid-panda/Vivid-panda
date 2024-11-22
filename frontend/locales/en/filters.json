@@ -1,0 +1,13 @@
+{
+    "LAPLACIAN_EDGE_DETECTION": "Laplacian edge detection",
+    "ROBERTS_CROSS_EDGE_DETECTION": "Roberts cross edge detection",
+    "SCHARR_EDGE_DETECTION": "Scharr edge detection",
+    "SOBEL_EDGE_DETECTION": "Sobel edge detection",
+    "SEPIA": "Sepia",
+    "GREYSCALE": "Greyscale",
+    "INVERSION": "Invert colors",
+    "BOX_BLUR": "Box blur",
+    "ONLY_RED": "Only red",
+    "ONLY_GREEN": "Only green",
+    "ONLY_BLUE": "Only blue"
+}

@@ -3,6 +3,8 @@ from flask_babel import gettext
 from marshmallow import ValidationError
 from webargs.flaskparser import parser
 
+from utils.request_utils import error_dict
+
 
 def create_validation_config(app: Flask) -> None:
     def translate_error_messages(messages):
@@ -18,7 +20,7 @@ def create_validation_config(app: Flask) -> None:
     def handle_validation_error(error: ValidationError):
         translated_messages = translate_error_messages(error.messages)
 
-        return jsonify(translated_messages), 400
+        return jsonify(error_dict(translated_messages)), 400
 
     @parser.error_handler
     def handle_webargs_error(err, req, schema, *, error_status_code, error_headers):

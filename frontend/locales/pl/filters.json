@@ -1,0 +1,13 @@
+{
+    "LAPLACIAN_EDGE_DETECTION": "Wykrywanie krawędzi Laplacian'a",
+    "ROBERTS_CROSS_EDGE_DETECTION": "Wykrywanie krawędzi Roberts'a",
+    "SCHARR_EDGE_DETECTION": "Wykrywanie krawędzi Scharr'a",
+    "SOBEL_EDGE_DETECTION": "Wykrywanie krawędzi Sobel'a",
+    "SEPIA": "Sepia",
+    "GREYSCALE": "Szarość",
+    "INVERSION": "Odwróć kolory",
+    "BOX_BLUR": "Rozmycie pudełkowe",
+    "ONLY_RED": "Tylko czerwony",
+    "ONLY_GREEN": "Tylko zielony",
+    "ONLY_BLUE": "Tylko niebieski"
+}

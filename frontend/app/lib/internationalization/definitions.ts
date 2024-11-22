@@ -10,6 +10,7 @@ export enum TranslationNamespace {
   Files = 'files',
   Licenses = 'licenses',
   Error = 'error',
+  Filters = 'filters',
 }
 
 export type LocaleParam = Promise<{ locale: SupportedLocale }>;

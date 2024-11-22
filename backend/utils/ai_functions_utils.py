@@ -8,7 +8,7 @@ class StyleTransfer(Enum):
     SKETCH = "sketch"
 
 
-class AiFunctions(Enum):
+class AiFunction(Enum):
     COLORIZE_IMAGE = "colorize_image"
     DELETE_OBJECT = "delete_object"
     ADD_OBJECT = "add_object"
