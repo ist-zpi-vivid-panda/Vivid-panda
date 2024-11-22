@@ -1,0 +1,14 @@
+# cache 
+.vscode
+
+# local install files
+node_modules
+npm-debug.log
+build
+
+# git
+.git
+.gitignore
+
+# docs
+*.md

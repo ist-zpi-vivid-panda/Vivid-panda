@@ -14,5 +14,6 @@
     "delete_object": "Usuń obiekt",
     "upscalling": "Poprawa rozdzielczości",
     "colorize_image": "Koloryzacja obrazu",
-    "style_transfer": "Transfer stylu"
+    "style_transfer": "Transfer stylu",
+    "max_image_size": "Maksymalna wielkość zdjęcia to {{size}} MB"
 }

@@ -3,7 +3,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Children } from '@/app/lib/definitions';
+import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import useStrings from '@/app/lib/internationalization/useStrings';
 import { Card } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 type BaseErrorProps = {
   buttonText: string;
@@ -13,6 +16,9 @@ type BaseErrorProps = {
 };
 
 const BaseError = ({ errorText, buttonText, onButtonClick, children }: BaseErrorProps) => {
+  const { t } = useStrings(TranslationNamespace.Common);
+  const router = useRouter();
+
   const [backgroundSize, setBackgroundSize] = useState<string>('20%');
 
   const updateBackgroundSize = useCallback(() => {
@@ -63,6 +69,10 @@ const BaseError = ({ errorText, buttonText, onButtonClick, children }: BaseError
 
           <button className="text-large" style={{ color: 'black' }} onClick={onButtonClick}>
             {buttonText}
+          </button>
+
+          <button className="text-large" style={{ color: 'black' }} onClick={() => router.replace('/')}>
+            {t('main_page')}
           </button>
 
           {children}

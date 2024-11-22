@@ -1,16 +1,18 @@
-'use client';
-
 import { MutableRefObject, useEffect, useMemo, useState } from 'react';
 
 import { ReactCropperElement } from 'react-cropper';
+import { toast } from 'react-toastify';
 
 import { AiFunctionType } from './ai-functions/definitions';
 import {
   AI_FUNCTION_REQUIRED_MASK,
   AI_FUNCTION_REQUIRED_PROMPT,
+  AI_FUNCTION_REQUIRED_STYLE,
   AI_FUNCTION_TO_API_CALL,
 } from './ai-functions/mappings';
 import { getFileFromBlob } from '../files/utils';
+import { TranslationNamespace } from '../internationalization/definitions';
+import useStrings from '../internationalization/useStrings';
 
 type UseAIImageEditProps = {
   aiFunction: AiFunctionType | undefined;
@@ -31,11 +33,16 @@ const useAIImageEditFlow = ({
   finishFlow,
   setResult,
 }: UseAIImageEditProps) => {
+  const { t } = useStrings(TranslationNamespace.Error);
   const [maskFile, setMaskFile] = useState<File | undefined>(undefined);
   const [prompt, setPrompt] = useState<string>(START_PROMPT);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const isMaskRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_MASK[aiFunction] : false), [aiFunction]);
-  const isPromptRequired = useMemo(() => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] : false), [aiFunction]);
+  const isPromptRequired = useMemo(
+    () => (aiFunction ? AI_FUNCTION_REQUIRED_PROMPT[aiFunction] || AI_FUNCTION_REQUIRED_STYLE[aiFunction] : false),
+    [aiFunction]
+  );
 
   useEffect(() => {
     if (!aiFunction) {
@@ -52,18 +59,19 @@ const useAIImageEditFlow = ({
       return;
     }
 
-    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob(async (currBlob) => {
-      finishFlow();
+    setLoading(true);
 
+    cropperRef?.current?.cropper?.getCroppedCanvas()?.toBlob(async (currBlob) => {
       if (!currBlob) {
         return;
       }
 
       const originalFile = getFileFromBlob(currBlob, 'original_image.png');
 
-      const resMaskFile = maskFile!;
+      const resMaskFile = maskFile;
       const resPrompt = prompt;
 
+      finishFlow();
       setMaskFile(undefined);
       setPrompt(START_PROMPT);
 
@@ -71,30 +79,26 @@ const useAIImageEditFlow = ({
         const result = await AI_FUNCTION_TO_API_CALL[aiFunction]({
           prompt: resPrompt,
           originalFile,
-          maskFile: resMaskFile!,
+          maskFile: resMaskFile,
         });
 
-        if (result) {
+        if (result && result.size > 0) {
           setResult(result);
+        } else {
+          toast.error(t('unknown_error'));
         }
-      } catch {
-        /* empty */
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
       }
-    });
-  }, [
-    aiFunction,
-    cropperRef,
-    finishFlow,
-    isMaskRequired,
-    isPromptRequired,
-    maskFile,
-    openMaskTool,
-    openPrompt,
-    prompt,
-    setResult,
-  ]);
 
-  return { setPrompt, setMaskFile };
+      setLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiFunction, isMaskRequired, isPromptRequired, maskFile, prompt]);
+
+  return { setPrompt, setMaskFile, isLoading };
 };
 
 export default useAIImageEditFlow;

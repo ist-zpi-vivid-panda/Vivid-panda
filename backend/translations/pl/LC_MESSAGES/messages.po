@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-16 09:51+0100\n"
+"POT-Creation-Date: 2024-11-22 08:56+0100\n"
 "PO-Revision-Date: 2024-11-16 09:52+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,43 +19,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.15.0\n"
 
+#: blueprints/ai/services.py:34
+#, python-format
+msgid ""
+"Image size for %(ai_func)s must be between %(min_size)s and %(max_size)s "
+"pixels"
+msgstr ""
+"Wielkość obrazka dla %(ai_func)s musi być pomiędzy %(min_size)s a %(max_size)s "
+"pikselami"
+
 #: blueprints/auth/routes.py:66
 msgid "Email already registered"
 msgstr "Adres email już zarejestrowany"
 
-#: blueprints/auth/routes.py:80 blueprints/auth/routes.py:83
+#: blueprints/auth/routes.py:82
 msgid "Invalid username or password"
 msgstr "Nieprawidłowy email lub hasło"
 
-#: blueprints/auth/routes.py:86 blueprints/auth/routes.py:213
+#: blueprints/auth/routes.py:85 blueprints/auth/routes.py:212
 msgid "Account already exists for another provider"
 msgstr "Konto istnieje dla innego dostawcy"
 
-#: blueprints/auth/routes.py:118
+#: blueprints/auth/routes.py:117
 msgid "User does not exists"
 msgstr "Użytkownik nie istnieje"
 
-#: blueprints/auth/routes.py:121
+#: blueprints/auth/routes.py:120
 msgid "Cannot reset password for this account provider"
 msgstr "Nie można zresetować hasła dla tego dostawcy"
 
-#: blueprints/auth/routes.py:141
+#: blueprints/auth/routes.py:140
 msgid "Missing data"
 msgstr "Brak danych"
 
-#: blueprints/auth/routes.py:144
+#: blueprints/auth/routes.py:143
 msgid "Token expired"
 msgstr "Token przestarzały"
 
-#: blueprints/auth/routes.py:147
+#: blueprints/auth/routes.py:146
 msgid "Passwords are not the same"
 msgstr "Hasła są rózne"
 
-#: blueprints/auth/routes.py:150
+#: blueprints/auth/routes.py:149
 msgid "Passwords cannot be the same as previous password"
 msgstr "Hasło musi być inne od poprzedniego"
 
-#: blueprints/auth/routes.py:201
+#: blueprints/auth/routes.py:200
 msgid "User email not available or not verified by Google"
 msgstr "Adres email niedostępny lub niezweryfikowany przez Google"
 
@@ -63,47 +72,49 @@ msgstr "Adres email niedostępny lub niezweryfikowany przez Google"
 msgid "Incorrect user"
 msgstr "Niepoprawny użytkownik"
 
-#: blueprints/files/routes.py:64 blueprints/files/routes.py:133
-#: blueprints/files/routes.py:158 blueprints/files/routes.py:181
-#: blueprints/files/routes.py:216
+#: blueprints/files/routes.py:64 blueprints/files/routes.py:137
+#: blueprints/files/routes.py:162 blueprints/files/routes.py:185
+#: blueprints/files/routes.py:220
 msgid "File doesn't exist"
 msgstr "Plik nie istnieje"
 
-#: blueprints/files/routes.py:85 blueprints/user/routes.py:61
+#: blueprints/files/routes.py:87 blueprints/user/routes.py:61
 msgid "File not saved"
 msgstr "Plik nie został zapisany"
 
-#: blueprints/files/routes.py:90
+#: blueprints/files/routes.py:94
 msgid "Unable to retrieve file size"
 msgstr "Nie udało się zczytać wielkości pliku"
 
-#: blueprints/files/routes.py:108
+#: blueprints/files/routes.py:112
 #, python-format
 msgid "Maximum number of files you can upload is %(max_files)s or %(max_mb)s MB"
-msgstr "Maksymalna liczba plików, które możesz wgrać to %(max_files)s or %(max_mb)s MB"
+msgstr ""
+"Maksymalna liczba plików, które możesz wgrać to %(max_files)s or "
+"%(max_mb)s MB"
 
-#: blueprints/files/routes.py:118
+#: blueprints/files/routes.py:122
 msgid "File info not saved"
 msgstr "Dane pliku nie zostały zapisane"
 
-#: blueprints/files/routes.py:139
+#: blueprints/files/routes.py:143
 msgid "File wasn't deleted"
 msgstr "Plik nie został usunięty"
 
-#: blueprints/files/routes.py:165 blueprints/files/routes.py:191
-#: blueprints/files/routes.py:196
+#: blueprints/files/routes.py:169 blueprints/files/routes.py:195
+#: blueprints/files/routes.py:200
 msgid "File not updated"
 msgstr "Plik nie zaktualizowany"
 
-#: blueprints/files/routes.py:186
+#: blueprints/files/routes.py:190
 msgid "Couldn't update file"
 msgstr "Nie można było zaktualizować pliku"
 
-#: blueprints/files/routes.py:211
+#: blueprints/files/routes.py:215
 msgid "File data doesn't exist"
 msgstr "Dane pliku nie istnieją"
 
-#: schemas/auth.py:10 schemas/generic.py:24
+#: schemas/auth.py:10 schemas/generic.py:25
 msgid "Password is required"
 msgstr "Hasło jest wymagane"
 
@@ -119,7 +130,7 @@ msgstr "Token dostępu jest wymagany"
 msgid "Refresh token is required"
 msgstr "Token odświeżający jest wymagany"
 
-#: schemas/file.py:21 schemas/file.py:129
+#: schemas/file.py:21 schemas/file.py:127
 #, python-format
 msgid "File of type %(ext)s up to %(length)s B"
 msgstr "Plik typu $(ext)s do $(length)s B"
@@ -146,96 +157,96 @@ msgstr "Nieprawidłowe rozszerzenie pliku. Jedynie %(ext)s są dozwolone"
 msgid "No MIME type detected. Please upload a valid file"
 msgstr "Brak typu MIME. Proszę wgrać poprawny plik"
 
-#: schemas/file.py:49
+#: schemas/file.py:48
 #, python-format
 msgid "Invalid MIME type. Only %(formats)s are allowed"
 msgstr "Nieprawidłowy typ MIME. Jedynie %(formats)s są dozwolone"
 
-#: schemas/file.py:56
+#: schemas/file.py:54
 msgid "Filename is required"
 msgstr "Nazwa pliku jest wymagana"
 
-#: schemas/file.py:56
+#: schemas/file.py:54
 msgid "Invalid filename format"
 msgstr "Nieprawidłowy format pliku"
 
-#: schemas/file.py:63
+#: schemas/file.py:61
 msgid "File ID is required"
 msgstr "ID pliku jest wymagane"
 
-#: schemas/file.py:63
+#: schemas/file.py:61
 msgid "Invalid file ID format"
 msgstr "Nieprawidłowy format ID pliku"
 
-#: schemas/file.py:67 schemas/file.py:116
+#: schemas/file.py:65 schemas/file.py:114
 msgid "MIME type is required"
 msgstr "Typ MIME jest wymagany"
 
-#: schemas/file.py:67 schemas/file.py:116
+#: schemas/file.py:65 schemas/file.py:114
 msgid "Invalid MIME type format"
 msgstr "Nieprawidłowy typ MIME"
 
-#: schemas/file.py:72
+#: schemas/file.py:70
 msgid "File size is required"
 msgstr "Rozmiar pliku jest wymagany"
 
-#: schemas/file.py:73
+#: schemas/file.py:71
 msgid "File size must be an integer"
 msgstr "Rozmiar pliku musi być liczbą całkowitą"
 
-#: schemas/file.py:78
+#: schemas/file.py:76
 msgid "Upload date is required"
 msgstr "Data wgrania jest wymagana"
 
-#: schemas/file.py:78 schemas/file.py:84
+#: schemas/file.py:76 schemas/file.py:82
 msgid "Invalid date format"
 msgstr "Nieprawidłowy format daty"
 
-#: schemas/file.py:83
+#: schemas/file.py:81
 msgid "Last update date is required"
 msgstr "Data ostatniej aktualizacji jest wymagana"
 
-#: schemas/file.py:89
+#: schemas/file.py:87
 msgid "Owner ID is required"
 msgstr "ID właściciela jest wymagane"
 
-#: schemas/file.py:89
+#: schemas/file.py:87
 msgid "Invalid owner ID format"
 msgstr "Nieprawidłowy format ID właściciela"
 
-#: schemas/file.py:91
+#: schemas/file.py:89
 msgid "Invalid thumbnail format"
 msgstr "Nieprawidłowy format miniaturki"
 
-#: schemas/file.py:103
+#: schemas/file.py:101
 msgid "File collection is required"
 msgstr "Kolekcja plików jest wymagana"
 
-#: schemas/file.py:104
+#: schemas/file.py:102
 msgid "Invalid format for file collection"
 msgstr "Nieprawidłowy format kolekcji plików"
 
-#: schemas/file.py:112
+#: schemas/file.py:110
 msgid "File path is required"
 msgstr "Ścieżka pliku jest wymagana"
 
-#: schemas/file.py:112
+#: schemas/file.py:110
 msgid "Invalid file path format"
 msgstr "Nieprawidłowy format ścieżki pliku"
 
-#: schemas/file.py:120
+#: schemas/file.py:118
 msgid "File name is required"
 msgstr "Nazwa pliku jest wymagana"
 
-#: schemas/file.py:120
+#: schemas/file.py:118
 msgid "Invalid file name format"
 msgstr "Nieprawidłowy format pliku"
 
-#: schemas/file.py:132
+#: schemas/file.py:130
 msgid "Invalid mask file format"
 msgstr "Nieprawidłowy format maski"
 
-#: schemas/generic.py:17
+#: schemas/generic.py:17 schemas/generic.py:26
 msgid ""
 "Password must be at least 8 characters long, with at least one uppercase "
 "letter, one lowercase letter, and one digit"
@@ -243,11 +254,11 @@ msgstr ""
 "Hasło musi mieć co najmniej 8 znaków, w tym co najmniej jedną wielką "
 "literę, jedną małą literę i jedną cyfrę"
 
-#: schemas/generic.py:32
+#: schemas/generic.py:39 schemas/generic.py:42
 msgid "Invalid email address format"
 msgstr "Niepoprawny format adresu email"
 
-#: schemas/generic.py:33
+#: schemas/generic.py:41
 msgid "Email is required"
 msgstr "Adres email jest wymagany"
 

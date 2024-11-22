@@ -14,5 +14,6 @@
     "delete_object": "Delete object",
     "upscalling": "Upscalling",
     "colorize_image": "Colorize image",
-    "style_transfer": "Style transfer"
+    "style_transfer": "Style transfer",
+    "max_image_size": "Max image size is {{size}} MB"
 }

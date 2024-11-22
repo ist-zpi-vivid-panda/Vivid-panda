@@ -6,6 +6,13 @@ from image_processing.invoker import Invoker
 from PIL import Image
 
 
+def check_image_shape(image: Image, request_type: str, min_size=10, max_size=10000) -> bool:
+    upscaler_increase = 4
+    if request_type == "upscaling":
+        max_size = max_size / upscaler_increase
+    return max_size > image.size[0] > min_size and max_size > image.size[1] > min_size
+
+
 def process_image_request(
     request_type: str,
     required_files: List[str],
@@ -28,6 +35,8 @@ def process_image_request(
     for file_key in required_files:
         file = request.files[file_key]
         request_data["params"][file_key] = Image.open(file)
+        if not check_image_shape(request_data["params"][file_key], request_data["type"]):
+            return jsonify({"error": f"Invalid {file_key} shape"}), 400
 
     for form_field in required_form_fields:
         request_data["params"][form_field] = request.form[form_field]

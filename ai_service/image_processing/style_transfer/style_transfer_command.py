@@ -58,11 +58,13 @@ class StyleTransferCommand(Command):
         return style
 
     def execute(self, image: Image.Image, style: str) -> Image.Image:
+        converted_image = image.convert("RGB")
+
         style_img = self.get_style_reference(style)
         content_tf = test_transform(self.size, self.crop)
         style_tf = test_transform(self.size, self.crop)
 
-        content = content_tf(image)
+        content = content_tf(converted_image)
         style = style_tf(style_img)
 
         if self.preserve_color:

@@ -1,5 +1,6 @@
 {
     "error": "Ooops age not found!",
     "back": "Go back",
-    "try_again": "Try again"
+    "try_again": "Try again",
+    "unknown_error": "Unknown error"
 }

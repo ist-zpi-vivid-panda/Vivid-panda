@@ -67,7 +67,6 @@ const GridView = ({
             height: '80%',
             justifyContent: 'center',
             alignItems: 'center',
-            border: '3px dashed #660066',
           }}
         >
           {children}

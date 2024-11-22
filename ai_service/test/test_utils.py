@@ -3,7 +3,7 @@ from io import BytesIO
 from typing import Generator
 
 import pytest
-from api.utils import process_image_request
+from api.request import process_image_request
 from flask import Flask, Response
 from flask.testing import FlaskClient
 from PIL import Image

@@ -43,14 +43,3 @@ const getScaledImageDimensions = (
 
   return { width: width * scale, height: height * scale };
 };
-
-// const getBoundingBoxDimensions = (width: number, height: number, angle: number) => {
-//   const radians = (Math.PI / 180) * angle;
-//   const sin = Math.abs(Math.sin(radians));
-//   const cos = Math.abs(Math.cos(radians));
-
-//   const newWidth = height * sin + width * cos;
-//   const newHeight = height * cos + width * sin;
-
-//   return { width: newWidth, height: newHeight };
-// };

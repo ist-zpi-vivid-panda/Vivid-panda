@@ -127,7 +127,9 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
             setCanUndo={setCanUndo}
             setCanRedo={setCanRedo}
             editingTool={editingTool}
+            setEditingTool={setEditingTool}
             aiFunction={aiFunction}
+            setAiFunction={setAiFunction}
             setCurrentEditComponent={setCurrentEditComponent}
             ref={canvasRef}
           />

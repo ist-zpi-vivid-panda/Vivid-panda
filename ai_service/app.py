@@ -1,9 +1,10 @@
 from functools import wraps
 from typing import Any, Callable, List, Optional, TypeVar
 
-import torch
-from api.utils import process_image_request
 from flask import Flask
+
+from api.authorization import jwt_required
+from api.request import process_image_request
 from image_processing.invoker import Invoker
 
 app = Flask(__name__)
@@ -18,6 +19,7 @@ def api_route(
 ) -> Callable[..., Any]:
     def decorator(f: Callable[..., Any]) -> Any:
         @app.route(f"/{action}", methods=["POST"])
+        @jwt_required
         @wraps(f)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             return process_image_request(action, required_files, required_form_fields)
