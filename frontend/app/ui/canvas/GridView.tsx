@@ -43,7 +43,7 @@ const GridView = ({
       <Grid
         container
         direction="row"
-        justifyContent="center"
+        justifyContent="flex-start"
         alignItems="flex-start" // Align content to the top
         sx={{
           height: '100vh',
@@ -55,6 +55,7 @@ const GridView = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            border: '3px dashed #660066',
           }}
         >
           <FileEditListOptions setEditingTool={setEditingTool} setAiFunction={setAiFunction} />

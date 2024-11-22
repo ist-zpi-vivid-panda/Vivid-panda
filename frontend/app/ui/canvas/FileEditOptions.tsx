@@ -34,14 +34,16 @@ const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPr
         onClick={onToolSelect}
         style={{
           display: 'flex',
-          gap: '10px',
+          gap: '3px',
           flexDirection: 'row',
-          fontSize: 'clamp(16px, 1.5vw, 40px)',
+          fontSize: 'clamp(1px, 1.5vw, 40px)',
           alignItems: 'center',
+          border: '2px solid #660066',
         }}
       >
-        <span style={{ color }}>{name}</span>
         <Icon />
+        <span style={{ color }}>{name}</span>
+        
       </button>
     </div>
   </IconContext.Provider>
@@ -71,7 +73,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
         flexDirection: 'column',
         gap: 2,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
       }}
     >
       <EditingToolPresentation
