@@ -2,17 +2,10 @@ from functools import wraps
 from typing import TypeVar, Callable, Any
 
 import jwt
-import os
 
 from flask import request, jsonify
-from dotenv import load_dotenv
 
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-
-if not SECRET_KEY:
-    raise ValueError("SECRET_KEY environment variable is not set!")
+from env.env_vars import SECRET_KEY
 
 F = TypeVar("F", bound=Callable[..., Any])
 

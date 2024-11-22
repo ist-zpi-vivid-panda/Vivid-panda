@@ -44,11 +44,12 @@ const enhanceSchemaWithErrorMessages = (
 };
 
 export const useSchema = (schemaName: string) => {
-  const { data, isLoading } = useValidationData();
   const { i18n } = useTranslation();
+  const currentLocale = useMemo(() => i18n.language as SupportedLocale, [i18n.language]);
+
+  const { data, isLoading } = useValidationData(currentLocale);
 
   const schema = useMemo(() => data?.components?.schemas?.[schemaName], [data?.components?.schemas, schemaName]);
-  const currentLocale = useMemo(() => i18n.language as SupportedLocale, [i18n.language]);
 
   if (!schema || isLoading) {
     return;

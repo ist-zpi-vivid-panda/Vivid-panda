@@ -5,6 +5,7 @@ from flask import Flask
 
 from api.authorization import jwt_required
 from api.request import process_image_request
+from env.env_vars import DEBUG, AI_MICROSERVICE_PORT, IP_ADDRESS
 from image_processing.invoker import Invoker
 
 app = Flask(__name__)
@@ -56,4 +57,4 @@ def upscale() -> None:
 
 if __name__ == "__main__":
     invoker = Invoker()
-    app.run(port=5003, debug=True)
+    app.run(host=IP_ADDRESS, port=AI_MICROSERVICE_PORT, debug=DEBUG)

@@ -35,9 +35,9 @@ const LocaleChangerItem = ({ locale, onClick }: LocaleChangerItemProps) => {
 const locales = getEnumValues(SupportedLocale);
 
 const LocaleChanger = ({ anchorEl, setAnchorEl }: LocaleChangerProps) => {
-  const { i18n } = useTranslation();
   const router = useRouter();
   const currentPathname = usePathname();
+  const { i18n } = useTranslation();
 
   const currentLocale = useMemo(() => i18n.language, [i18n.language]);
 

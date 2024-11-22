@@ -1,7 +1,7 @@
 from app import create_app
-from config.env_vars import APP_HOST, APP_PORT, DEBUG
+from config.env_vars import IP_ADDRESS, BACKEND_PORT, DEBUG
 
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host=APP_HOST, port=APP_PORT, debug=DEBUG)
+    app.run(host=IP_ADDRESS, port=BACKEND_PORT, debug=DEBUG)
