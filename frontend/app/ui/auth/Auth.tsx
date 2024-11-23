@@ -40,8 +40,13 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
         }}
       >
         <Card
-          className="custom-card"
+          className="custom-auth-card"
           sx={{
+            padding: '2.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            boxShadow: 24,
             '@media (max-width: 700px)': {
               width: '40vw',
               height: '80vh',
@@ -75,11 +80,6 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
               marginTop: '5vh',
               marginRight: '-17vw',
             },
-            padding: '2.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            boxShadow: 24,
           }}
           component="form"
           onSubmit={onSubmit}
