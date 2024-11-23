@@ -43,7 +43,7 @@ const GridView = ({
       <Grid
         container
         direction="row"
-        justifyContent="center"
+        justifyContent="flex-start"
         alignItems="flex-start" // Align content to the top
         sx={{
           height: '100vh',

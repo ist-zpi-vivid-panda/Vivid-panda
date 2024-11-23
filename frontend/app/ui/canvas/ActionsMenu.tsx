@@ -32,11 +32,12 @@ const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon, disabled }: 
           gap: '10px',
           flexDirection: 'row',
           fontSize: 'clamp(16px, 1.5vw, 40px)',
+          border: '1px solid #660066',
         }}
         disabled={disabled}
       >
-        <span style={{ color }}>{name}</span>
         <Icon />
+        <span style={{ color }}>{name}</span>
       </button>
     </div>
   </IconContext.Provider>
@@ -53,7 +54,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
       style={{
         fontSize: '24px',
         display: 'flex',
-        gap: '25px',
+        gap: '0px',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: '25px',
