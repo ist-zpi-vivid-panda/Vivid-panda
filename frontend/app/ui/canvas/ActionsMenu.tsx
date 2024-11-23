@@ -3,9 +3,12 @@
 import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { FaSave, FaDownload, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { FaDeleteLeft } from 'react-icons/fa6';
-import { IconContext, IconType } from 'react-icons/lib';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import { Button, Tooltip, Card } from '@mui/material';
 
 type ActionsMenuProps = {
   canvasCrudOperations: CanvasCRUDOperations;
@@ -17,30 +20,25 @@ type ActionsMenuPresentationProps = {
   color: string;
   textColor: string;
   onToolSelect: () => void;
-  Icon: IconType;
+  Icon: React.ElementType;
   disabled?: boolean;
 };
 
-const ActionsMenuPresentation = ({ name, color, onToolSelect, Icon, disabled }: ActionsMenuPresentationProps) => (
-  <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
-    {/* Responsive icon size */}
-    <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <button
-        onClick={onToolSelect}
-        style={{
-          display: 'flex',
-          gap: '10px',
-          flexDirection: 'row',
-          fontSize: 'clamp(16px, 1.5vw, 40px)',
-          border: '1px solid #660066',
-        }}
-        disabled={disabled}
-      >
-        <Icon />
-        <span style={{ color }}>{name}</span>
-      </button>
-    </div>
-  </IconContext.Provider>
+const ActionsMenuPresentation = ({ name, onToolSelect, Icon }: ActionsMenuPresentationProps) => (
+  <Tooltip title={name}>
+    <Button
+      onClick={onToolSelect}
+      sx={{
+        gap: '10px',
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        justifyContent: 'flex-start',
+      }}
+    >
+      <Icon />
+    </Button>
+  </Tooltip>
 );
 
 const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuProps) => {
@@ -50,22 +48,23 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
   const textColor = '#36065f';
 
   return (
-    <div
-      style={{
+    <Card
+      sx={{
         fontSize: '24px',
         display: 'flex',
-        gap: '0px',
+        gap: 2,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: '25px',
         flexDirection: 'row',
+        padding: 2,
       }}
     >
       <ActionsMenuPresentation
         name={t('save')}
         color={iconColor}
         textColor={textColor}
-        Icon={() => <FaSave />}
+        Icon={SaveRoundedIcon}
         onToolSelect={canvasCrudOperations.handleSave}
       />
 
@@ -73,7 +72,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         name={t('undo')}
         color={iconColor}
         textColor={textColor}
-        Icon={() => <FaArrowLeft />}
+        Icon={ArrowBackRoundedIcon}
         onToolSelect={changeHistoryData.handleUndo}
         disabled={!changeHistoryData.canUndo}
       />
@@ -82,7 +81,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         name={t('redo')}
         color={iconColor}
         textColor={textColor}
-        Icon={() => <FaArrowRight />}
+        Icon={ArrowForwardRoundedIcon}
         onToolSelect={changeHistoryData.handleRedo}
         disabled={!changeHistoryData.canRedo}
       />
@@ -91,7 +90,7 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         name={t('delete')}
         color={iconColor}
         textColor={textColor}
-        Icon={() => <FaDeleteLeft />}
+        Icon={DeleteForeverRoundedIcon}
         onToolSelect={canvasCrudOperations.handleDelete}
       />
 
@@ -99,10 +98,10 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         name={t('download')}
         color={iconColor}
         textColor={textColor}
-        Icon={() => <FaDownload />}
+        Icon={DownloadRoundedIcon}
         onToolSelect={canvasCrudOperations.handleDownload}
       />
-    </div>
+    </Card>
   );
 };
 

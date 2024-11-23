@@ -10,9 +10,12 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import ControlledCustomInput from '@/app/ui/forms/CustomInput';
 import SubmitButton from '@/app/ui/forms/SubmitButton';
+import { Box } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
+
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -38,16 +41,16 @@ const ForgotPassword = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">{t('reset_password')}</span>
+      <ResponsiveTypography>{t('reset_password')}</ResponsiveTypography>
 
       <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
 
-      <div className="flex justify-end mb-20">
+      <Box className="flex justify-end mb-20">
         <SubmitButton />
-      </div>
+      </Box>
 
       <Link href="/auth/login">
-        <span className="text-sm font-light">{t('already_have_an_account')}</span>
+        <ResponsiveTypography>{t('already_have_an_account')}</ResponsiveTypography>
       </Link>
     </Auth>
   );

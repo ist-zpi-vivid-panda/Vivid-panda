@@ -9,8 +9,11 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import { ControlledCustomPasswordInput } from '@/app/ui/forms/CustomInput';
 import SubmitButton from '@/app/ui/forms/SubmitButton';
+import { Box } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
+
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -43,7 +46,7 @@ const ChangePassword = () => {
   );
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">{t('change_password')}</span>
+      <ResponsiveTypography>{t('change_password')}</ResponsiveTypography>
 
       <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
@@ -55,9 +58,9 @@ const ChangePassword = () => {
         required
       />
 
-      <div className="flex justify-end custom-margin">
+      <Box className="flex justify-end custom-margin">
         <SubmitButton />
-      </div>
+      </Box>
     </Auth>
   );
 };

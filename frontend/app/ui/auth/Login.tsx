@@ -11,9 +11,12 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import ControlledCustomInput, { ControlledCustomPasswordInput } from '@/app/ui/forms/CustomInput';
 import SubmitButton from '@/app/ui/forms/SubmitButton';
+import { Box } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
+
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 const Login = () => {
   const router = useRouter();
@@ -43,25 +46,25 @@ const Login = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <span className="text-2xl m-auto">{t('login')}</span>
+      <ResponsiveTypography className="text-2xl m-auto">{t('login')}</ResponsiveTypography>
 
       <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
 
       <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
 
-      <div className="flex justify-end custom-margin">
+      <Box className="flex justify-end custom-margin">
         <SubmitButton />
-      </div>
+      </Box>
 
-      <div className="flex flex-row justify-between gap-10">
+      <Box className="flex flex-row justify-between gap-10">
         <Link href="/auth/forgot-password">
-          <span className="text-sm font-light">{t('restore_password')}</span>
+          <ResponsiveTypography>{t('restore_password')}</ResponsiveTypography>
         </Link>
 
         <Link href="/auth/register">
-          <span className="text-sm font-light">{t('create_account')}</span>
+          <ResponsiveTypography>{t('create_account')}</ResponsiveTypography>
         </Link>
-      </div>
+      </Box>
     </Auth>
   );
 };
