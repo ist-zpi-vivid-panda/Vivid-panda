@@ -29,21 +29,20 @@ type EditToolPresentationProps = {
 
 const EditingToolPresentation = ({ name, color, onToolSelect, Icon }: EditToolPresentationProps) => (
   <IconContext.Provider value={{ color, size: 'clamp(20px, 2vw, 35px)' }}>
-    <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <button
-        onClick={onToolSelect}
-        style={{
-          display: 'flex',
-          gap: '10px',
-          flexDirection: 'row',
-          fontSize: 'clamp(16px, 1.5vw, 40px)',
-          alignItems: 'center',
-        }}
-      >
-        <span style={{ color }}>{name}</span>
-        <Icon />
-      </button>
-    </div>
+    <button
+      onClick={onToolSelect}
+      style={{
+        display: 'flex',
+        gap: '10px',
+        flexDirection: 'row',
+        fontSize: 'clamp(16px, 1.5vw, 40px)',
+        alignItems: 'center',
+      }}
+    >
+      <span style={{ color }}>{name}</span>
+
+      <Icon />
+    </button>
   </IconContext.Provider>
 );
 

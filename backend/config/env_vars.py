@@ -35,11 +35,16 @@ MONGO_USERNAME: str = _read_env_string("MONGO_USERNAME")
 MONGO_PASSWORD: str = _read_env_string("MONGO_PASSWORD")
 MONGO_DB_NAME: str = _read_env_string("MONGO_DB_NAME")
 
-FRONTEND_URL: str = _read_env_string("FRONTEND_URL")
+IP_ADDRESS: str = _read_env_string("IP_ADDRESS")
+
+METHOD: str = _read_env_string("METHOD")
+FRONTEND_PORT: str = _read_env_string("FRONTEND_PORT")
+
+FRONTEND_URL: str = f"{METHOD}://{IP_ADDRESS}:{FRONTEND_PORT}"
+
+BACKEND_PORT: int = _read_env_int("BACKEND_PORT")
 
 TEMPLATE_FOLDER: str = _read_env_string("TEMPLATE_FOLDER")
-IP_ADDRESS: str = _read_env_string("IP_ADDRESS")
-BACKEND_PORT: int = _read_env_int("BACKEND_PORT")
 DEBUG: bool = _read_env_bool("DEBUG")
 
 APP_SECRET: str = _read_env_string("APP_SECRET")
