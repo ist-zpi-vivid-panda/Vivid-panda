@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import { Box } from '@mui/material';
+
 const Loading = () => {
   const [backgroundSize, setBackgroundSize] = useState('20%');
 
@@ -26,17 +28,17 @@ const Loading = () => {
   }, []);
 
   return (
-    <div
+    <Box
       className="logoBackground min-h-screen bg-center"
-      style={{
+      sx={{
         backgroundPosition: 'center',
         backgroundSize: backgroundSize,
         width: '100%',
         height: '100vh',
       }}
     >
-      <div className="loading-circle"></div>
-    </div>
+      <Box className="loading-circle" />
+    </Box>
   );
 };
 

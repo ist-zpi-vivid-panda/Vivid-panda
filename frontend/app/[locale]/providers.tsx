@@ -1,13 +1,12 @@
 'use client';
 
 import { ChildrenProp } from '@/app/lib/definitions';
-import { ThemeProvider } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental';
 
 import { getQueryClient } from '../lib/storage/getQueryClient';
-import theme from '../ui/themed/theme';
+import ConfiguredThemeProvider from '../ui/themed/ConfiguredThemeProvider';
 import { ActionPrompt } from '../ui/utilities/ActionPrompt';
 import AuthRedirector from '../ui/utilities/AuthRedirector';
 import ErrorBoundaryTanstack from '../ui/utilities/ErrorBoundaryTanstack';
@@ -17,7 +16,7 @@ const Providers = ({ children }: ChildrenProp) => {
   const queryClient = getQueryClient();
 
   return (
-    <ThemeProvider theme={theme}>
+    <ConfiguredThemeProvider>
       <HydrationZustand>
         <AuthRedirector>
           <QueryClientProvider client={queryClient}>
@@ -33,7 +32,7 @@ const Providers = ({ children }: ChildrenProp) => {
           </QueryClientProvider>
         </AuthRedirector>
       </HydrationZustand>
-    </ThemeProvider>
+    </ConfiguredThemeProvider>
   );
 };
 export default Providers;

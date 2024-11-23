@@ -41,10 +41,11 @@ const FilesListItem = ({
         <Avatar
           sx={{
             border: '1px solid #000',
+            backgroundColor: 'primary.contrastText',
           }}
           variant="square"
           src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}
-        ></Avatar>
+        />
       )}
 
       <Tooltip title={fileInfo.filename}>
