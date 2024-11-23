@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-22 08:56+0100\n"
+"POT-Creation-Date: 2024-11-23 20:11+0100\n"
 "PO-Revision-Date: 2024-11-16 09:52+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,52 +19,56 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.15.0\n"
 
-#: blueprints/ai/services.py:34
+#: blueprints/ai/services.py:36
 #, python-format
 msgid ""
 "Image size for %(ai_func)s must be between %(min_size)s and %(max_size)s "
 "pixels"
 msgstr ""
-"Wielkość obrazka dla %(ai_func)s musi być pomiędzy %(min_size)s a %(max_size)s "
-"pikselami"
+"Wielkość obrazka dla %(ai_func)s musi być pomiędzy %(min_size)s a "
+"%(max_size)s pikselami"
 
-#: blueprints/auth/routes.py:66
+#: blueprints/auth/routes.py:62
 msgid "Email already registered"
 msgstr "Adres email już zarejestrowany"
 
-#: blueprints/auth/routes.py:82
+#: blueprints/auth/routes.py:78
 msgid "Invalid username or password"
 msgstr "Nieprawidłowy email lub hasło"
 
-#: blueprints/auth/routes.py:85 blueprints/auth/routes.py:212
+#: blueprints/auth/routes.py:81 blueprints/auth/routes.py:179
 msgid "Account already exists for another provider"
 msgstr "Konto istnieje dla innego dostawcy"
 
-#: blueprints/auth/routes.py:117
+#: blueprints/auth/routes.py:113
 msgid "User does not exists"
 msgstr "Użytkownik nie istnieje"
 
-#: blueprints/auth/routes.py:120
+#: blueprints/auth/routes.py:116
 msgid "Cannot reset password for this account provider"
 msgstr "Nie można zresetować hasła dla tego dostawcy"
 
-#: blueprints/auth/routes.py:140
+#: blueprints/auth/routes.py:136
 msgid "Missing data"
 msgstr "Brak danych"
 
-#: blueprints/auth/routes.py:143
+#: blueprints/auth/routes.py:139
 msgid "Token expired"
 msgstr "Token przestarzały"
 
-#: blueprints/auth/routes.py:146
+#: blueprints/auth/routes.py:142
 msgid "Passwords are not the same"
 msgstr "Hasła są rózne"
 
-#: blueprints/auth/routes.py:149
+#: blueprints/auth/routes.py:145
 msgid "Passwords cannot be the same as previous password"
 msgstr "Hasło musi być inne od poprzedniego"
 
-#: blueprints/auth/routes.py:200
+#: blueprints/auth/routes.py:163 blueprints/auth/routes.py:184
+msgid "Invalid Google token"
+msgstr "Nieprawidłowy token Google"
+
+#: blueprints/auth/routes.py:171
 msgid "User email not available or not verified by Google"
 msgstr "Adres email niedostępny lub niezweryfikowany przez Google"
 
@@ -123,10 +127,14 @@ msgid "Username is required"
 msgstr "Nazwa użytkownika jest wymagana"
 
 #: schemas/auth.py:29
+msgid "Google code required"
+msgstr "Kod Google jest wymagany"
+
+#: schemas/auth.py:33
 msgid "Access token is required"
 msgstr "Token dostępu jest wymagany"
 
-#: schemas/auth.py:33
+#: schemas/auth.py:37
 msgid "Refresh token is required"
 msgstr "Token odświeżający jest wymagany"
 

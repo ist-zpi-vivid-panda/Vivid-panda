@@ -14,6 +14,7 @@ import { Box } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import ResponsiveTypography from '../themed/ResponsiveTypography';
 
@@ -29,12 +30,18 @@ const ForgotPassword = () => {
   } = useConfiguredForm({ schemaName: SchemaNames.SendEmailRequestSchema });
 
   const onSubmit = useCallback(
-    (values: FieldValues) => {
+    async (values: FieldValues) => {
       const sendPasswordEmail: RequestSendPasswordProps = { email: values.email };
 
-      sendEmail(sendPasswordEmail);
+      try {
+        await sendEmail(sendPasswordEmail);
 
-      router.replace('/auth/login');
+        router.replace('/auth/login');
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+      }
     },
     [router]
   );

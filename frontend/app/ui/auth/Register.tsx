@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
 
+import GoogleAuthButton from './GoogleAuthButton';
 import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 const Register = () => {
@@ -60,6 +61,10 @@ const Register = () => {
 
       <Box className="flex justify-end custom-margin">
         <SubmitButton />
+      </Box>
+
+      <Box className="flex justify-end custom-margin">
+        <GoogleAuthButton />
       </Box>
 
       <Link href="/auth/login">

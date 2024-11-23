@@ -5,7 +5,6 @@ from flask import Flask
 from flask_babel import Babel
 from flask_mailman import Mail
 from flask_marshmallow import Marshmallow
-from oauthlib.oauth2 import WebApplicationClient
 
 from config.babel_config import create_babel_config
 from config.cors_config import create_cors_config
@@ -13,7 +12,6 @@ from config.database import create_db_connection
 from config.doc_config import create_doc_config
 from config.env_vars import (
     APP_SECRET,
-    GOOGLE_CLIENT_ID,
     MAX_CONTENT_LENGTH,
     MONGO_DB_NAME,
     TEMPLATE_FOLDER,
@@ -22,7 +20,6 @@ from config.mail_config import create_mailer
 from config.validation_config import create_validation_config
 
 marshmallow = Marshmallow()
-oauth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 database = create_db_connection(MONGO_DB_NAME)
 grid_fs = gridfs.GridFS(database)
 mail = Mail()

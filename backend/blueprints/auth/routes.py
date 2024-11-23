@@ -1,7 +1,6 @@
-from typing import Any, Tuple
+from typing import Tuple
 
-import requests
-from flask import Blueprint, Response, json, jsonify, request, url_for
+from flask import Blueprint, request
 from flask_apispec import marshal_with
 from flask_babel import gettext
 from flask_jwt_extended import (
@@ -9,15 +8,17 @@ from flask_jwt_extended import (
     create_refresh_token,
     jwt_required,
 )
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import oauth_client
 from blueprints.auth.services import send_reset_password_email, validate_reset_password_token
 from blueprints.user.models import AccountDataProvider, UserModel
-from config.env_vars import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_DISCOVERY_URL
+from config.env_vars import GOOGLE_CLIENT_ID
 from run_services import user_service
 from schemas.auth import (
     AccessTokenSchema,
+    GoogleAuth,
     LoginSchema,
     RegisterSchema,
     ResetPasswordSchema,
@@ -33,10 +34,6 @@ from utils.request_utils import doc_endpoint, error_dict, success_dict, user_req
 auth_blueprint = Blueprint("auth", __name__)
 
 tags = ["Authentication"]
-
-
-def get_google_provider_cfg() -> Any:
-    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
 def create_access_token_for_user(user: UserModel) -> str:
@@ -94,12 +91,12 @@ def login(email: str, password: str) -> Tuple[dict, int] | dict:
 @doc_endpoint(
     description="Refresh access token",
     tags=tags,
-    response_schemas=[(AccessTokenSchema, 200)],
+    response_schemas=[(TokensSchema, 200), (AccessTokenSchema, 200)],
     secure=False,  # add security other way
 )
-def refresh(user: UserModel) -> Tuple[Response, int] | Response:
+def refresh(user: UserModel) -> Tuple[dict, int] | dict:
     access_token = create_access_token_for_user(user)
-    return jsonify({"access_token": access_token})
+    return {"access_token": access_token}
 
 
 @auth_blueprint.route("/request_reset_password", methods=["POST"])
@@ -154,61 +151,36 @@ def reset_password(password: str, password_repeated: str) -> Tuple[dict, int] | 
     return success_dict(True)
 
 
-@auth_blueprint.route("/google", methods=["GET"])
-def auth_with_google() -> Tuple[Response, int] | Response:
-    google_provider_cfg = get_google_provider_cfg()
-    authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+@auth_blueprint.route("/google-callback", methods=["POST"])
+@doc_endpoint(
+    description="Google callback endpoint",
+    tags=tags,
+    input_schema=GoogleAuth,
+    response_schemas=[(TokensSchema, 200), (ErrorSchema, 400)],
+    secure=False,
+)
+def callback_google(code: str | None) -> Tuple[dict, int] | dict:
+    if not code:
+        return error_dict(gettext("Invalid Google token"))
 
-    request_uri = oauth_client.prepare_request_uri(
-        authorization_endpoint,
-        redirect_uri=url_for("callback", _external=True),
-        scope=["openid", "email", "profile"],
-    )
+    try:
+        id_info = id_token.verify_oauth2_token(code, Request(), GOOGLE_CLIENT_ID, clock_skew_in_seconds=3)
 
-    return jsonify(request_uri)
+        user_email = id_info.get("email")
+        user_username = id_info.get("given_name")
 
+        if not user_email:
+            return error_dict(gettext("User email not available or not verified by Google")), 400
 
-@auth_blueprint.route("/google/callback", methods=["GET"])
-def callback_google() -> Tuple[Response, int] | Response:
-    code = request.args.get("code")
+        user = user_service.get_by_email(user_email)
 
-    google_provider_cfg = get_google_provider_cfg()
-    token_endpoint = google_provider_cfg["token_endpoint"]
+        if user is None:
+            user = UserModel(None, user_email, user_username, "", AccountDataProvider.GOOGLE, None)
+            user_service.insert(user)
+        elif user.provider != AccountDataProvider.GOOGLE:
+            return error_dict(gettext("Account already exists for another provider")), 400
 
-    token_url, headers, body = oauth_client.prepare_token_request(
-        token_endpoint,
-        authorization_response=request.url,
-        redirect_url=request.base_url,
-        code=code,
-    )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
-    )
+        return create_tokens(user)
 
-    oauth_client.parse_request_body_response(json.dumps(token_response.json()))
-
-    userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
-    uri, headers, body = oauth_client.add_token(userinfo_endpoint)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
-
-    userinfo = userinfo_response.json()
-    if not userinfo.get("email_verified"):
-        return jsonify(
-            error_dict(gettext("User email not available or not verified by Google")),
-            400,
-        )
-
-    email = userinfo["email"]
-    username = userinfo["given_name"]
-
-    user = user_service.get_by_email(email)
-    if user is None:
-        user = UserModel(None, email, username, "", AccountDataProvider.GOOGLE, None)
-        user_service.insert(user)
-    elif user.provider != AccountDataProvider.GOOGLE:
-        return jsonify(error_dict(gettext("Account already exists for another provider"))), 400
-
-    return jsonify(create_tokens(user))
+    except ValueError:
+        return error_dict(gettext("Invalid Google token")), 400

@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mui/icons-material": "^6.1.8",
     "@mui/material": "^6.1.8",
+    "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.53.1",
     "@tanstack/react-query-next-experimental": "^5.56.2",
     "ajv-errors": "^3.0.0",
@@ -28,7 +29,6 @@
     "i18next-resources-to-backend": "^1.2.1",
     "license-checker": "^25.0.1",
     "next": "^15.0.3",
-    "next-auth": "^5.0.0-beta.20",
     "next-i18n-router": "^5.5.1",
     "normalize.css": "^8.0.1",
     "react": "^18.3.1",
@@ -37,7 +37,6 @@
     "react-error-boundary": "^4.0.13",
     "react-hook-form": "^7.52.2",
     "react-i18next": "^15.1.0",
-    "react-icons": "^5.3.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-toastify": "^10.0.5",
     "zustand": "^4.5.5"

@@ -1,5 +1,5 @@
 from app import create_app
-from config.env_vars import IP_ADDRESS, BACKEND_PORT, DEBUG
+from config.env_vars import BACKEND_PORT, DEBUG, IP_ADDRESS
 
 app = create_app()
 

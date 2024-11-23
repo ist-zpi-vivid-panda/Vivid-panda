@@ -1,5 +1,6 @@
 import { apiCallNoAutoToken, HttpMethod, postCall } from '@/app/lib/api/apiUtils';
 import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
+import { CredentialResponse } from '@react-oauth/google';
 import { toast } from 'react-toastify';
 
 export type LoginProps = {
@@ -36,6 +37,7 @@ const REGISTER_ENDPOINT = '/register' as const;
 const REQUEST_RESET_PASSWORD_ENDPOINT = '/request_reset_password' as const;
 const RESET_PASSWORD_ENDPOINT = '/reset_password' as const;
 const REFRESH_TOKENS_ENDPOINT = '/refresh' as const;
+const GOOGLE_CALLBACK = '/google-callback' as const;
 
 const TOKEN_QS = 'token' as const;
 const USER_ID_QS = 'user_id' as const;
@@ -68,6 +70,13 @@ export const loginUser = async (loginProps: LoginProps) =>
 
 export const registerUser = async (registerProps: RegisterProps) =>
   auth(() => postCall<AuthResult>(AUTH_ENDPOINT + REGISTER_ENDPOINT, registerProps));
+
+export const googleAuth = async (credentialResponse: CredentialResponse) =>
+  auth(() =>
+    postCall<AuthResult>(AUTH_ENDPOINT + GOOGLE_CALLBACK, {
+      code: credentialResponse.credential,
+    })
+  );
 
 export const sendEmail = async (sendPassword: RequestSendPasswordProps) => {
   const apiResult = await postCall(AUTH_ENDPOINT + REQUEST_RESET_PASSWORD_ENDPOINT, sendPassword);

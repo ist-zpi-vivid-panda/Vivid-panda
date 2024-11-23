@@ -12,6 +12,7 @@ import SubmitButton from '@/app/ui/forms/SubmitButton';
 import { Box } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import ResponsiveTypography from '../themed/ResponsiveTypography';
 
@@ -30,14 +31,20 @@ const ChangePassword = () => {
   } = useConfiguredForm({ schemaName: SchemaNames.ResetPasswordSchema });
 
   const onSubmit = useCallback(
-    (values: FieldValues) => {
+    async (values: FieldValues) => {
       if (token && userId) {
         const changePasswordData: ChangePasswordProps = {
           password: values.password,
           password_repeated: values.password_repeated,
         };
 
-        changePassword(changePasswordData, token as string, userId as string);
+        try {
+          await changePassword(changePasswordData, token as string, userId as string);
+        } catch (error) {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
       }
 
       router.replace('/auth/login');

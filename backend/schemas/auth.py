@@ -25,6 +25,10 @@ class ResetPasswordSchema(Schema):
     password_repeated = get_password_field()
 
 
+class GoogleAuth(Schema):
+    code = fields.Str(required=True, error_messages={"required": gettext("Google code required")})
+
+
 class AccessTokenSchema(Schema):
     access_token = fields.Str(required=True, error_messages={"required": gettext("Access token is required")})
 
