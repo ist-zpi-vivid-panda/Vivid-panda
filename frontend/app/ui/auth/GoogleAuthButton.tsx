@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { googleAuth } from '@/app/lib/api/authApi';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import { DEFAULT_LOCALE } from '@/app/lib/internationalization/utils';
 import useUserData from '@/app/lib/storage/useUserData';
 import ENV_VARS from '@/constants/envVars';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
@@ -29,9 +30,11 @@ const GoogleAuthButton = () => {
 
   const onError = useCallback(() => toast.error(t('unknown_error')), [t]);
 
+  const locale = useMemo(() => i18n.language || DEFAULT_LOCALE, [i18n.language]);
+
   return (
     <GoogleOAuthProvider clientId={ENV_VARS.GOOGLE_ID}>
-      <GoogleLogin onSuccess={onSuccess} onError={onError} locale={i18n.language} useOneTap />
+      <GoogleLogin onSuccess={onSuccess} onError={onError} locale={locale} useOneTap />
     </GoogleOAuthProvider>
   );
 };

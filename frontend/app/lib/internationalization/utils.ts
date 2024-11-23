@@ -1,3 +1,3 @@
 import { SupportedLocale } from './definitions';
 
-export const getDefaultLocale = () => SupportedLocale.en;
+export const DEFAULT_LOCALE = SupportedLocale.en as const;

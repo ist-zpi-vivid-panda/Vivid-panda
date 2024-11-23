@@ -7,7 +7,7 @@ import { getI18n } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { refreshToken } from './authApi';
-import { getDefaultLocale } from '../internationalization/utils';
+import { DEFAULT_LOCALE } from '../internationalization/utils';
 
 export type ErrorApiResponse = { error: string };
 
@@ -34,7 +34,7 @@ export enum HttpMethod {
 export const buildWholeApiUri = (endpoint: string) => `${API_CONFIG.root}${endpoint}`;
 
 const buildHeaders = (isFormData: boolean, token?: string) => ({
-  'Accept-Language': getI18n().language || getDefaultLocale(),
+  'Accept-Language': getI18n().language || DEFAULT_LOCALE,
   ...(!isFormData && { 'Content-Type': 'application/json' }),
   ...(token && { Authorization: `Bearer ${token}` }),
 });

@@ -1,10 +1,10 @@
 import { SupportedLocale } from './app/lib/internationalization/definitions';
-import { getDefaultLocale } from './app/lib/internationalization/utils';
+import { DEFAULT_LOCALE } from './app/lib/internationalization/utils';
 import { getEnumValues } from './app/lib/utilities/enums';
 
 const i18Config = {
   locales: getEnumValues(SupportedLocale),
-  defaultLocale: getDefaultLocale(),
+  defaultLocale: DEFAULT_LOCALE,
 };
 
 export default i18Config;
