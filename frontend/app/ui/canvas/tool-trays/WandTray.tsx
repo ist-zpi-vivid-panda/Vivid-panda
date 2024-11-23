@@ -1,4 +1,6 @@
-import { FaCheck, FaX } from 'react-icons/fa6';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { Button } from '@mui/material';
 
 type WandTrayProps = {
   clearMask: () => void;
@@ -7,13 +9,15 @@ type WandTrayProps = {
 
 const WandTray = ({ clearMask, acceptMask }: WandTrayProps) => {
   return (
-    <div className="text-large-edit">
-      <div className="text-large-edit-less">
-        <button onClick={clearMask}>{<FaX />}</button>
+    <>
+      <Button variant="contained" onClick={clearMask}>
+        {<CloseRoundedIcon />}
+      </Button>
 
-        <button onClick={acceptMask}>{<FaCheck />}</button>
-      </div>
-    </div>
+      <Button variant="contained" onClick={acceptMask}>
+        {<CheckRoundedIcon />}
+      </Button>
+    </>
   );
 };
 

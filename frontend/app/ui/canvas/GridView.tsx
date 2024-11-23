@@ -9,6 +9,7 @@ import { Grid2 as Grid } from '@mui/material';
 
 import ActionsMenu from './ActionsMenu';
 import FileEditListOptions from './FileEditOptions';
+import TrayCard from '../themed/TrayCard';
 
 type GridViewProps = {
   setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
@@ -72,7 +73,7 @@ const GridView = ({
         </Grid>
 
         <Grid size={{ xs: 2, sm: 3, md: 2 }} sx={{ padding: 2 }}>
-          {currentEditComponent}
+          {currentEditComponent && <TrayCard>{currentEditComponent}</TrayCard>}
         </Grid>
       </Grid>
     </Grid>

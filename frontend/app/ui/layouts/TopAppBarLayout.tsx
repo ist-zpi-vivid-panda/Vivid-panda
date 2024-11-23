@@ -1,15 +1,29 @@
 import { ChildrenProp } from '@/app/lib/definitions';
+import { Box } from '@mui/material';
 
 import TopAppBar from '../navigation/TopAppBar';
 
 const TopAppBarLayout = ({ children }: ChildrenProp) => (
-  <div className="min-h-screen flex flex-col">
-    <nav>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
+    }}
+  >
+    <Box component="nav">
       <TopAppBar />
-    </nav>
+    </Box>
 
-    {children}
-  </div>
+    <Box
+      sx={{
+        flex: 1,
+        overflowY: 'auto',
+      }}
+    >
+      {children}
+    </Box>
+  </Box>
 );
 
 export default TopAppBarLayout;

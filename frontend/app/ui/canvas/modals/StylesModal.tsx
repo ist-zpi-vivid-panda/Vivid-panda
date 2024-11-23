@@ -1,6 +1,8 @@
 import { TransferStyle } from '@/app/lib/canvas/ai-functions/definitions';
 import { getEnumValues } from '@/app/lib/utilities/enums';
+import { Button } from '@mui/material';
 
+import ResponsiveTypography from '../../themed/ResponsiveTypography';
 import ActionModal from '../../utilities/ActionModal';
 
 type StylesModalProps = {
@@ -9,20 +11,16 @@ type StylesModalProps = {
   setTransferStyle: (_: TransferStyle) => void;
 };
 
-const styles = getEnumValues(TransferStyle);
+const styleTypes = getEnumValues(TransferStyle);
 
 const StylesModal = ({ isOpen, close, setTransferStyle }: StylesModalProps) => {
   return (
     <ActionModal isOpen={isOpen} close={close}>
-      <div className="text-large-edit">
-        <div className="text-large-edit-less">
-          {styles.map((style) => (
-            <button key={style} onClick={() => setTransferStyle(style)}>
-              {style}
-            </button>
-          ))}
-        </div>
-      </div>
+      {styleTypes.map((styleName) => (
+        <Button variant="contained" key={styleName} onClick={() => setTransferStyle(styleName)}>
+          <ResponsiveTypography>{styleName}</ResponsiveTypography>
+        </Button>
+      ))}
     </ActionModal>
   );
 };

@@ -24,7 +24,7 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
 
       <div className="px-10 py-4 flex flex-row justify-between">
         <Link href="/">
-          <BackArrow size={40} />
+          <BackArrow />
         </Link>
 
         <LocaleChangeButton setAnchorEl={setAnchorElLang} />

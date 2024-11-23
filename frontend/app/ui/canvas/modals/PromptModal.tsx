@@ -3,10 +3,11 @@ import { useCallback } from 'react';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import { Box } from '@mui/material';
 import { FieldValues } from 'react-hook-form';
 
-import ControlledCustomInput from '../../shared/CustomInput';
-import SubmitButton from '../../shared/SubmitButton';
+import ControlledCustomInput from '../../forms/CustomInput';
+import SubmitButton from '../../forms/SubmitButton';
 import ActionModal from '../../utilities/ActionModal';
 
 type PromptModalProps = {
@@ -38,9 +39,9 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ControlledCustomInput control={control} errors={errors} label={t('prompt')} name="prompt" required />
 
-        <div className="flex justify-end mb-20">
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
           <SubmitButton />
-        </div>
+        </Box>
       </form>
     </ActionModal>
   );

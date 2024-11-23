@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,7 +15,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import { FaBars } from 'react-icons/fa6';
 
 import AvatarOptions from './AvatarOptions';
 import LocaleChangeButton from '../locale/LocaleChangeButton';
@@ -84,7 +84,7 @@ const TopAppBar = () => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <FaBars />
+              <MenuRoundedIcon />
             </IconButton>
 
             <Menu

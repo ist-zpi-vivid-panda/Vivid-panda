@@ -1,5 +1,3 @@
-'use client'; // Mark this component as a client component
-
 import { ChildrenProp } from '@/app/lib/definitions';
 
 const AuthLayout = ({ children }: ChildrenProp) => {

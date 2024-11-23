@@ -5,8 +5,10 @@ import { useState } from 'react';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { readLicenses } from '@/app/lib/licenses/licenseReader';
+import { Box, Button } from '@mui/material';
 
 import LicenseInfo from './LicenseInfo';
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 const licenses = readLicenses();
 
@@ -16,34 +18,34 @@ const LicenseList = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ flex: 1, overflowY: 'scroll', borderRight: '1px solid #ddd', padding: '1rem' }}>
-        <h2>{t('licenses')}</h2>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, gap: 2 }}>
+        <ResponsiveTypography>{t('licenses')}:</ResponsiveTypography>
 
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {licenses.map((license, index) => (
-            <li key={license.key} style={{ marginBottom: '0.5rem' }}>
-              <button
+        <Box sx={{ flex: 1, overflowY: 'scroll' }}>
+          <Box>
+            {licenses.map((license, index) => (
+              <Button
+                key={license.key}
                 onClick={() => setSelectedIndex(index)}
-                style={{
+                sx={{
                   background: selectedIndex === index ? '#0070f3' : 'transparent',
                   color: selectedIndex === index ? '#fff' : '#000',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  cursor: 'pointer',
-                  textAlign: 'left',
+                  justifyContent: 'flex-start',
                   width: '100%',
+                  p: 1,
+                  px: 2,
                 }}
               >
-                {license.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+                <ResponsiveTypography>{license.name}</ResponsiveTypography>
+              </Button>
+            ))}
+          </Box>
+        </Box>
+      </Box>
 
       <LicenseInfo license={selectedIndex !== null ? licenses[selectedIndex] : undefined} />
-    </div>
+    </Box>
   );
 };
 

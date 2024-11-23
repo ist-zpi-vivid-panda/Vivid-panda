@@ -8,8 +8,8 @@ import { TranslationNamespace } from '@/app/lib/internationalization/definitions
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
-import ControlledCustomInput from '@/app/ui/shared/CustomInput';
-import SubmitButton from '@/app/ui/shared/SubmitButton';
+import ControlledCustomInput from '@/app/ui/forms/CustomInput';
+import SubmitButton from '@/app/ui/forms/SubmitButton';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';

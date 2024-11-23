@@ -15,5 +15,8 @@
     "pl": "Polish",
     "en": "English",
     "language": "Language",
-    "main_page": "Main page"
+    "main_page": "Main page",
+    "uploaded_at": "Uploaded at",
+    "updated_at": "Updated at",
+    "size": "Size"
 }

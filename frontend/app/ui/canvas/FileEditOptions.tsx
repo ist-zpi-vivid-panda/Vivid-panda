@@ -15,10 +15,11 @@ import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDouble
 import OpenWithRoundedIcon from '@mui/icons-material/OpenWithRounded';
 import RotateRightRoundedIcon from '@mui/icons-material/RotateRightRounded';
 import ZoomOutMapRoundedIcon from '@mui/icons-material/ZoomOutMapRounded';
-import { Button, Card } from '@mui/material';
+import { Button } from '@mui/material';
 
 import { EditingTool } from '../../lib/canvas/definitions';
 import ResponsiveTypography from '../themed/ResponsiveTypography';
+import TrayCard from '../themed/TrayCard';
 
 type FileEditListOptionsProps = {
   setEditingTool?: Dispatch<SetStateAction<EditingTool | undefined>>;
@@ -33,13 +34,14 @@ type EditToolPresentationProps = {
 
 const EditingToolPresentation = ({ name, onToolSelect, Icon }: EditToolPresentationProps) => (
   <Button
+    variant="contained"
     onClick={onToolSelect}
     sx={{
-      gap: '10px',
       flexDirection: 'row',
       alignItems: 'center',
       width: '100%',
       justifyContent: 'flex-start',
+      gap: 2,
     }}
   >
     <Icon />
@@ -62,14 +64,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
   );
 
   return (
-    <Card
-      sx={{
-        padding: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-      }}
-    >
+    <TrayCard>
       <EditingToolPresentation
         name={t('scissors')}
         Icon={ContentCutRoundedIcon}
@@ -129,7 +124,7 @@ const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOpti
         Icon={ColorLensRoundedIcon}
         onToolSelect={() => toggleAiFunction(AiFunctionType.ColorizeImage)}
       />
-    </Card>
+    </TrayCard>
   );
 };
 

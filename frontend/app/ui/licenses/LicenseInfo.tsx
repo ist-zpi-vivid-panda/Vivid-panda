@@ -1,6 +1,9 @@
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { License } from '@/app/lib/licenses/definitions';
+import { Box } from '@mui/material';
+
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 type LicenseInfoProps = {
   license?: License;
@@ -10,37 +13,37 @@ const LicenseInfo = ({ license }: LicenseInfoProps) => {
   const { t } = useStrings(TranslationNamespace.Licenses);
 
   return (
-    <div style={{ flex: 2, padding: '1rem' }}>
-      <h2>{t('license_details')}:</h2>
+    <Box sx={{ flex: 2, padding: '1rem' }}>
+      <ResponsiveTypography>{t('license_details')}:</ResponsiveTypography>
 
-      <div>
+      <Box>
         {license ? (
           <>
-            <p>
+            <ResponsiveTypography>
               <strong>{t('license')}: </strong> {license.licenses}
-            </p>
+            </ResponsiveTypography>
 
-            <p>
+            <ResponsiveTypography>
               <strong>URL: </strong>
               <a href={license.repository} target="_blank" rel="noopener noreferrer">
                 {license.repository}
               </a>
-            </p>
+            </ResponsiveTypography>
 
-            <p>
+            <ResponsiveTypography>
               <strong>{t('copyright')}: </strong>
               {license.copyright}
-            </p>
+            </ResponsiveTypography>
 
             <br />
 
-            <p>{license.licenseText || t('no_license_text')}</p>
+            <ResponsiveTypography>{license.licenseText || t('no_license_text')}</ResponsiveTypography>
           </>
         ) : (
-          <p>{t('no_license_chosen')}</p>
+          <ResponsiveTypography>{t('no_license_chosen')}</ResponsiveTypography>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

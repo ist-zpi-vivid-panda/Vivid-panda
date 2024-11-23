@@ -5,8 +5,10 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { ChildrenProp } from '@/app/lib/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import { Box, Button } from '@mui/material';
 
 import ActionModal from './ActionModal';
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 type PromptActionProps = {
   text: string;
@@ -25,7 +27,11 @@ type ActionPromptProps = {
   prompt: (_: PromptProps) => void;
 };
 
-const PromptAction = ({ text, onPress }: PromptActionProps) => <button onClick={onPress}>{text}</button>;
+const PromptAction = ({ text, onPress }: PromptActionProps) => (
+  <Button variant="contained" sx={{ flex: 1 }} onClick={onPress}>
+    {text}
+  </Button>
+);
 
 const ActionPromptContext = createContext<ActionPromptProps>({ prompt: () => {} });
 
@@ -78,36 +84,36 @@ export const ActionPrompt = ({ children }: ChildrenProp) => {
   return (
     <ActionPromptContext.Provider value={{ prompt }}>
       <ActionModal isOpen={isVisible} close={hideOverlay}>
-        <div style={{ backgroundColor: 'lavender' }}>
-          {title}
+        <Box>
+          <ResponsiveTypography>{title}</ResponsiveTypography>
 
-          {message}
-        </div>
+          <ResponsiveTypography>{message}</ResponsiveTypography>
+        </Box>
 
-        {(!actionsWithAdditional || actionsWithAdditional.length === 0) && (
-          <div>
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
+          {(!actionsWithAdditional || actionsWithAdditional.length === 0) && (
             <PromptAction text={t('ok')} onPress={hideOverlay} />
-          </div>
-        )}
+          )}
 
-        {actionsWithAdditional && actionsWithAdditional.length > 0 && (
-          <div style={{ backgroundColor: 'lavender' }}>
-            {actionsWithAdditional?.map((action, index) => (
-              <PromptAction
-                key={index}
-                text={action?.text}
-                isCancelStyled={action?.isCancelStyled}
-                onPress={() =>
-                  hideOverlayWithFn(() => {
-                    if (action?.onPress) {
-                      action?.onPress();
-                    }
-                  })
-                }
-              />
-            ))}
-          </div>
-        )}
+          {actionsWithAdditional && actionsWithAdditional.length > 0 && (
+            <>
+              {actionsWithAdditional?.map((action, index) => (
+                <PromptAction
+                  key={index}
+                  text={action?.text}
+                  isCancelStyled={action?.isCancelStyled}
+                  onPress={() =>
+                    hideOverlayWithFn(() => {
+                      if (action?.onPress) {
+                        action?.onPress();
+                      }
+                    })
+                  }
+                />
+              ))}
+            </>
+          )}
+        </Box>
       </ActionModal>
 
       {children}

@@ -16,7 +16,7 @@ Best `ZPI` in the entire universe, don't change my mind
 
 ## Icons
 
-https://react-icons.github.io/react-icons/
+https://mui.com/material-ui/material-icons/?theme=Rounded&query=hamburger
 
 
 ## Hooks

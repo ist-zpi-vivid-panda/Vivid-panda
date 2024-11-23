@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Children } from '@/app/lib/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { Card } from '@mui/material';
+import { Box, Button, Card, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 type BaseErrorProps = {
@@ -27,11 +27,11 @@ const BaseError = ({ errorText, buttonText, onButtonClick, children }: BaseError
     if (width >= 1280) {
       setBackgroundSize('50%'); // Large screens
     } else if (width >= 1024) {
-      setBackgroundSize('30%'); // Medium screens
+      setBackgroundSize('40%'); // Medium screens
     } else if (width >= 640) {
-      setBackgroundSize('20%'); // Small screens
+      setBackgroundSize('25%'); // Small screens
     } else {
-      setBackgroundSize('12%'); // Default size for smaller screens
+      setBackgroundSize('20%'); // Default size for smaller screens
     }
   }, []);
 
@@ -44,41 +44,40 @@ const BaseError = ({ errorText, buttonText, onButtonClick, children }: BaseError
   }, [updateBackgroundSize]);
 
   return (
-    <div
-      className="logoSadBackground min-h-screen bg-center"
-      style={{
-        backgroundPosition: 'center',
-        backgroundSize: backgroundSize,
-        width: '100%',
-        height: '100vh',
-      }}
-    >
-      <Card style={{ backgroundColor: 'pink', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: '20px',
-            alignItems: 'center',
-          }}
-        >
-          <p className="text-large" style={{ color: 'black' }}>
-            {errorText}
-          </p>
+    <>
+      <Card
+        sx={{
+          display: 'flex',
+          backgroundColor: 'pink',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          gap: 1.5,
+          p: 1,
+        }}
+      >
+        <Typography variant="h3">{errorText}</Typography>
 
-          <button className="text-large" style={{ color: 'black' }} onClick={onButtonClick}>
-            {buttonText}
-          </button>
+        <Button variant="text" onClick={onButtonClick}>
+          <Typography variant="h4">{buttonText}</Typography>
+        </Button>
 
-          <button className="text-large" style={{ color: 'black' }} onClick={() => router.replace('/')}>
-            {t('main_page')}
-          </button>
+        <Button variant="text" onClick={() => router.replace('/')}>
+          <Typography variant="h4">{t('main_page')}</Typography>
+        </Button>
 
-          {children}
-        </div>
+        {children}
       </Card>
-    </div>
+
+      <Box
+        className="logoSadBackground"
+        sx={{
+          flex: 1,
+          backgroundPosition: 'center',
+          backgroundSize: backgroundSize,
+        }}
+      />
+    </>
   );
 };
 export default BaseError;

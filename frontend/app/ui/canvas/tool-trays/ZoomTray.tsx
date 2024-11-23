@@ -4,6 +4,9 @@ import { SetStateAction } from 'react';
 
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import { Button } from '@mui/material';
 
 type ZoomTrayProps = {
   zoomStep: number;
@@ -15,15 +18,19 @@ const ZoomTray = ({ zoomStep, setZoom, defaultZoom }: ZoomTrayProps) => {
   const { t } = useStrings(TranslationNamespace.Canvas);
 
   return (
-    <div className="text-large-edit">
-      <div className="text-large-edit-less flex-row">
-        <button onClick={() => setZoom((prev) => prev + zoomStep)}>+</button>
+    <>
+      <Button variant="contained" onClick={() => setZoom((prev) => prev + zoomStep)}>
+        <AddRoundedIcon />
+      </Button>
 
-        <button onClick={() => setZoom(defaultZoom)}>{t('reset')}</button>
+      <Button variant="contained" onClick={() => setZoom(defaultZoom)}>
+        {t('reset')}
+      </Button>
 
-        <button onClick={() => setZoom((prev) => prev - zoomStep)}>-</button>
-      </div>
-    </div>
+      <Button variant="contained" onClick={() => setZoom((prev) => prev - zoomStep)}>
+        <RemoveRoundedIcon />
+      </Button>
+    </>
   );
 };
 

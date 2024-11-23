@@ -7,8 +7,8 @@ import { TranslationNamespace } from '@/app/lib/internationalization/definitions
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
-import { ControlledCustomPasswordInput } from '@/app/ui/shared/CustomInput';
-import SubmitButton from '@/app/ui/shared/SubmitButton';
+import { ControlledCustomPasswordInput } from '@/app/ui/forms/CustomInput';
+import SubmitButton from '@/app/ui/forms/SubmitButton';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
 

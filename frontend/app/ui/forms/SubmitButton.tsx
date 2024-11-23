@@ -2,14 +2,15 @@
 
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import { Button } from '@mui/material';
 
 const SubmitButton = () => {
   const { t } = useStrings(TranslationNamespace.Common);
 
   return (
-    <button type="submit" className="btn-success rounded-xl px-10 py-4">
+    <Button type="submit" variant="contained">
       {t('submit')}
-    </button>
+    </Button>
   );
 };
 

@@ -6,11 +6,12 @@ import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { SchemaNames } from '@/app/lib/validation/config';
-import { Card, Modal } from '@mui/material';
+import { Box } from '@mui/material';
 import { FieldValues } from 'react-hook-form';
 
-import ControlledCustomInput from '../shared/CustomInput';
-import SubmitButton from '../shared/SubmitButton';
+import ControlledCustomInput from '../forms/CustomInput';
+import SubmitButton from '../forms/SubmitButton';
+import ActionModal from '../utilities/ActionModal';
 
 type FileEditProps = {
   fileInfo?: FileInfo;
@@ -54,23 +55,15 @@ const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
   }, [fileInfo, reset]);
 
   return (
-    <Modal
-      open={!!fileInfo}
-      onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      className="flex flex-auto items-center justify-center mb-32"
-    >
-      <Card className="p-6">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ControlledCustomInput control={control} name="filename" errors={errors} label={t('file_name')} />
+    <ActionModal isOpen={!!fileInfo} close={onClose}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ControlledCustomInput control={control} name="filename" errors={errors} label={t('file_name')} />
 
-          <div className="flex justify-end mb-20">
-            <SubmitButton />
-          </div>
-        </form>
-      </Card>
-    </Modal>
+        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
+          <SubmitButton />
+        </Box>
+      </form>
+    </ActionModal>
   );
 };
 

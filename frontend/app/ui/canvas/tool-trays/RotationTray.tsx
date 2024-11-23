@@ -4,6 +4,9 @@ import { SetStateAction } from 'react';
 
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
+import { Button } from '@mui/material';
+
+import ResponsiveTypography from '../../themed/ResponsiveTypography';
 
 type RotationTrayProps = {
   rotationStep: number;
@@ -16,23 +19,23 @@ const RotationTray = ({ rotationStep, setRotation, currentRotation, defaultRotat
   const { t } = useStrings(TranslationNamespace.Canvas);
 
   return (
-    <div className="text-large-edit">
-      <span className="text-large-span">
+    <>
+      <ResponsiveTypography>
         {t('rotation')}: {currentRotation.toFixed(1)}
-      </span>
+      </ResponsiveTypography>
 
-      <div className=" text-large-edit-less">
-        <button onClick={() => setRotation((prev) => prev + rotationStep)}>
-          {t('rotate_by')} {rotationStep}°
-        </button>
+      <Button variant="contained" onClick={() => setRotation((prev) => prev + rotationStep)}>
+        {t('rotate_by')} {rotationStep}°
+      </Button>
 
-        <button onClick={() => setRotation(defaultRotation)}>{t('reset')}</button>
+      <Button variant="contained" onClick={() => setRotation(defaultRotation)}>
+        {t('reset')}
+      </Button>
 
-        <button onClick={() => setRotation((prev) => prev - rotationStep)}>
-          {t('rotate_by')} -{rotationStep}°
-        </button>
-      </div>
-    </div>
+      <Button variant="contained" onClick={() => setRotation((prev) => prev - rotationStep)}>
+        {t('rotate_by')} -{rotationStep}°
+      </Button>
+    </>
   );
 };
 

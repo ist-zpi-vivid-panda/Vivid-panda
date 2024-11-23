@@ -1,10 +1,15 @@
 'use client';
 
+import { DISPLAY_DATE_FORMAT } from '@/app/lib/dates/format';
 import { FileInfo } from '@/app/lib/files/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { Card } from '@mui/material';
+import { formatBytes } from '@/app/lib/utilities/fileSize';
+import { Button, Card, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import dayjs from 'dayjs';
+
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 type FilesListItemProps = {
   fileInfo: FileInfo;
@@ -24,21 +29,75 @@ const FilesListItem = ({
   const { t } = useStrings(TranslationNamespace.Common);
 
   return (
-    <Card className="flex flex-col p-2" style={{ backgroundColor: 'lavender' }}>
-      {fileInfo.thumbnail && <Avatar variant="square" src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}></Avatar>}
+    <Card
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1.5,
+        p: 1,
+      }}
+    >
+      {fileInfo.thumbnail && (
+        <Avatar
+          sx={{
+            border: '1px solid #000',
+          }}
+          variant="square"
+          src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}
+        ></Avatar>
+      )}
 
-      <span>{fileInfo.filename}</span>
+      <Tooltip title={fileInfo.filename}>
+        <ResponsiveTypography
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {fileInfo.filename}
+        </ResponsiveTypography>
+      </Tooltip>
 
-      <span>{fileInfo.file_size}</span>
+      <ResponsiveTypography>
+        {t('size')} {formatBytes(fileInfo.file_size)}
+      </ResponsiveTypography>
 
-      <span>{fileInfo.uploaded_at?.toDateString()}</span>
+      {fileInfo.uploaded_at && (
+        <ResponsiveTypography>
+          {t('uploaded_at')} {dayjs(fileInfo.uploaded_at).format(DISPLAY_DATE_FORMAT)}
+        </ResponsiveTypography>
+      )}
 
-      <span>{fileInfo.last_update_at?.toDateString()}</span>
+      {fileInfo.last_update_at && (
+        <ResponsiveTypography>
+          {t('updated_at')} {dayjs(fileInfo.last_update_at).format(DISPLAY_DATE_FORMAT)}
+        </ResponsiveTypography>
+      )}
 
-      {onEditClick && <button onClick={() => onEditClick(fileInfo)}>{t('edit')}</button>}
-      {onDeleteClick && <button onClick={() => onDeleteClick(fileInfo)}>{t('delete')}</button>}
-      {onDownloadClick && <button onClick={() => onDownloadClick(fileInfo)}>{t('download')}</button>}
-      {onEditPhotoClick && <button onClick={() => onEditPhotoClick(fileInfo)}>{t('files:edit_photo')}</button>}
+      {onEditClick && (
+        <Button variant="contained" onClick={() => onEditClick(fileInfo)}>
+          {t('edit')}
+        </Button>
+      )}
+
+      {onDeleteClick && (
+        <Button variant="contained" onClick={() => onDeleteClick(fileInfo)}>
+          {t('delete')}
+        </Button>
+      )}
+
+      {onDownloadClick && (
+        <Button variant="contained" onClick={() => onDownloadClick(fileInfo)}>
+          {t('download')}
+        </Button>
+      )}
+
+      {onEditPhotoClick && (
+        <Button variant="contained" onClick={() => onEditPhotoClick(fileInfo)}>
+          {t('files:edit_photo')}
+        </Button>
+      )}
     </Card>
   );
 };

@@ -3,9 +3,11 @@
 import { ChangeEvent, useRef, useState, DragEvent } from 'react';
 
 import PressableSpan from '@/app/ui/shared/PressableSpan';
+import { Box, Card } from '@mui/material';
 
 import { TranslationNamespace } from '../../lib/internationalization/definitions';
 import useStrings from '../../lib/internationalization/useStrings';
+import ResponsiveTypography from '../themed/ResponsiveTypography';
 
 type ImageUploadProps = {
   onImageUpload: (image: File) => void;
@@ -53,9 +55,16 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
   };
 
   return (
-    <div
-      className="flex flex-1 justify-center border-2 border-dashed border-black rounded-xl overflow-hidden"
-      style={{ display: 'flex', width: '100%', height: '100%' }}
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        border: '2px dashed black',
+        borderRadius: '16px',
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+      }}
     >
       <form
         className="flex flex-1 justify-center items-center"
@@ -78,19 +87,23 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
             ref={inputRef}
           />
 
-          <p
-            className={`${dragActive ? 'primaryBackgroundActive' : 'primaryBackground'} p-24 rounded-xl border-0`}
-            style={{ fontSize: 'clamp(10px, 1.5vw, 20px)' }}
+          <Card
+            sx={{
+              p: 10,
+              backgroundColor: dragActive ? 'primary.main' : 'background.default',
+            }}
           >
-            {`${t('drag_and_drop_or')} `}
-            <PressableSpan onClick={openFileExplorer}>
-              <u>{t('select_file')}</u>
-            </PressableSpan>
-            {`, ${t('to_upload')}`}
-          </p>
+            <ResponsiveTypography>
+              {`${t('drag_and_drop_or')} `}
+              <PressableSpan onClick={openFileExplorer}>
+                <u>{t('select_file')}</u>
+              </PressableSpan>
+              {`, ${t('to_upload')}`}
+            </ResponsiveTypography>
+          </Card>
         </div>
       </form>
-    </div>
+    </Box>
   );
 };
 

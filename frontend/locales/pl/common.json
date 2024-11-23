@@ -15,5 +15,8 @@
     "pl": "polski",
     "en": "angielski",
     "language": "Język",
-    "main_page": "Strona główna"
+    "main_page": "Strona główna",
+    "uploaded_at": "Przesłane",
+    "updated_at": "Zmienione",
+    "size": "Wielkość"
 }
