@@ -42,36 +42,36 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
         <Card
           className="custom-card"
           sx={{
-            '@media (min-width: 400px) and (max-width: 700px)': {
+            '@media (max-width: 700px)': {
               width: '40vw',
-              height: '60vh',
-              marginTop: '0.5vh',
+              height: '80vh',
+              marginTop: '-13vh',
               marginRight: '15vw',
             },
             '@media (min-width: 700px) and (max-width: 1366px)': {
               width: '40vw',
-              height: '65vh',
-              marginTop: '1vh',
+              height: '85vh',
+              marginTop: '-5vh',
               marginRight: '8vw',
             },
 
             '@media (min-width: 1366px) and (max-width: 1920px)': {
               width: '30vw',
-              height: '65vh',
+              height: '70vh',
               marginTop: '3vh',
               marginRight: '-3vw',
             },
 
             '@media (min-width: 1920px) and (max-width: 2560px)': {
               width: '30vw',
-              height: '70vh',
+              height: '80vh',
               marginTop: '3vh',
               marginRight: '-10vw',
             },
 
             '@media (min-width: 2560px)': {
               width: '60%',
-              height: '75vh',
+              height: '78vh',
               marginTop: '5vh',
               marginRight: '-17vw',
             },
@@ -80,15 +80,14 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
             flexDirection: 'column',
             alignItems: 'center',
             boxShadow: 24,
-            gap: '0.3vh',
           }}
           component="form"
           onSubmit={onSubmit}
         >
           <Typography
             sx={{
-              '@media (min-width: 400px) and (max-width: 700px)': {
-                fontSize: '1rem',
+              '@media (max-width: 400px)': {
+                fontSize: '0.5rem',
               },
               '@media (min-width: 700px) and (max-width: 1366px)': {
                 fontSize: '2rem',
@@ -116,33 +115,25 @@ const Auth = ({ onSubmit, children }: AuthPageProps) => {
               display: 'flex',
               flexDirection: 'column',
               width: '100%',
-              '@media (min-width: 400px) and (max-width: 700px)': {
-                gap: '0.3rem',
-                fontSize: '0.2rem',
-              },
-              '@media (min-width: 700px) and (max-width: 1366px)': {
-                gap: '0.5rem',
-                fontSize: '0.3rem',
-              },
-
-              '@media (min-width: 1366px) and (max-width: 1920px)': {
-                gap: '1rem',
-                fontSize: '1rem',
-              },
-
-              '@media (min-width: 1920px) and (max-width: 2560px)': {
-                gap: '3rem',
-                fontSize: '1rem',
-              },
-
-              '@media (min-width: 2560px)': {
-                gap: '4rem',
-                fontSize: '1.3rem',
-              },
             }}
           >
             {React.Children.map(children, (child) => (
-              <Box sx={{ width: '100%' }}>{child}</Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  '@media (max-width: 400px)': {
+                    gap: '1rem',
+                  },
+                  '@media (min-width: 700px) and (max-width: 1366px)': {
+                    gap: '1.5rem',
+                  },
+                  '@media (min-width: 1366px)': {
+                    gap: '2rem',
+                  },
+                }}
+              >
+                {child}
+              </Box>
             ))}
           </Box>
         </Card>

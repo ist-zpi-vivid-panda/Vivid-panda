@@ -307,7 +307,6 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
             height: '100%',
             justifyContent: 'center',
             alignItems: 'center',
-            border: '3px dashed #660066',
           }}
         >
           {image &&

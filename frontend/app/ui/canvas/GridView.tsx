@@ -64,7 +64,7 @@ const GridView = ({
         <Grid
           size={{ xs: 12, sm: 7, md: 7 }}
           sx={{
-            height: '80%',
+            height: '77%',
             justifyContent: 'center',
             alignItems: 'center',
           }}
