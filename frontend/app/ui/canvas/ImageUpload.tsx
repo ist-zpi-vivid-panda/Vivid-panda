@@ -59,11 +59,12 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        border: '2px dashed black',
+        border: '2px dashed',
         borderRadius: '16px',
         overflow: 'hidden',
         width: '100%',
         height: '100%',
+        borderColor: 'primary.main',
       }}
     >
       <form

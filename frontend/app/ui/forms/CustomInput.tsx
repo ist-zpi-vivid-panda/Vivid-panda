@@ -34,6 +34,52 @@ const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps
             endAdornment: <InputAdornment position="end">{rightIcon}</InputAdornment>,
           },
         }}
+        sx={{
+          '& .MuiInputBase-input': {
+            '@media (max-width: 400px)': {
+              fontSize: '0.4rem',
+            },
+            '@media  (min-width: 400px) and (max-width: 700px)': {
+              fontSize: '0.8rem',
+            },
+            '@media (min-width: 700px) and (max-width: 1366px)': {
+              fontSize: '1rem',
+            },
+            '@media (min-width: 1366px)': {
+              fontSize: '1.2rem',
+            },
+            '@media (min-width: 1920px) and (max-width: 2560px)': {
+              fontSize: '1.4rem',
+            },
+
+            '@media (min-width: 2560px)': {
+              fontSize: '1.6rem',
+            },
+          },
+          '& .MuiFormHelperText-root': {
+            fontSize: {
+              '@media (max-width: 400px)': {
+                fontSize: '0.2rem',
+              },
+              '@media  (min-width: 400px) and (max-width: 700px)': {
+                fontSize: '0.5rem',
+              },
+              '@media (min-width: 700px) and (max-width: 1366px)': {
+                fontSize: '0.7rem',
+              },
+              '@media (min-width: 1366px)': {
+                fontSize: '0.8rem',
+              },
+              '@media (min-width: 1920px) and (max-width: 2560px)': {
+                fontSize: '1.2rem',
+              },
+
+              '@media (min-width: 2560px)': {
+                fontSize: '1.3rem',
+              },
+            },
+          },
+        }}
       />
     </Box>
   );

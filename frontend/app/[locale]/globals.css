@@ -3,103 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  /*
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-  */
-  --background-rgb: 218, 192, 240;
-  --primary-rgb: 54, 6, 95;
-  --primary-active-rgb: 213, 255, 242;
-  --danger: 179, 38, 30;
-  --warning: 255, 190, 60;
-  --info: 100, 149, 237;
-  --hover: 69, 160, 7;
-  --disabled: 105, 105, 105;
-  --disabled-light: 211, 211, 211;
-  --text-background: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    /*
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-    */
-    --background-rgb: 218, 192, 240;
-    --primary-rgb: 54, 6, 95;
-    --primary-active-rgb: 91, 255, 203;
-    --danger: 179, 38, 30;
-    --warning: 255, 190, 60;
-    --info: 100, 149, 237;
-    --hover: 69, 160, 7;
-    --disabled: 105, 105, 105;
-    --disabled-light: 211, 211, 211;
-    --text-background: var(--background-rgb);
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: /*linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )*/
-    rgb(var(--background-rgb));
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.textBackground {
-  background-color: rgb(var(--text-background));
-}
-
-.primaryBackground {
-  background-color: rgb(var(--primary-rgb));
-}
-
-.primaryBorder {
-  border-color: rgb(var(--primary-rgb)) ;
-}
-
-.primaryBackgroundActive {
-  background-color: rgb(var(--primary-active-rgb));
-}
-
-.danger {
-  color: rgb(var(--danger));
-}
-
-.dangerBorder {
-  border-color: rgb(var(--danger)) ;
-}
-
-.warning {
-  color: rgb(var(--warning));
-}
-
-.info {
-  color: rgb(var(--info));
-}
-
-.infoBackground {
-  background-color: rgb(var(--info));
-}
-
-.dangerBackground {
-  background-color: rgb(var(--danger));
-}
-
-.disabled {
-  color: rgb(var(--disabled));
-  background: rgb(var(--disabled-light));
 }
 
 .logoBackground {
@@ -112,60 +19,6 @@ body {
   background-repeat: no-repeat;
 }
 
-.text-large {
-  font-size: 3vw;
-  color: black; 
-  line-height: 1.2;
-}
-
-.text-large-span {
-  font-size: 2vw;
-  color: black; 
-  line-height: 1.2;
-}
-
-.text-large-edit {
-  display: grid; 
-  grid-template-columns: 1fr; 
-  gap: 10px; 
-  margin: 10px; 
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.text-large-edit-less {
-  display: grid; 
-  grid-template-columns: 1fr; 
-  gap: 10px; 
-  margin: 10px; 
-}
-
-.text-large-edit button {
-  background-color: #36065f; 
-  color: white; 
-  font-size:12px; 
-  padding: 15px 2em; 
-  border: none; 
-  border-radius: 6px; 
-  cursor: pointer; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  transition: background-color 0.3s, transform 0.2s; 
-  white-space: normal; 
-  word-wrap: break-word; 
-  max-width: 90%; 
-  text-align: center;
-}
-
-.text-large-edit button:hover {
-  background-color: #36065f; 
-  transform: scale(1.05); 
-}
-
-.text-large-edit button:active {
-  background-color: #36065f; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transform: scale(0.98);
-}
 
 @media (min-width: 1281px) and (max-width: 2560px)  {
   .logoBackground {
@@ -265,38 +118,11 @@ a:hover {
   }
 }
 
-.custom-text {
-  font-size: 2rem; 
-  padding: 10px;   
-}
-
-@media (min-width: 1366px) and (max-width: 1920px) {
-  .custom-text {
-    font-size: 3rem; 
-    padding: 15px;   
-  }
-}
-
-@media (min-width: 1920px) and (max-width: 2560px) {
-  .custom-text {
-    font-size: 4rem; 
-    padding: 20px;   
-  }
-}
-
-@media (min-width: 2560px) {
-  .custom-text {
-    font-size: 5rem; 
-    padding: 38px;   
-  }
-}
-
-
 .loading-circle {
   width: 10vw; 
   height: 10vw; 
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 250px;
+  max-height: 250px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -327,3 +153,4 @@ a:hover {
     transform: rotate(360deg);
   }
 }
+

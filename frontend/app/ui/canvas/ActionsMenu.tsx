@@ -27,13 +27,14 @@ type ActionsMenuPresentationProps = {
 const ActionsMenuPresentation = ({ name, onToolSelect, Icon }: ActionsMenuPresentationProps) => (
   <Tooltip title={name}>
     <Button
+      variant="contained"
       onClick={onToolSelect}
       sx={{
         gap: '10px',
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-center',
       }}
     >
       <Icon />

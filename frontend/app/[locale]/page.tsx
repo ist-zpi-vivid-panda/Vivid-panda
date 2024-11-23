@@ -117,7 +117,6 @@ const Home = async ({ params }: LocaleParamProps) => {
           <Link href="/auth/login">
             <Button
               variant="contained"
-              color="success"
               sx={{
                 borderRadius: '12px',
                 paddingX: '4vw',
