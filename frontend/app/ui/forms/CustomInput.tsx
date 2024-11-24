@@ -32,7 +32,7 @@ const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps
         margin="normal"
         value={value || ''}
         error={!!errorMessage}
-        helperText={errorMessage}
+        helperText={errorMessage || ' '}
         slotProps={{
           input: {
             endAdornment: <InputAdornment position="end">{rightIcon}</InputAdornment>,
