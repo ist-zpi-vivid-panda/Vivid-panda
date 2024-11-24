@@ -1,5 +1,6 @@
 import { forwardRef, ReactElement, useCallback, useMemo, useState } from 'react';
 
+import useCurrentMode from '@/app/lib/theme/useCurrentMode';
 import VisibilityOffRoundedIcon from '@mui/icons-material/VisibilityOffRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { Box, IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material';
@@ -19,12 +20,15 @@ type ControlledCustomInputProps = {
 } & CustomInputProps;
 
 const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps }: CustomInputProps, ref) => {
+  const mode = useCurrentMode();
+
   return (
     <Box ref={ref} sx={{ display: 'flex' }}>
       <TextField
         {...restOfProps}
         variant="outlined"
         fullWidth
+        {...(mode === 'dark' && { color: 'secondary' })}
         margin="normal"
         value={value || ''}
         error={!!errorMessage}

@@ -1,17 +1,10 @@
-import { useMemo } from 'react';
-
 import Colors from '@/constants/Colors';
-import { useMediaQuery } from '@mui/material';
-import { createTheme, responsiveFontSizes, useColorScheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+
+import useCurrentMode from './useCurrentMode';
 
 const useCurrentTheme = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const { mode } = useColorScheme();
-
-  const currentMode = useMemo(
-    () => (!mode || mode === 'system' ? (prefersDarkMode ? 'dark' : 'light') : mode),
-    [mode, prefersDarkMode]
-  );
+  const mode = useCurrentMode();
 
   return responsiveFontSizes(
     createTheme({
@@ -21,7 +14,7 @@ const useCurrentTheme = () => {
           textTransform: 'none',
         },
       },
-      palette: Colors[currentMode],
+      palette: Colors[mode],
     })
   );
 };
