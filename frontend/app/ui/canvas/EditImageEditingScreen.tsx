@@ -4,7 +4,7 @@ import { ReactNode, useState, useCallback, useEffect, useRef, useMemo } from 're
 
 import {
   downloadFile,
-  downloadFileInfo,
+  handleDownloadBlobToBrowser,
   useDeleteFileMutation,
   useFileData,
   useUpdateFileDataMutation,
@@ -30,7 +30,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const canvasRef = useRef<CanvasConsumer | null>(null);
 
-  const [uploadedImage, setUploadedImage] = useState<string | undefined>(undefined);
+  const [uploadedImage, setUploadedImage] = useState<Blob | undefined>(undefined);
   const [editingTool, setEditingTool] = useState<EditingTool | undefined>(undefined);
   const [aiFunction, setAiFunction] = useState<AiFunctionType | undefined>(undefined);
 
@@ -46,15 +46,19 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const updateDataFile = useUpdateFileDataMutation();
   const deleteFile = useDeleteFileMutation();
 
-  const handleSave = useCallback(() => {
-    canvasRef.current?.getBlob((blob) => {
-      if (!blob) {
-        return;
-      }
+  const handleSave = useCallback(
+    () =>
+      canvasRef.current?.getBlob((blob) => {
+        if (!blob) {
+          return;
+        }
 
-      updateDataFile.mutateAsync({ id: fileInfo.id, data: getFileFromFileInfoAndBlob(blob, fileInfo) });
-    });
-  }, [fileInfo, updateDataFile]);
+        const data = getFileFromFileInfoAndBlob(blob, fileInfo);
+
+        updateDataFile.mutateAsync({ id: fileInfo.id, data });
+      }),
+    [fileInfo, updateDataFile]
+  );
 
   const handleDelete = useCallback(
     () =>
@@ -75,11 +79,19 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
     [deleteFile, fileInfo.id, prompt, router, t]
   );
 
-  const handleDownload = useCallback(() => {
-    if (fileInfo) {
-      downloadFileInfo(fileInfo);
-    }
-  }, [fileInfo]);
+  const handleDownload = useCallback(
+    () =>
+      canvasRef.current?.getBlob((blob) => {
+        if (!blob) {
+          return;
+        }
+
+        const data = getFileFromFileInfoAndBlob(blob, fileInfo);
+
+        handleDownloadBlobToBrowser(data, fileInfo.filename);
+      }),
+    [fileInfo]
+  );
 
   const canvasCrudOperations: CanvasCRUDOperations = useMemo(
     () => ({
@@ -104,7 +116,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
     const getFileData = async () => {
       const downloadedImageFile = await downloadFile(fileInfo.id);
 
-      setUploadedImage(URL.createObjectURL(downloadedImageFile));
+      setUploadedImage(downloadedImageFile);
     };
 
     if (!isLoadingFileInfo) {
@@ -123,7 +135,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
       >
         {!!uploadedImage && (
           <Canvas
-            imageStr={uploadedImage}
+            imageBlob={uploadedImage}
             setCanUndo={setCanUndo}
             setCanRedo={setCanRedo}
             editingTool={editingTool}

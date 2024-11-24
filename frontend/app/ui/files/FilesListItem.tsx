@@ -5,6 +5,7 @@ import { FileInfo } from '@/app/lib/files/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { formatBytes } from '@/app/lib/utilities/fileSize';
+import { imageStrToBase64Typed } from '@/app/lib/utilities/image';
 import { Button, Card, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import dayjs from 'dayjs';
@@ -44,7 +45,7 @@ const FilesListItem = ({
             backgroundColor: 'primary.contrastText',
           }}
           variant="square"
-          src={`data:image/jpeg;base64,${fileInfo.thumbnail}`}
+          src={imageStrToBase64Typed(fileInfo.thumbnail)}
         />
       )}
 

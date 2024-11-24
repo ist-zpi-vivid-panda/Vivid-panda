@@ -9,16 +9,19 @@ const lightTheme: PaletteOptions = {
     main: '#f9d7fe',
   },
   error: {
-    main: '#ffb1a8',
+    main: '#a80000',
   },
   info: {
-    main: '#00d5ff',
+    main: '#005e75',
   },
   warning: {
-    main: '#ffb647',
+    main: '#685308',
   },
   success: {
-    main: '#66e16a',
+    main: '#006122',
+  },
+  background: {
+    paper: '#f3f3f3',
   },
 };
 

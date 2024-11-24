@@ -2,10 +2,12 @@ import os
 
 from dotenv import load_dotenv
 
-if os.path.exists("../.env"):
-    load_dotenv("../.env")
-
 load_dotenv(".env")
+
+if os.path.exists("../.env"):
+    load_dotenv("../.env", override=True)
+
+load_dotenv(".env.local", override=True)
 
 
 def _read_env_bool(name: str) -> bool:
@@ -31,4 +33,7 @@ def _read_env_string(name: str) -> str:
 SECRET_KEY: str = _read_env_string("SECRET_KEY")
 IP_ADDRESS: str = _read_env_string("IP_ADDRESS")
 AI_MICROSERVICE_PORT: int = _read_env_int("AI_MICROSERVICE_PORT")
+
+MAX_CONTENT_LENGTH: int = _read_env_int("MAX_CONTENT_LENGTH")
+
 DEBUG: bool = _read_env_bool("DEBUG")

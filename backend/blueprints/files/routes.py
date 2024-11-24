@@ -175,8 +175,8 @@ def update_file_info(file_id: str, user: UserModel, filename: str) -> Tuple[dict
 @doc_endpoint(
     description="Switch file data for a given file",
     tags=tags,
-    input_schema=FileInputDataSchema,
     response_schemas=[(SuccessSchema, 200), (ErrorSchema, 400)],
+    input_schema=FileInputDataSchema,
     location="files",
 )
 def update_file_data(file_id: str, user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
@@ -184,12 +184,19 @@ def update_file_data(file_id: str, user: UserModel, file: FileStorage) -> Tuple[
     if file_info is None or file_info.owner_id != user.uid:
         return error_dict(gettext("File doesn't exist")), 400
 
+    # one of ways of getting filesize as content-length is 0
+    file.seek(0, 2)
+    file_size = file.tell()
+    file.seek(0, 0)
+
     new_file_id_grid_fs = update_file_on_grid_fs(file, file_info.grid_fs_id)
 
     if new_file_id_grid_fs is None:
         return error_dict(gettext("Couldn't update file")), 400
 
     file_info.grid_fs_id = new_file_id_grid_fs
+    file_info.last_update_at = datetime.now()
+    file_info.file_size = file_size
 
     if new_file_id_grid_fs is None:
         return error_dict(gettext("File not updated")), 400

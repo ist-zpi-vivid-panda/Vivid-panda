@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import useUserData from '@/app/lib/storage/useUserData';
+import { imageStrToBase64Typed } from '@/app/lib/utilities/image';
 import { Menu, MenuItem, Button } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -76,7 +77,7 @@ const UserInfo = () => {
 
       <Image
         className="rounded-full ml-3"
-        src={profilePicture ? `data:image/jpeg;base64,${profilePicture}` : '/logo.png'}
+        src={profilePicture ? imageStrToBase64Typed(profilePicture) : '/logo.png'}
         alt="Profile"
         width={75}
         height={75}

@@ -51,12 +51,7 @@ export const useDeleteFileMutation = () => useDeleteMutation(deleteFilesQuery, g
 export const downloadFile = async (id: string) =>
   await getCall<Blob>(`${FILES_ENDPOINT}${DATA_ENDPOINT}${DOWNLOAD_ENDPOINT}/${id}`);
 
-export const handleDownloadFileToBrowser = async (idOfPhoto: string, filename: string) => {
-  if (!idOfPhoto || !filename) {
-    return;
-  }
-
-  const file = await downloadFile(idOfPhoto);
+export const handleDownloadBlobToBrowser = async (file: Blob, filename: string) => {
   const url = URL.createObjectURL(file);
 
   const a = document.createElement('a');
@@ -66,4 +61,14 @@ export const handleDownloadFileToBrowser = async (idOfPhoto: string, filename: s
   window.URL.revokeObjectURL(url);
 };
 
-export const downloadFileInfo = (fileInfo: FileInfo) => handleDownloadFileToBrowser(fileInfo.id, fileInfo.filename);
+export const handleDownloadFileFromApiToBrowser = async (idOfPhoto: string, filename: string) => {
+  if (!idOfPhoto || !filename) {
+    return;
+  }
+
+  const file = await downloadFile(idOfPhoto);
+  handleDownloadBlobToBrowser(file, filename);
+};
+
+export const downloadFileInfo = (fileInfo: FileInfo) =>
+  handleDownloadFileFromApiToBrowser(fileInfo.id, fileInfo.filename);

@@ -91,7 +91,7 @@ const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
           <Card
             sx={{
               p: 10,
-              backgroundColor: dragActive ? 'primary.main' : 'background.default',
+              backgroundColor: dragActive ? 'primary.main' : 'background.paper',
             }}
           >
             <ResponsiveTypography>

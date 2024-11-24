@@ -35,7 +35,7 @@ import OverlaySpinner from '../state-indicator/OverlaySpinner';
 import StylesModal from './modals/StylesModal';
 
 type CanvasProps = {
-  imageStr: string;
+  imageBlob: Blob;
   setCanUndo: Dispatch<SetStateAction<boolean>>;
   setCanRedo: Dispatch<SetStateAction<boolean>>;
   editingTool: EditingTool | undefined;
@@ -62,7 +62,7 @@ const CHANGE_HISTORY_LENGTH: number = 25 as const;
 const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
   (
     {
-      imageStr: passedInImageStr,
+      imageBlob: passedInImageBlob,
       setCanUndo,
       setCanRedo,
       setCurrentEditComponent,
@@ -76,6 +76,9 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
     const parentRef = useRef<HTMLDivElement | null>(null);
     const cropperRef = useRef<ReactCropperElement | null>(null);
     const maskGenRef = useRef<MaskConsumer | null>(null);
+
+    const passedInImageStr = useMemo(() => URL.createObjectURL(passedInImageBlob), [passedInImageBlob]);
+    const imageType = useMemo(() => passedInImageBlob.type, [passedInImageBlob.type]);
 
     const {
       current: imageStr,
@@ -120,6 +123,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
       cropperRef,
       finishFlow,
       setResult: (downloadedImageFile) => setImageStr(URL.createObjectURL(downloadedImageFile)),
+      imageType,
     });
 
     const mouseListener = useCallback(
@@ -133,12 +137,12 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
 
     const saveCanvasFromCropper = useCallback(() => {
       const croppedCanvas = cropperRef?.current?.cropper?.getCroppedCanvas();
-      const croppedImageUrl = croppedCanvas?.toDataURL();
+      const croppedImageUrl = croppedCanvas?.toDataURL(imageType);
 
       if (croppedImageUrl) {
         setImageStr(croppedImageUrl);
       }
-    }, [setImageStr]);
+    }, [imageType, setImageStr]);
 
     const handleMask = useCallback(
       () =>
@@ -279,7 +283,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         const res = cropperRef?.current?.cropper?.getCroppedCanvas();
 
         if (res) {
-          res.toBlob(callback, type, quality);
+          res.toBlob(callback, imageType, quality);
         } else {
           callback(null);
         }

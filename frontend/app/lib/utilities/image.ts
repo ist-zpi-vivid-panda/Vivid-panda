@@ -1,15 +1,6 @@
-// manual conversion doesn't seem to work
-// export const convertImageDataToImageStr = (imageData: ImageData) => {
-//     let binary = '';
-//     for (let idx = 0; idx < imageData.data.length; ++idx) {
-//       // += is the fastest way to concatenate strings in js
-//       binary += String.fromCharCode(imageData.data[idx]);
-//     }
-
-//     const base64Image = btoa(binary);
-
-//     return `data:image/png;base64,${base64Image}`;
-//   };
+// this is used because there is a bug in js that makes the images a lot bigger if other type/no typ is used
+// it can make an image from 2.3MB to 20MB
+export const DEFAULT_IMAGE_TYPE: string = 'image/jpeg' as const;
 
 export const convertImageDataToImageStr = (imageData: ImageData) => {
   const canvas = document.createElement('canvas');
@@ -18,5 +9,7 @@ export const convertImageDataToImageStr = (imageData: ImageData) => {
   const ctx = canvas.getContext('2d');
   ctx?.putImageData(imageData, 0, 0);
 
-  return canvas.toDataURL();
+  return canvas.toDataURL(DEFAULT_IMAGE_TYPE);
 };
+
+export const imageStrToBase64Typed = (imageStr: string) => `data:${DEFAULT_IMAGE_TYPE};base64,${imageStr}`;

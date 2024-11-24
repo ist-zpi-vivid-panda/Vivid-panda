@@ -5,10 +5,12 @@ from flask import Flask
 
 from api.authorization import jwt_required
 from api.request import process_image_request
-from env.env_vars import DEBUG, AI_MICROSERVICE_PORT, IP_ADDRESS
+from env.env_vars import DEBUG, AI_MICROSERVICE_PORT, IP_ADDRESS, MAX_CONTENT_LENGTH
 from image_processing.invoker import Invoker
 
 app = Flask(__name__)
+
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 F = TypeVar("F", bound=Callable[..., Any])
 

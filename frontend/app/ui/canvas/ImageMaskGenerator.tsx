@@ -4,6 +4,7 @@ import { forwardRef, MutableRefObject, useCallback, useEffect, useImperativeHand
 
 import { mouseInfoCalc, resizeCanvasToParent } from '@/app/lib/canvas/basic';
 import { MouseInfo } from '@/app/lib/canvas/definitions';
+import { DEFAULT_IMAGE_TYPE } from '@/app/lib/utilities/image';
 import Image from 'next/image';
 
 type ImageMaskGeneratorProps = {
@@ -119,7 +120,7 @@ const ImageMaskGenerator = forwardRef<MaskConsumer, ImageMaskGeneratorProps>(
         const res = maskCanvas?.current;
 
         if (res) {
-          res.toBlob(callback, type, quality);
+          res.toBlob(callback, DEFAULT_IMAGE_TYPE, quality);
         } else {
           callback(null);
         }

@@ -21,6 +21,7 @@ type UseAIImageEditProps = {
   openPrompt: () => void;
   finishFlow: () => void;
   setResult: (_: Blob) => void;
+  imageType: string;
 };
 
 const START_PROMPT: string = '' as const;
@@ -32,6 +33,7 @@ const useAIImageEditFlow = ({
   cropperRef,
   finishFlow,
   setResult,
+  imageType,
 }: UseAIImageEditProps) => {
   const { t } = useStrings(TranslationNamespace.Error);
   const [maskFile, setMaskFile] = useState<File | undefined>(undefined);
@@ -94,9 +96,9 @@ const useAIImageEditFlow = ({
       }
 
       setLoading(false);
-    });
+    }, imageType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiFunction, isMaskRequired, isPromptRequired, maskFile, prompt]);
+  }, [aiFunction, isMaskRequired, isPromptRequired, maskFile, prompt, imageType]);
 
   return { setPrompt, setMaskFile, isLoading };
 };

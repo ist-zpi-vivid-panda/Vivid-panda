@@ -6,6 +6,7 @@ import { useUserProfilePicture } from '@/app/lib/api/userApi';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import useUserData from '@/app/lib/storage/useUserData';
+import { imageStrToBase64Typed } from '@/app/lib/utilities/image';
 import { Menu, MenuItem, Typography, Tooltip, IconButton, Avatar } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -48,7 +49,7 @@ const AvatarOptions = () => {
         <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
           <Avatar
             alt="avatar"
-            src={profilePicture ? `data:image/jpeg;base64,${profilePicture}` : '/logo.png'}
+            src={profilePicture ? imageStrToBase64Typed(profilePicture) : '/logo.png'}
             sx={{ width: 64, height: 64 }}
           />
         </IconButton>

@@ -33,7 +33,7 @@ const GoogleAuthButton = () => {
   const locale = useMemo(() => i18n.language || DEFAULT_LOCALE, [i18n.language]);
 
   return (
-    <GoogleOAuthProvider clientId={ENV_VARS.GOOGLE_ID}>
+    <GoogleOAuthProvider clientId={ENV_VARS.GOOGLE_CLIENT_ID}>
       <GoogleLogin onSuccess={onSuccess} onError={onError} locale={locale} />
     </GoogleOAuthProvider>
   );
