@@ -34,7 +34,7 @@ const GoogleAuthButton = () => {
 
   return (
     <GoogleOAuthProvider clientId={ENV_VARS.GOOGLE_ID}>
-      <GoogleLogin onSuccess={onSuccess} onError={onError} locale={locale} useOneTap />
+      <GoogleLogin onSuccess={onSuccess} onError={onError} locale={locale} />
     </GoogleOAuthProvider>
   );
 };
