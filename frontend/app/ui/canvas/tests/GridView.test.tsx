@@ -3,7 +3,7 @@ import GridView from '../GridView';
 import ActionsMenu from '../ActionsMenu';
 import FileEditListOptions from '../FileEditOptions';
 
-// Мокаем дочерние компоненты
+// Mockowanie komponentów potomnych
 jest.mock('../ActionsMenu', () => jest.fn(() => <div>ActionsMenu</div>));
 jest.mock('../FileEditOptions', () => jest.fn(() => <div>FileEditListOptions</div>));
 jest.mock('../../themed/TrayCard', () => jest.fn(({ children }) => <div>TrayCard {children}</div>));
@@ -25,7 +25,7 @@ describe('GridView', () => {
   const mockSetEditingTool = jest.fn();
   const mockSetAiFunction = jest.fn();
 
-  it('renders ActionsMenu, FileEditListOptions, TrayCard, and children', () => {
+  it('renderuje ActionsMenu, FileEditListOptions, TrayCard i dzieci', () => {
     render(
       <GridView
         canvasCrudOperations={mockCanvasCrudOperations}
@@ -38,7 +38,7 @@ describe('GridView', () => {
       </GridView>
     );
 
-    // Проверяем, что все компоненты рендерятся
+    // Sprawdzanie, czy wszystkie komponenty są renderowane
     expect(screen.getByText('ActionsMenu')).toBeInTheDocument();
     expect(screen.getByText('FileEditListOptions')).toBeInTheDocument();
     expect(screen.getByText('TrayCard')).toBeInTheDocument();

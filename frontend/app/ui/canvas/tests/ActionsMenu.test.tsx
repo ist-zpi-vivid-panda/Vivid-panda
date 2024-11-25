@@ -6,7 +6,7 @@ import { initReactI18next } from 'react-i18next';
 import ActionsMenu from '../ActionsMenu';
 import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 
-// Настройка мокового i18next
+// Konfiguracja mockowego i18next
 const i18nInstance = i18n.createInstance();
 i18nInstance.use(initReactI18next).init({
   lng: 'en',
@@ -40,7 +40,7 @@ describe('ActionsMenu', () => {
   const renderWithProviders = (ui: React.ReactElement) =>
     render(<I18nextProvider i18n={i18nInstance}>{ui}</I18nextProvider>);
 
-  it('renders all buttons', () => {
+  it('renderuje wszystkie przyciski', () => {
     const { getByLabelText } = renderWithProviders(
       <ActionsMenu
         canvasCrudOperations={mockCanvasCrudOperations}
@@ -55,7 +55,7 @@ describe('ActionsMenu', () => {
     expect(getByLabelText('download')).toBeInTheDocument();
   });
 
-  it('calls handleSave when save button is clicked', () => {
+  it('wywołuje handleSave po kliknięciu przycisku zapisu', () => {
     const { getByLabelText } = renderWithProviders(
       <ActionsMenu
         canvasCrudOperations={mockCanvasCrudOperations}
@@ -67,7 +67,7 @@ describe('ActionsMenu', () => {
     expect(mockCanvasCrudOperations.handleSave).toHaveBeenCalled();
   });
 
-  it.skip('disables undo button when canUndo is false', () => {
+  it.skip('wyłącza przycisk undo, gdy canUndo jest false', () => {
     const { getByLabelText } = renderWithProviders(
       <ActionsMenu
         canvasCrudOperations={mockCanvasCrudOperations}
@@ -79,7 +79,7 @@ describe('ActionsMenu', () => {
     expect(undoButton).toBeDisabled();
   });
 
-  it.skip('disables redo button when canRedo is false', () => {
+  it.skip('wyłącza przycisk redo, gdy canRedo jest false', () => {
     const { getByLabelText } = renderWithProviders(
       <ActionsMenu
         canvasCrudOperations={mockCanvasCrudOperations}
