@@ -1,5 +1,4 @@
-import Colors from '../Colors';
-
+/* eslint-disable @typescript-eslint/no-require-imports */
 jest.mock('../Colors', () => ({
   default: {
     light: {

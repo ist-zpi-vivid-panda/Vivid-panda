@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
+
 import GridView from '../GridView';
-import ActionsMenu from '../ActionsMenu';
-import FileEditListOptions from '../FileEditOptions';
 
 // Mockowanie komponentów potomnych
 jest.mock('../ActionsMenu', () => jest.fn(() => <div>ActionsMenu</div>));

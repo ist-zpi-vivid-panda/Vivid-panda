@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import { I18nextProvider } from 'react-i18next';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import ActionsMenu from '../ActionsMenu';
+
 import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
+import { render, fireEvent } from '@testing-library/react';
+import i18n from 'i18next';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
+
+import ActionsMenu from '../ActionsMenu';
 
 // Konfiguracja mockowego i18next
 const i18nInstance = i18n.createInstance();
@@ -42,10 +43,7 @@ describe('ActionsMenu', () => {
 
   it('renderuje wszystkie przyciski', () => {
     const { getByLabelText } = renderWithProviders(
-      <ActionsMenu
-        canvasCrudOperations={mockCanvasCrudOperations}
-        changeHistoryData={mockChangeHistoryData}
-      />
+      <ActionsMenu canvasCrudOperations={mockCanvasCrudOperations} changeHistoryData={mockChangeHistoryData} />
     );
 
     expect(getByLabelText('save')).toBeInTheDocument();
@@ -57,10 +55,7 @@ describe('ActionsMenu', () => {
 
   it('wywołuje handleSave po kliknięciu przycisku zapisu', () => {
     const { getByLabelText } = renderWithProviders(
-      <ActionsMenu
-        canvasCrudOperations={mockCanvasCrudOperations}
-        changeHistoryData={mockChangeHistoryData}
-      />
+      <ActionsMenu canvasCrudOperations={mockCanvasCrudOperations} changeHistoryData={mockChangeHistoryData} />
     );
 
     fireEvent.click(getByLabelText('save'));

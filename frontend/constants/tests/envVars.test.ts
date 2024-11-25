@@ -1,5 +1,4 @@
-import ENV_VARS from '../envVars';
-
+/* eslint-disable @typescript-eslint/no-require-imports */
 describe('envVars module', () => {
   beforeAll(() => {
     process.env.NEXT_PUBLIC_METHOD = 'GET';

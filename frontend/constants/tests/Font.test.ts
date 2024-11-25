@@ -1,5 +1,4 @@
-import FONT from '../Font';
-
+/* eslint-disable @typescript-eslint/no-require-imports */
 jest.mock('next/font/google', () => ({
   Inter: jest.fn(() => 'MockedFont'),
 }));
