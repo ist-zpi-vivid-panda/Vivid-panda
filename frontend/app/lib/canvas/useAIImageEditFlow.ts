@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useMemo, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ReactCropperElement } from 'react-cropper';
 import { toast } from 'react-toastify';
@@ -46,6 +46,8 @@ const useAIImageEditFlow = ({
     [aiFunction]
   );
 
+  const onError = useCallback(() => toast.error(t('unknown_error')), [t]);
+
   useEffect(() => {
     if (!aiFunction) {
       return;
@@ -84,15 +86,14 @@ const useAIImageEditFlow = ({
           maskFile: resMaskFile,
         });
 
-        if (result && result.size > 0) {
-          setResult(result);
-        } else {
-          toast.error(t('unknown_error'));
+        if (!result || result.size <= 0) {
+          onError();
+          return;
         }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+
+        setResult(result);
+      } catch {
+        onError();
       }
 
       setLoading(false);

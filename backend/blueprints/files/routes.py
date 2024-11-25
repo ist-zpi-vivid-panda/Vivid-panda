@@ -8,7 +8,7 @@ from werkzeug.datastructures import FileStorage
 
 import grid_fs_service
 from blueprints.files.models import FileInfoModel
-from blueprints.files.services import count_user_files, get_total_file_size_in_mb
+from blueprints.files.services import count_user_files, get_total_file_size
 from blueprints.user.models import UserModel
 from grid_fs_service import (
     add_thumbnail,
@@ -29,41 +29,43 @@ from utils.request_utils import doc_endpoint, error_dict, success_dict
 
 files_blueprint = Blueprint("files", __name__)
 tags = ["Files"]
-MAX_NUMBER_OF_FILES = 5
-MAX_MB_OF_FILES = 20
+
+_MAX_NUMBER_OF_FILES = 5
+_MAX_SIZE_OF_FILES_MB = 20
+_MAX_SIZE_OF_FILES = _MAX_SIZE_OF_FILES_MB * 1024 * 1024
 
 
 @files_blueprint.route("/", methods=["GET"])
 @doc_endpoint(
     description="Retrieve files with pagination",
     tags=tags,
-    response_schemas=[(FilePaginationSchema, 200)],
+    response_schemas=[(FilePaginationSchema, 200), (ErrorSchema, 400)],
 )
-def get_files(user: UserModel) -> Tuple[Response, int] | Response:
+def get_files(user: UserModel) -> Tuple[dict, int] | dict:
     page: int = request.args.get("page", 1, type=int)
     per_page: int = request.args.get("per_page", 10, type=int)
 
     if user.uid is None:
-        return jsonify(error_dict(gettext("Incorrect user"))), 400
+        return error_dict(gettext("Incorrect user")), 400
 
     files = file_service.get_paginated_by_owner_id(user.uid, page, per_page)
 
-    return jsonify(files.__dict__)
+    return files
 
 
 @files_blueprint.route("/<file_id>", methods=["GET"])
 @doc_endpoint(
     description="Retrieve file details by file ID",
     tags=tags,
-    response_schemas=[(FileInfoEditSchema, 200), (ErrorSchema, 400)],
+    response_schemas=[(FileInfoSchema, 200), (ErrorSchema, 400)],
 )
-def get_file(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
+def get_file(file_id: str, user: UserModel) -> Tuple[dict, int] | dict:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
-        return jsonify(error_dict(gettext("File doesn't exist"))), 400
+        return error_dict(gettext("File doesn't exist")), 400
 
-    return jsonify(file.get_dto())
+    return add_thumbnail(obj_dict=file.get_dto(), grid_fs_id=file.grid_fs_id)
 
 
 @files_blueprint.route("/", methods=["POST"])
@@ -78,20 +80,28 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
     if user.uid is None:
         return error_dict("Incorrect user"), 401
 
+    # one of ways of getting filesize as content-length is 0
+    file.seek(0, 2)
+    file_size = file.tell()
+    file.seek(0, 0)
+
     number_of_user_files = count_user_files(user.uid)
+    size_of_user_files = get_total_file_size(user.uid)
+
+    if number_of_user_files >= _MAX_NUMBER_OF_FILES or size_of_user_files + file_size >= _MAX_SIZE_OF_FILES:
+        return error_dict(
+            gettext(
+                "Maximum number of files you can upload is %(max_files)s or %(max_mb)s MB",
+                max_files=_MAX_NUMBER_OF_FILES,
+                max_mb=_MAX_SIZE_OF_FILES_MB,
+            )
+        ), 400
 
     file_id_grid_fs = put_file_on_grid_fs(file)
 
     # Ensure that `file_from_grid.length` is accessed properly to get the file size in bytes
     if file_id_grid_fs is None or user.uid is None or file.filename is None:
         return error_dict(gettext("File not saved")), 400
-
-    file_from_grid = grid_fs_service.get_file_grid_fs(file_id_grid_fs)
-
-    file_size = getattr(file_from_grid, "length", None)
-    if file_size is None:
-        delete_file_from_grid_fs(file_id_grid_fs)
-        return error_dict(gettext("Unable to retrieve file size")), 400
 
     file_info = FileInfoModel(
         file_id=None,
@@ -104,19 +114,8 @@ def post_file(user: UserModel, file: FileStorage) -> Tuple[dict, int] | dict:
         grid_fs_id=file_id_grid_fs,
     )
 
-    mb_of_user_files = get_total_file_size_in_mb(user.uid)
-
-    if number_of_user_files >= MAX_NUMBER_OF_FILES or mb_of_user_files >= MAX_MB_OF_FILES:
-        delete_file_from_grid_fs(file_id_grid_fs)
-        return error_dict(
-            gettext(
-                "Maximum number of files you can upload is %(max_files)s or %(max_mb)s MB",
-                max_files=MAX_NUMBER_OF_FILES,
-                max_mb=MAX_MB_OF_FILES,
-            )
-        ), 400
-
     file_id = file_service.insert(file_info)
+
     if file_id is None:
         delete_file_from_grid_fs(file_id_grid_fs)
         return error_dict(gettext("File info not saved")), 400
@@ -215,16 +214,16 @@ def update_file_data(file_id: str, user: UserModel, file: FileStorage) -> Tuple[
     tags=tags,
     response_schemas=[(FileOutputDataSchema, 200), (ErrorSchema, 400)],
 )
-def get_file_data(file_id: str, user: UserModel) -> Tuple[Response, int] | Response:
+def get_file_data(file_id: str, user: UserModel) -> Tuple[dict, int] | Response:
     file: FileInfoModel | None = file_service.get_by_id(file_id)
 
     if file is None or file.owner_id != user.uid:
-        return jsonify(error_dict(gettext("File data doesn't exist"))), 400
+        return error_dict(gettext("File data doesn't exist")), 400
 
     file_from_grid = grid_fs_service.get_file_grid_fs(file.grid_fs_id)
 
     if file_from_grid is None:
-        return jsonify(error_dict(gettext("File doesn't exist"))), 400
+        return error_dict(gettext("File doesn't exist")), 400
 
     return send_file(
         io.BytesIO(file_from_grid.read()),

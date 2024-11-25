@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { readLicenses } from '@/app/lib/licenses/licenseReader';
+import useCurrentMode from '@/app/lib/theme/useCurrentMode';
 import { Box, Button } from '@mui/material';
 
 import LicenseInfo from './LicenseInfo';
@@ -14,6 +15,7 @@ const licenses = readLicenses();
 
 const LicenseList = () => {
   const { t } = useStrings(TranslationNamespace.Licenses);
+  const mode = useCurrentMode();
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -29,8 +31,13 @@ const LicenseList = () => {
                 key={license.key}
                 onClick={() => setSelectedIndex(index)}
                 sx={{
-                  background: selectedIndex === index ? '#0070f3' : 'transparent',
-                  color: selectedIndex === index ? '#fff' : '#000',
+                  backgroundColor: selectedIndex === index ? 'primary.main' : 'transparent',
+                  color:
+                    selectedIndex === index
+                      ? 'primary.contrastText'
+                      : mode === 'dark'
+                        ? 'secondary.main'
+                        : 'primary.main',
                   justifyContent: 'flex-start',
                   width: '100%',
                   p: 1,

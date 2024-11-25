@@ -11,7 +11,7 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import ControlledCustomInput, { ControlledCustomPasswordInput } from '@/app/ui/forms/CustomInput';
 import SubmitButton from '@/app/ui/forms/SubmitButton';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
@@ -47,11 +47,26 @@ const Login = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <ResponsiveTypography className="text-2xl m-auto">{t('login')}</ResponsiveTypography>
+      <Typography className="text-2xl m-auto">{t('login')}</Typography>
 
-      <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
+      <Box>
+        <ControlledCustomInput
+          control={control}
+          errors={errors}
+          label={t('email')}
+          type="email"
+          name="email"
+          required
+        />
 
-      <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
+        <ControlledCustomPasswordInput
+          control={control}
+          errors={errors}
+          label={t('password')}
+          name="password"
+          required
+        />
+      </Box>
 
       <Box className="flex justify-end custom-margin">
         <SubmitButton />

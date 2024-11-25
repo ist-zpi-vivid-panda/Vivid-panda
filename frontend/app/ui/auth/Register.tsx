@@ -11,7 +11,7 @@ import { SchemaNames } from '@/app/lib/validation/config';
 import Auth from '@/app/ui/auth/Auth';
 import ControlledCustomInput, { ControlledCustomPasswordInput } from '@/app/ui/forms/CustomInput';
 import SubmitButton from '@/app/ui/forms/SubmitButton';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
@@ -51,13 +51,28 @@ const Register = () => {
 
   return (
     <Auth onSubmit={handleSubmit(onSubmit)}>
-      <ResponsiveTypography>{t('register')}</ResponsiveTypography>
+      <Typography>{t('register')}</Typography>
 
-      <ControlledCustomInput control={control} errors={errors} label={t('email')} type="email" name="email" required />
+      <Box>
+        <ControlledCustomInput
+          control={control}
+          errors={errors}
+          label={t('email')}
+          type="email"
+          name="email"
+          required
+        />
 
-      <ControlledCustomInput control={control} errors={errors} label={t('username')} name="username" />
+        <ControlledCustomInput control={control} errors={errors} label={t('username')} name="username" />
 
-      <ControlledCustomPasswordInput control={control} errors={errors} label={t('password')} name="password" required />
+        <ControlledCustomPasswordInput
+          control={control}
+          errors={errors}
+          label={t('password')}
+          name="password"
+          required
+        />
+      </Box>
 
       <Box className="flex justify-end custom-margin">
         <SubmitButton />
