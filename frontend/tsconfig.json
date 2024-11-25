@@ -34,13 +34,12 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "i18nConfig.ts"
+    "i18nConfig.js",
+    "constants/**/*",
+    "__tests__/**/*"
   ],
   "exclude": [
     "node_modules"
   ],
-  "typeRoots": [
-    "./node_modules/@types",
-    "./types"
-  ]
+  "typeRoots": ["./node_modules/@types", "./types"]
 }
