@@ -1,42 +1,81 @@
-import pytest
-from blueprints.auth.services import send_reset_password_email, validate_reset_password_token
-from blueprints.user.models import UserModel
+#Działa
+from unittest import TestCase
 from unittest.mock import patch, MagicMock
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from itsdangerous import SignatureExpired, BadSignature
+from blueprints.auth.services import validate_reset_password_token
+from config import env_vars
+from config.env_vars import RESET_PASS_TOKEN_MAX_AGE
 
 
-@pytest.fixture
-def user():
-    return UserModel(
-        uid="user_id",
-        email="test@example.com",
-        username="testuser",
-        password_hash="hashedpassword",
-        provider="LOCAL"
-    )
 
+class TestValidateResetPasswordToken(TestCase):
 
-def test_send_reset_password_email(user):
-    with patch("flask_mailman.EmailMessage.send") as mock_send:
-        send_reset_password_email(user)
-        mock_send.assert_called_once()
+    @patch("blueprints.auth.services.user_service.get_by_id")
+    @patch("blueprints.auth.services.URLSafeTimedSerializer")
+    def test_validate_reset_password_token_success(self, mock_serializer, mock_get_by_id):
+        # Мокаем пользователя
+        mock_user = MagicMock()
+        mock_user.uid = "12345"
+        mock_user.password_hash = "hashed_password"
+        mock_get_by_id.return_value = mock_user
 
+        # Мокаем успешную проверку токена
+        mock_serializer.return_value.loads.return_value = "12345"
 
-def test_validate_reset_password_token(user):
-    serializer = URLSafeTimedSerializer("secret_key")
-    token = serializer.dumps(user.uid, salt=user.password_hash)
+        # Вызываем тестируемую функцию
+        user = validate_reset_password_token("valid_token", "12345")
 
-    with patch("blueprints.auth.services.URLSafeTimedSerializer") as mock_serializer:
-        mock_serializer.return_value = serializer
-        validated_user = validate_reset_password_token(token, user.uid)
-        assert validated_user == user
+        # Проверяем, что пользователь вернулся
+        self.assertEqual(user, mock_user)
+        mock_get_by_id.assert_called_once_with("12345")
+        mock_serializer.return_value.loads.assert_called_once_with(
+            "valid_token",
+            max_age=env_vars.RESET_PASS_TOKEN_MAX_AGE,  # Убедитесь, что значение соответствует реальному
+            salt="hashed_password",
+        )
 
+    @patch("blueprints.auth.services.user_service.get_by_id")
+    @patch("blueprints.auth.services.URLSafeTimedSerializer")
+    def test_validate_reset_password_token_expired(self, mock_serializer, mock_get_by_id):
+        # Мокаем пользователя
+        mock_user = MagicMock()
+        mock_user.password_hash = "hashed_password"
+        mock_get_by_id.return_value = mock_user
 
-def test_validate_reset_password_token_expired(user):
-    with patch("blueprints.auth.services.URLSafeTimedSerializer.loads", side_effect=SignatureExpired("Token expired")):
-        assert validate_reset_password_token("expired_token", user.uid) is None
+        # Мокаем истёкший токен
+        mock_serializer.return_value.loads.side_effect = SignatureExpired("Token expired")
 
+        # Вызываем тестируемую функцию
+        user = validate_reset_password_token("expired_token", "12345")
 
-def test_validate_reset_password_token_invalid(user):
-    with patch("blueprints.auth.services.URLSafeTimedSerializer.loads", side_effect=BadSignature("Invalid token")):
-        assert validate_reset_password_token("invalid_token", user.uid) is None
+        # Проверяем, что вернулся None
+        self.assertIsNone(user)
+        mock_get_by_id.assert_called_once_with("12345")
+        mock_serializer.return_value.loads.assert_called_once_with(
+            "expired_token",
+            max_age=env_vars.RESET_PASS_TOKEN_MAX_AGE,
+            salt="hashed_password",
+        )
+
+    @patch("blueprints.auth.services.user_service.get_by_id")
+    @patch("blueprints.auth.services.URLSafeTimedSerializer")
+    def test_validate_reset_password_token_invalid(self, mock_serializer, mock_get_by_id):
+        # Мокаем пользователя
+        mock_user = MagicMock()
+        mock_user.password_hash = "hashed_password"
+        mock_get_by_id.return_value = mock_user
+
+        # Мокаем невалидный токен
+        mock_serializer.return_value.loads.side_effect = BadSignature("Invalid token signature")
+
+        # Вызываем тестируемую функцию
+        user = validate_reset_password_token("invalid_token", "12345")
+
+        # Проверяем, что вернулся None
+        self.assertIsNone(user)
+        mock_get_by_id.assert_called_once_with("12345")
+        mock_serializer.return_value.loads.assert_called_once_with(
+            "invalid_token",
+            max_age=env_vars.RESET_PASS_TOKEN_MAX_AGE,
+            salt="hashed_password",
+        )

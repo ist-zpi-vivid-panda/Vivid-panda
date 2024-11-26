@@ -9,6 +9,7 @@ from config.env_vars import JWT_ACCESS_TOKEN_EXPIRES, JWT_REFRESH_TOKEN_EXPIRES,
 from run_services import user_service
 from utils.request_utils import error_dict
 
+jwt = JWTManager()
 
 def create_jwt_config(app: Flask) -> JWTManager:
     app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
@@ -26,7 +27,9 @@ def create_jwt_config(app: Flask) -> JWTManager:
 
 def __config_jwt(jwt: JWTManager) -> None:
     @jwt.user_identity_loader
-    def user_identity_lookup(user: UserModel) -> str:
+    def user_identity_lookup(user):
+        if isinstance(user, str):
+            return user
         return user.email.lower()
 
     @jwt.user_lookup_loader
