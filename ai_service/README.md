@@ -24,7 +24,7 @@ Then download weights from here:
 
 And put them in the _models_ folder.
 
-### Docker (na razie nie testowałam)
+### Docker
 
 Alternatively, you can build the docker image with the following command:
 
@@ -42,13 +42,11 @@ To run the application locally, run the following command:
 
 The modul will be exposing on port 5001.
 
-### Docker (na razie nie testowałam)
+### Docker
 
 If you want to run the application in a docker container, run the following command:
 
-    ```docker run -p 5001:5001 <image_name>```
-
-## Issues
+    ```docker run -p 5003:5003 <image_name>```
 
 ## License
 
