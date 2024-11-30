@@ -39,9 +39,13 @@ const LicenseList = () => {
                         ? 'secondary.main'
                         : 'primary.main',
                   justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
                   width: '100%',
                   p: 1,
                   px: 2,
+                  wordWrap: 'break-word',
+                  textAlign: 'left',
+                  whiteSpace: 'normal',
                 }}
               >
                 <ResponsiveTypography>{license.name}</ResponsiveTypography>

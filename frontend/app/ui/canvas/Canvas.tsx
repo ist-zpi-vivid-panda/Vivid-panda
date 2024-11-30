@@ -202,9 +202,7 @@ const Canvas = forwardRef<CanvasConsumer, CanvasProps>(
         return;
       }
 
-      cropper.setDragMode(
-        editingTool === EditingTool.Crop ? 'crop' : editingTool === EditingTool.Move ? 'move' : 'none'
-      );
+      cropper.setDragMode(editingTool === EditingTool.Crop ? 'crop' : 'move');
 
       if (editingTool === EditingTool.Crop) {
         cropper.crop();
