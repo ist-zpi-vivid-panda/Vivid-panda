@@ -17,7 +17,7 @@ ALLOWED_MIMETYPES_STR = ",".join(ALLOWED_MIME_TYPES)
 def get_file():
     return fields.Field(
         required=True,
-        validate=[validate_file_size, validate_file_extension, validate_mime_type],
+        validate=[validate_file_size, validate_mime_type],
         description=gettext(
             "File of type %(ext)s up to %(length)s B", ext=ALLOWED_EXTENSIONS_STR, length=MAX_CONTENT_LENGTH
         ),
@@ -29,15 +29,15 @@ def validate_file_size(file: FileStorage):
     if file.content_length > MAX_CONTENT_LENGTH:
         raise ValidationError(gettext("File size must not exceed %(length)s B", length=MAX_CONTENT_LENGTH))
 
-
-def validate_file_extension(file: FileStorage):
-    if file.filename is None:
-        raise ValidationError(gettext("No file name detected"))
-
-    _, ext = os.path.splitext(file.filename)
-
-    if ext is None or ext.lower() not in ALLOWED_EXTENSIONS:
-        raise ValidationError(gettext("Invalid file extension. Only %(ext)s are allowed", ext=ALLOWED_EXTENSIONS_STR))
+# extension can be changed !
+# def validate_file_extension(file: FileStorage):
+#     if file.filename is None:
+#         raise ValidationError(gettext("No file name detected"))
+#
+#     _, ext = os.path.splitext(file.filename)
+#
+#     if ext is None or ext.lower() not in ALLOWED_EXTENSIONS:
+#         raise ValidationError(gettext("Invalid file extension. Only %(ext)s are allowed", ext=ALLOWED_EXTENSIONS_STR))
 
 
 def validate_mime_type(file: FileStorage):
@@ -123,7 +123,7 @@ class AIMicroserviceSchema(Schema):
     original_file = get_file()
     mask_file = fields.Field(
         required=False,
-        validate=[validate_file_size, validate_file_extension, validate_mime_type],
+        validate=[validate_file_size, validate_mime_type],
         description=gettext(
             "File of type %(ext)s up to %(length)s B", ext=ALLOWED_EXTENSIONS_STR, length=MAX_CONTENT_LENGTH
         ),
