@@ -6,6 +6,8 @@ import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { Box, IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 
+import ErrorField from './ErrorField';
+
 type CustomInputProps = TextFieldProps & {
   errorMessage?: string;
   rightIcon?: ReactElement;
@@ -23,7 +25,7 @@ const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps
   const mode = useCurrentMode();
 
   return (
-    <Box ref={ref} sx={{ display: 'flex' }}>
+    <Box ref={ref} sx={{ display: 'flex', flexDirection: 'column', marginBottom: 1 }}>
       <TextField
         {...restOfProps}
         variant="outlined"
@@ -32,7 +34,6 @@ const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps
         margin="normal"
         value={value || ''}
         error={!!errorMessage}
-        helperText={errorMessage || ' '}
         slotProps={{
           input: {
             endAdornment: <InputAdornment position="end">{rightIcon}</InputAdornment>,
@@ -85,6 +86,8 @@ const CustomInput = forwardRef(({ value, errorMessage, rightIcon, ...restOfProps
           },
         }}
       />
+
+      <ErrorField error={errorMessage} />
     </Box>
   );
 });

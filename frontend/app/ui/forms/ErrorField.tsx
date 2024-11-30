@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 
 type ErrorFieldProps = {
-  error?: string;
+  error: string | undefined;
 };
 
 const ErrorField = ({ error }: ErrorFieldProps) =>
@@ -16,7 +16,9 @@ const ErrorField = ({ error }: ErrorFieldProps) =>
         minWidth: '100%',
       }}
     >
-      <Typography variant="caption">{error}</Typography>
+      <Typography variant="caption" sx={{ color: 'error.contrastText' }}>
+        {error}
+      </Typography>
     </Box>
   ) : (
     false

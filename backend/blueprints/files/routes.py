@@ -30,8 +30,8 @@ from utils.request_utils import doc_endpoint, error_dict, success_dict
 files_blueprint = Blueprint("files", __name__)
 tags = ["Files"]
 
-_MAX_NUMBER_OF_FILES = 5
-_MAX_SIZE_OF_FILES_MB = 20
+_MAX_NUMBER_OF_FILES = 50
+_MAX_SIZE_OF_FILES_MB = 200
 _MAX_SIZE_OF_FILES = _MAX_SIZE_OF_FILES_MB * 1024 * 1024
 
 
