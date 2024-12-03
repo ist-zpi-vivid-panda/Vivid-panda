@@ -1,3 +1,5 @@
+# Some code in this script was inspired by https://github.com/naoto0804/pytorch-AdaIN
+
 import torch
 from image_processing.command import Command
 from image_processing.style_transfer import net
