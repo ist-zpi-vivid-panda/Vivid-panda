@@ -10,6 +10,7 @@ import {
   AI_FUNCTION_REQUIRED_STYLE,
   AI_FUNCTION_TO_API_CALL,
 } from './ai-functions/mappings';
+import handleApiError from '../api/apiErrorHandler';
 import { getFileFromBlob } from '../files/utils';
 import { TranslationNamespace } from '../internationalization/definitions';
 import useStrings from '../internationalization/useStrings';
@@ -91,9 +92,7 @@ const useAIImageEditFlow = ({
 
         setResult(result);
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+        handleApiError(error);
       }
 
       setLoading(false);

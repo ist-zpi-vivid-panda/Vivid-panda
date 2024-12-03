@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 
+import handleApiError from '@/app/lib/api/apiErrorHandler';
 import { usePostFileMutation } from '@/app/lib/api/fileApi';
 import { CanvasCRUDOperations, ChangeHistory } from '@/app/lib/canvas/definitions';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
@@ -45,11 +46,10 @@ const NewImageEditingScreen = () => {
 
       try {
         const response = await postFile.mutateAsync(image);
+
         router.replace(`/canvas/edit/${response.id}`);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+      } catch (error) {
+        handleApiError(error);
       }
     },
     [postFile, router, t]

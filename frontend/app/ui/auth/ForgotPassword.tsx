@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 
+import handleApiError from '@/app/lib/api/apiErrorHandler';
 import { RequestSendPasswordProps, sendEmail } from '@/app/lib/api/authApi';
 import useConfiguredForm from '@/app/lib/forms/useConfiguredForm';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
@@ -14,7 +15,6 @@ import { Box } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FieldValues } from 'react-hook-form';
-import { toast } from 'react-toastify';
 
 import ResponsiveTypography from '../themed/ResponsiveTypography';
 
@@ -38,9 +38,7 @@ const ForgotPassword = () => {
 
         router.replace('/auth/login');
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+        handleApiError(error);
       }
     },
     [router]

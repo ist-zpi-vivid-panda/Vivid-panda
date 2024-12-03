@@ -2,6 +2,7 @@
 
 import { ReactNode, useState, useCallback, useEffect, useRef, useMemo } from 'react';
 
+import handleApiError from '@/app/lib/api/apiErrorHandler';
 import {
   downloadFile,
   handleDownloadBlobToBrowser,
@@ -16,7 +17,6 @@ import { getFileFromFileInfoAndBlob } from '@/app/lib/files/utils';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
 
 import Canvas, { CanvasConsumer } from './Canvas';
 import GridView from './GridView';
@@ -65,20 +65,14 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const handleSaveAsNew = useCallback(
     () =>
-      canvasRef.current?.getBlob(async (blob) => {
+      canvasRef.current?.getBlob((blob) => {
         if (!blob) {
           return;
         }
 
         const data = getFileFromFileInfoAndBlob(blob, fileInfo);
 
-        try {
-          await postFile.mutateAsync(data);
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            toast.error(error.message);
-          }
-        }
+        postFile.mutateAsync(data).catch(handleApiError);
       }),
     [fileInfo, postFile]
   );
@@ -90,10 +84,10 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
         actions: [
           {
             text: t('common:delete'),
-            onPress: async () => {
+            onPress: () => {
               router.replace('/canvas/new');
 
-              await deleteFile.mutateAsync(fileInfo.id);
+              deleteFile.mutateAsync(fileInfo.id);
             },
           },
         ],

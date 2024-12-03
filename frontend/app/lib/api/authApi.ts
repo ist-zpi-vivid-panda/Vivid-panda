@@ -1,7 +1,8 @@
 import { apiCallNoAutoToken, HttpMethod, postCall } from '@/app/lib/api/apiUtils';
 import useUserData, { UserInfo } from '@/app/lib/storage/useUserData';
 import { CredentialResponse } from '@react-oauth/google';
-import { toast } from 'react-toastify';
+
+import handleApiError from './apiErrorHandler';
 
 export type LoginProps = {
   email: string;
@@ -59,9 +60,7 @@ const auth = async (apiCallFn: () => Promise<AuthResult>) => {
       refreshToken: apiResult.refresh_token,
     } as UserInfo;
   } catch (error) {
-    if (error instanceof Error) {
-      toast.error(error.message);
-    }
+    handleApiError(error);
   }
 };
 
