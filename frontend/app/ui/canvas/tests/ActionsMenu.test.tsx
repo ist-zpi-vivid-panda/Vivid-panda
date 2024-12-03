@@ -9,6 +9,7 @@ import ActionsMenu from '../ActionsMenu';
 
 // Konfiguracja mockowego i18next
 const i18nInstance = i18n.createInstance();
+
 i18nInstance.use(initReactI18next).init({
   lng: 'en',
   resources: {
@@ -27,6 +28,7 @@ i18nInstance.use(initReactI18next).init({
 describe('ActionsMenu', () => {
   const mockCanvasCrudOperations: CanvasCRUDOperations = {
     handleSave: jest.fn(),
+    handleSaveAsNew: jest.fn(),
     handleDelete: jest.fn(),
     handleDownload: jest.fn(),
   };

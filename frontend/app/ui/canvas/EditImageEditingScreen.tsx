@@ -7,6 +7,7 @@ import {
   handleDownloadBlobToBrowser,
   useDeleteFileMutation,
   useFileData,
+  usePostFileMutation,
   useUpdateFileDataMutation,
 } from '@/app/lib/api/fileApi';
 import { AiFunctionType } from '@/app/lib/canvas/ai-functions/definitions';
@@ -15,6 +16,7 @@ import { getFileFromFileInfoAndBlob } from '@/app/lib/files/utils';
 import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 import Canvas, { CanvasConsumer } from './Canvas';
 import GridView from './GridView';
@@ -43,6 +45,7 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
 
   const { prompt } = useActionPrompt();
 
+  const postFile = usePostFileMutation();
   const updateDataFile = useUpdateFileDataMutation();
   const deleteFile = useDeleteFileMutation();
 
@@ -58,6 +61,26 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
         updateDataFile.mutateAsync({ id: fileInfo.id, data });
       }),
     [fileInfo, updateDataFile]
+  );
+
+  const handleSaveAsNew = useCallback(
+    () =>
+      canvasRef.current?.getBlob(async (blob) => {
+        if (!blob) {
+          return;
+        }
+
+        const data = getFileFromFileInfoAndBlob(blob, fileInfo);
+
+        try {
+          await postFile.mutateAsync(data);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        }
+      }),
+    [fileInfo, postFile]
   );
 
   const handleDelete = useCallback(
@@ -96,10 +119,11 @@ const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const canvasCrudOperations: CanvasCRUDOperations = useMemo(
     () => ({
       handleSave,
+      handleSaveAsNew,
       handleDelete,
       handleDownload,
     }),
-    [handleDelete, handleDownload, handleSave]
+    [handleDelete, handleDownload, handleSave, handleSaveAsNew]
   );
 
   const changeHistoryData: ChangeHistory = useMemo(

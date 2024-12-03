@@ -34,6 +34,7 @@ export type ChangeHistory = {
 
 export type CanvasCRUDOperations = {
   handleSave: () => void;
+  handleSaveAsNew: () => void;
   handleDelete: () => void;
   handleDownload: () => void;
 };

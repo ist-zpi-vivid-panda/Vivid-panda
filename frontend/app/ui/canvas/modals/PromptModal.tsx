@@ -8,6 +8,7 @@ import { FieldValues } from 'react-hook-form';
 
 import ControlledCustomInput from '../../forms/CustomInput';
 import SubmitButton from '../../forms/SubmitButton';
+import ResponsiveTypography from '../../themed/ResponsiveTypography';
 import ActionModal from '../../utilities/ActionModal';
 
 type PromptModalProps = {
@@ -37,6 +38,8 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
   return (
     <ActionModal isOpen={isOpen} close={close}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <ResponsiveTypography>{t('prompt_english')}</ResponsiveTypography>
+
         <ControlledCustomInput control={control} errors={errors} label={t('prompt')} name="prompt" required />
 
         <Box sx={{ display: 'flex', justifyContent: 'end' }}>

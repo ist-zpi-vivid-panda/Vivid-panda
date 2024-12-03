@@ -7,6 +7,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
+import LibraryAddRoundedIcon from '@mui/icons-material/LibraryAddRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { Button, Tooltip, Card } from '@mui/material';
 
@@ -17,8 +18,6 @@ type ActionsMenuProps = {
 
 type ActionsMenuPresentationProps = {
   name: string;
-  color: string;
-  textColor: string;
   onToolSelect: () => void;
   Icon: React.ElementType;
   disabled?: boolean;
@@ -45,9 +44,6 @@ const ActionsMenuPresentation = ({ name, onToolSelect, Icon }: ActionsMenuPresen
 const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuProps) => {
   const { t } = useStrings(TranslationNamespace.Common);
 
-  const iconColor = '#36065f';
-  const textColor = '#36065f';
-
   return (
     <Card
       sx={{
@@ -61,18 +57,16 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
         padding: 2,
       }}
     >
+      <ActionsMenuPresentation name={t('save')} Icon={SaveRoundedIcon} onToolSelect={canvasCrudOperations.handleSave} />
+
       <ActionsMenuPresentation
-        name={t('save')}
-        color={iconColor}
-        textColor={textColor}
-        Icon={SaveRoundedIcon}
-        onToolSelect={canvasCrudOperations.handleSave}
+        name={t('save_as_copy')}
+        Icon={LibraryAddRoundedIcon}
+        onToolSelect={canvasCrudOperations.handleSaveAsNew}
       />
 
       <ActionsMenuPresentation
         name={t('undo')}
-        color={iconColor}
-        textColor={textColor}
         Icon={ArrowBackRoundedIcon}
         onToolSelect={changeHistoryData.handleUndo}
         disabled={!changeHistoryData.canUndo}
@@ -80,8 +74,6 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
 
       <ActionsMenuPresentation
         name={t('redo')}
-        color={iconColor}
-        textColor={textColor}
         Icon={ArrowForwardRoundedIcon}
         onToolSelect={changeHistoryData.handleRedo}
         disabled={!changeHistoryData.canRedo}
@@ -89,16 +81,12 @@ const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuPro
 
       <ActionsMenuPresentation
         name={t('delete')}
-        color={iconColor}
-        textColor={textColor}
         Icon={DeleteForeverRoundedIcon}
         onToolSelect={canvasCrudOperations.handleDelete}
       />
 
       <ActionsMenuPresentation
         name={t('download')}
-        color={iconColor}
-        textColor={textColor}
         Icon={DownloadRoundedIcon}
         onToolSelect={canvasCrudOperations.handleDownload}
       />

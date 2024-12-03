@@ -15,5 +15,6 @@
     "upscalling": "Upscalling",
     "colorize_image": "Colorize image",
     "style_transfer": "Style transfer",
-    "max_image_size": "Max image size is {{size}} MB"
+    "max_image_size": "Max image size is {{size}} MB",
+    "prompt_english": "For best results please use english in the prompt"
 }

@@ -15,5 +15,6 @@
     "upscalling": "Poprawa rozdzielczości",
     "colorize_image": "Koloryzacja obrazu",
     "style_transfer": "Transfer stylu",
-    "max_image_size": "Maksymalna wielkość zdjęcia to {{size}} MB"
+    "max_image_size": "Maksymalna wielkość zdjęcia to {{size}} MB",
+    "prompt_english": "Dla najlepszych wyników użyj języka angielskiego w akcji"
 }

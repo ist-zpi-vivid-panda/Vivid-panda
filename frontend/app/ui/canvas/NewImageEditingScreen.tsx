@@ -16,6 +16,7 @@ const VOID_FN = () => {};
 
 const canvasCrudOperations: CanvasCRUDOperations = Object.freeze({
   handleSave: VOID_FN,
+  handleSaveAsNew: VOID_FN,
   handleDelete: VOID_FN,
   handleDownload: VOID_FN,
 } as const);
