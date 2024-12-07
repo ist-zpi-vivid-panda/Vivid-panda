@@ -56,6 +56,10 @@ def create_tokens(user: UserModel) -> dict:
     secure=False,
 )
 def register(email: str, username: str | None, password: str) -> Tuple[dict, int] | dict:
+    user = user_service.get_by_email(email.lower())
+    if user is not None:
+        return error_dict(gettext("Email already registered")), 400
+
     user = UserModel(None, email, username, generate_password_hash(password), AccountDataProvider.LOCAL, None)
     result = user_service.insert(user)
 
