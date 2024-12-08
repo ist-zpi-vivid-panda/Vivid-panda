@@ -1,4 +1,3 @@
-#Działa na 75%
 import unittest
 from unittest.mock import patch, MagicMock
 from werkzeug.security import generate_password_hash
@@ -9,47 +8,47 @@ class TestRoutes(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Создаем приложение Flask и клиент для тестов
+        # Create a Flask application and test client
         cls.app = create_app()
         cls.app.config['TESTING'] = True
         cls.client = cls.app.test_client()
 
     def setUp(self):
-        # Очищаем зарегистрированные компоненты, чтобы избежать DuplicateComponentNameError
+        # Clear registered components to avoid DuplicateComponentNameError
         if hasattr(self.app, "apispec"):
             self.app.apispec.components = {}
             self.app.apispec._definitions = {}
 
-    @unittest.skip("Пропускаем тест, так как он пока не работает")
+    @unittest.skip("Skipping test as it is not functional yet")
     @patch('blueprints.auth.routes.user_service.get_by_email')
     def test_login_user_success(self, mock_get_by_email):
-        # Мокаем пользователя
+        # Mock a user
         mock_user = MagicMock()
         mock_user.password_hash = generate_password_hash("Password123!")
         mock_user.provider = "LOCAL"
         mock_get_by_email.return_value = mock_user
 
-        # Тестируем запрос логина
+        # Test login request
         response = self.client.post('/auth/login', json={'email': 'test@example.com', 'password': 'Password123!'})
         print("Status Code:", response.status_code)
-        print("Response JSON:", response.get_json())  # Отладка
+        print("Response JSON:", response.get_json())  # Debugging
 
-        # Проверяем успешный ответ
+        # Check successful response
         self.assertEqual(response.status_code, 200)
         response_json = response.get_json()
         self.assertIn("access_token", response_json)
 
     @patch('blueprints.auth.routes.user_service.get_by_email')
     def test_login_user_invalid_credentials(self, mock_get_by_email):
-        # Мокаем отсутствие пользователя
+        # Mock no user found
         mock_get_by_email.return_value = None
 
-        # Тестируем запрос с некорректными данными
+        # Test request with invalid credentials
         response = self.client.post('/auth/login', json={'email': 'wrong@example.com', 'password': 'wrongpassword'})
         print("Status Code:", response.status_code)
-        print("Response JSON:", response.get_json())  # Отладка
+        print("Response JSON:", response.get_json())  # Debugging
 
-        # Проверяем ответ с ошибкой авторизации
+        # Check authorization error response
         self.assertEqual(response.status_code, 401)
         response_json = response.get_json()
         self.assertIn("error", response_json)
@@ -57,30 +56,30 @@ class TestRoutes(unittest.TestCase):
 
     @patch('blueprints.auth.routes.user_service.insert')
     def test_register_user_success(self, mock_insert):
-        # Мокаем успешную регистрацию
+        # Mock successful registration
         mock_insert.return_value = True
 
-        # Тестируем запрос регистрации
+        # Test registration request
         response = self.client.post('/auth/register', json={'email': 'new@example.com', 'username': 'newuser', 'password': 'Password123!'})
         print("Status Code:", response.status_code)
-        print("Response JSON:", response.get_json())  # Отладка
+        print("Response JSON:", response.get_json())  # Debugging
 
-        # Проверяем успешный ответ
+        # Check successful response
         self.assertEqual(response.status_code, 200)
         response_json = response.get_json()
         self.assertIn("access_token", response_json)
 
     @patch('blueprints.auth.routes.user_service.insert')
     def test_register_user_email_exists(self, mock_insert):
-        # Мокаем случай, когда пользователь уже существует
+        # Mock user already exists case
         mock_insert.return_value = None
 
-        # Тестируем запрос регистрации с уже существующим email
+        # Test registration request with existing email
         response = self.client.post('/auth/register', json={'email': 'existing@example.com', 'username': 'existinguser', 'password': 'Password123!'})
         print("Status Code:", response.status_code)
-        print("Response JSON:", response.get_json())  # Отладка
+        print("Response JSON:", response.get_json())  # Debugging
 
-        # Проверяем ответ с ошибкой
+        # Check error response
         self.assertEqual(response.status_code, 400)
         response_json = response.get_json()
         self.assertIn("error", response_json)

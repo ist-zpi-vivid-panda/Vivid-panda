@@ -3,7 +3,7 @@ from flask_jwt_extended import create_access_token
 from app import create_app
 import mongomock
 
-# Мок-класс для имитации пользователя
+# Mock class to simulate a user
 class MockUser:
     def __init__(self, uid="507f1f77bcf86cd799439012", email="test_user@example.com"):
         self.uid = uid
@@ -35,7 +35,7 @@ def mock_user():
     return MockUser()
 
 def test_get_files(client, mock_db, access_token, mock_user):
-    # Эмуляция вставки данных в mock MongoDB
+    # Simulate inserting data into mock MongoDB
     mock_db.file_info.insert_one({
         "_id": "507f1f77bcf86cd799439015",
         "filename": "test.txt",
@@ -47,11 +47,11 @@ def test_get_files(client, mock_db, access_token, mock_user):
         "grid_fs_id": "507f1f77bcf86cd799439013",
     })
 
-    # Отправка GET-запроса к маршруту
+    # Send a GET request to the route
     headers = {"Authorization": f"Bearer {access_token}"}
     response = client.get('/files/', headers=headers)
 
-    # Проверка статуса и данных
+    # Check the status and data
     assert response.status_code == 200
     data = response.get_json()
     assert data is not None

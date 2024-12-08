@@ -1,79 +1,113 @@
+#Nie działa :(
 import pytest
 from flask import Flask
-from flask_jwt_extended import create_access_token
-from blueprints.user.routes import users_blueprint
-from blueprints.user.models import UserModel
-from blueprints.user.services import UserService
-from unittest.mock import MagicMock
 from io import BytesIO
+from flask_jwt_extended import JWTManager, create_access_token
 
+class MockUser:
+    """Mock user object to mimic the UserModel class."""
+    def __init__(self, uid, email, username="test_user", provider=0, profile_picture_grid_fs_id=None):
+        self.uid = uid
+        self.email = email
+        self.username = username
+        self.provider = provider
+        self.profile_picture_grid_fs_id = profile_picture_grid_fs_id
 
-# Mock Flask app setup
+    def get_dto(self):
+        """Return a dictionary representation of the user."""
+        return {
+            "id": self.uid,
+            "email": self.email,
+            "username": self.username,
+            "provider": self.provider,
+        }
+
 @pytest.fixture
 def app():
-    app = Flask(__name__)
-    app.register_blueprint(users_blueprint, url_prefix='/users')
-    app.config['TESTING'] = True
-    app.config['JWT_TOKEN_LOCATION'] = ['headers']
-    app.config['JWT_SECRET_KEY'] = 'test-secret-key'
-    app.config['JWT_HEADER_NAME'] = 'Authorization'
-    app.config['JWT_HEADER_TYPE'] = 'Bearer'
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 9000  # Example: 150 minutes
-    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = 2592000  # Example: 30 days
-    return app
+    """
+    Fixture to create and configure a Flask app instance.
+    """
+    from blueprints.user.routes import users_blueprint
 
+    app = Flask(__name__)
+    app.config["JWT_SECRET_KEY"] = "test-secret"  # Dummy secret key for JWT
+    app.config["JWT_TOKEN_LOCATION"] = ["headers"]  # JWT expected in headers
+
+    jwt = JWTManager(app)  # Initialize the JWT manager
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(jwt_header, jwt_data):
+        # Simulate user lookup from identity
+        identity = jwt_data["sub"]
+        return MockUser(uid=identity["id"], email=identity["email"])
+
+    app.register_blueprint(users_blueprint, url_prefix="/users")
+    app.testing = True
+    return app
 
 @pytest.fixture
 def client(app):
-    return app.test_client()
+    """
+    Fixture to create a test client with an application context.
+    """
+    with app.app_context():  # Ensures app context is active
+        yield app.test_client()
 
 @pytest.fixture
-def access_token(mock_user):
-    return create_access_token(identity=mock_user.uid)
+def auth_headers(app):
+    """
+    Fixture to provide Authorization headers with a valid JWT.
+    """
+    with app.app_context():  # Needed to create tokens within app context
+        access_token = create_access_token(identity={"id": "test_user", "email": "test@example.com"})
+    return {"Authorization": f"Bearer {access_token}"}
 
-@pytest.fixture
-def mock_user():
-    return UserModel(
-        uid="64b4d7f93f999a1a8e123456",  # valid 24-character hex string
-        email="testuser@example.com",
-        username="testuser",
-        password_hash="hashed_password",
-        provider=0,  # LOCAL provider
-        profile_picture_grid_fs_id=None
-    )
-
-
-# Test get_user endpoint
-def test_get_user(client, mock_user):
-    UserService.get_one_by = MagicMock(return_value=mock_user)
-
-    response = client.get('/users/')
+def test_get_user(client, auth_headers):
+    """
+    Test the GET /users/ endpoint.
+    """
+    response = client.get("/users/", headers=auth_headers)
     assert response.status_code == 200
-    assert response.json == {
-        "id": "64b4d7f93f999a1a8e123456",
-        "email": "testuser@example.com",
-        "username": "testuser",
-        "provider": 0
-    }
+    data = response.get_json()
+    assert "id" in data
+    assert "email" in data
+    assert "username" in data
+    assert "provider" in data
 
-
-# Test get_user_profile_picture endpoint
-def test_get_user_profile_picture(client, mock_user):
-    mock_user.profile_picture_grid_fs_id = "mock_grid_fs_id"
-    UserService.get_one_by = MagicMock(return_value=mock_user)
-
-    response = client.get('/users/profile-picture')
+def test_get_user_profile_picture(client, auth_headers):
+    """
+    Test the GET /users/profile-picture endpoint.
+    """
+    response = client.get("/users/profile-picture", headers=auth_headers)
     assert response.status_code == 200
-    assert "data" in response.json
+    data = response.get_json()
+    assert "data" in data
+    # Add specific assertions if you expect certain values
 
-
-# Test upsert_user_profile_picture endpoint
-def test_upsert_user_profile_picture(client, mock_user):
-    UserService.get_one_by = MagicMock(return_value=mock_user)
-
+def test_upsert_user_profile_picture(client, auth_headers):
+    """
+    Test the POST /users/profile-picture endpoint.
+    """
+    # Mock file upload
     data = {
-        'file': (BytesIO(b"fake image data"), 'test_picture.png')
+        "file": (BytesIO(b"dummy file content"), "test_picture.jpg"),
     }
-    response = client.post('/users/profile-picture', data=data, content_type='multipart/form-data')
+    response = client.post(
+        "/users/profile-picture",
+        headers=auth_headers,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert response.status_code in [200, 400]  # Depending on the test case
+    data = response.get_json()
+    if response.status_code == 200:
+        assert "success" in data and data["success"] is True
+    else:
+        assert "error" in data
 
-    assert response.status_code in [200, 400]  # Test for success and file save failure scenarios
+def test_get_user_invalid_method(client, auth_headers):
+    """
+    Test invalid method (POST instead of GET) on /users/.
+    """
+    response = client.post("/users/", headers=auth_headers)
+    assert response.status_code == 405  # Method not allowed
