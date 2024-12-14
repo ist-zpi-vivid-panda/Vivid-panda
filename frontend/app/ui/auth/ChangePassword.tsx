@@ -22,7 +22,7 @@ const ChangePassword = () => {
   const token = searchParams.get('token');
   const userId = searchParams.get('user_id');
 
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const {
     control,

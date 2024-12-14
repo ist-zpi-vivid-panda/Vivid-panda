@@ -1,14 +1,9 @@
 import React from 'react';
 
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import NotFoundError from '@/app/ui/errors/NotFoundError';
-import { Metadata } from 'next';
 
-// ------------------ begin :: metadata ------------------
-// can't use metadata and 'use client' in one file
-export const metadata: Metadata = Object.freeze({
-  title: 'Error',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('error');
 
 const NotFoundPage = () => <NotFoundError />;
 

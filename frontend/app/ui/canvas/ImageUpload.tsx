@@ -16,7 +16,7 @@ type ImageUploadProps = {
 const ACCEPTED_EXTENSIONS = '.jpg, .jpeg, .png' as const;
 
 const ImageUpload = ({ onImageUpload }: ImageUploadProps) => {
-  const { t } = useStrings(TranslationNamespace.Files);
+  const { t } = useStrings(TranslationNamespace.FILES);
 
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement | null>(null);

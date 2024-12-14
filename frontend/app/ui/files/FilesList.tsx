@@ -17,7 +17,7 @@ import useActionPrompt from '../utilities/ActionPrompt';
 const FilesList = () => {
   const router = useRouter();
 
-  const { t } = useStrings(TranslationNamespace.Files);
+  const { t } = useStrings(TranslationNamespace.FILES);
 
   const deleteFile = useDeleteFileMutation();
 

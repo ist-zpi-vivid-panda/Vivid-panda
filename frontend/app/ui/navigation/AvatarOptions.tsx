@@ -16,7 +16,7 @@ const AvatarOptions = () => {
   const { data: profilePicture } = useUserProfilePicture().data;
   const { logout } = useUserData();
 
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

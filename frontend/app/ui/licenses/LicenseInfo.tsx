@@ -10,7 +10,7 @@ type LicenseInfoProps = {
 };
 
 const LicenseInfo = ({ license }: LicenseInfoProps) => {
-  const { t } = useStrings(TranslationNamespace.Licenses);
+  const { t } = useStrings(TranslationNamespace.LICENSES);
 
   return (
     <Box sx={{ flex: 2, padding: '1rem' }}>

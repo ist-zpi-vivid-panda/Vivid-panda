@@ -13,7 +13,7 @@ type FilterTrayProps = {
 const filters = getEnumValues(FilterType);
 
 const FilterTray = ({ setFilterType }: FilterTrayProps) => {
-  const { t } = useStrings(TranslationNamespace.Filters);
+  const { t } = useStrings(TranslationNamespace.FILTERS);
 
   return (
     <>

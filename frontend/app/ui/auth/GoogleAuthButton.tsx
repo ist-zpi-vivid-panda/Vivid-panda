@@ -14,7 +14,7 @@ const GoogleAuthButton = () => {
   const router = useRouter();
   const { login } = useUserData();
 
-  const { t, i18n } = useStrings(TranslationNamespace.Error);
+  const { t, i18n } = useStrings(TranslationNamespace.ERROR);
 
   const onSuccess = useCallback(
     async (credentialResponse: CredentialResponse) => {

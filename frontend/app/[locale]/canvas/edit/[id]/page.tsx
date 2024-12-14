@@ -1,16 +1,11 @@
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import EditImageEditingScreen from '@/app/ui/canvas/EditImageEditingScreen';
-import { Metadata } from 'next';
 
 type EditCanvasPageProps = {
   params: Promise<{ id: string }>;
 };
 
-// ------------------ begin :: metadata ------------------
-// can't use metadata and 'use client' in one file
-export const metadata: Metadata = Object.freeze({
-  title: 'Edit',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('edit');
 
 const EditCanvasPage = async ({ params }: EditCanvasPageProps) => {
   const { id } = await params;

@@ -21,7 +21,7 @@ import ResponsiveTypography from '../themed/ResponsiveTypography';
 const ForgotPassword = () => {
   const router = useRouter();
 
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const {
     control,

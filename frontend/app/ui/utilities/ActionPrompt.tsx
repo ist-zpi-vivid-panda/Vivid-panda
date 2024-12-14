@@ -36,7 +36,7 @@ const PromptAction = ({ text, onPress }: PromptActionProps) => (
 const ActionPromptContext = createContext<ActionPromptProps>({ prompt: () => {} });
 
 export const ActionPrompt = ({ children }: ChildrenProp) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   const [overlayState, setOverlayState] = useState<PromptProps>({});
   const [isVisible, setVisible] = useState<boolean>(false);

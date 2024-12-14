@@ -25,7 +25,7 @@ const PromptModal = ({ isOpen, close, setPromptText }: PromptModalProps) => {
     formState: { errors },
   } = useConfiguredForm({});
 
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   const onSubmit = useCallback(
     async (values: FieldValues) => {

@@ -1,11 +1,7 @@
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import FilesList from '@/app/ui/files/FilesList';
-import { Metadata } from 'next';
 
-// ------------------ begin :: metadata ------------------
-export const metadata: Metadata = Object.freeze({
-  title: 'Files List',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('files_list');
 
 const FilesListPage = () => <FilesList />;
 

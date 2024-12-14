@@ -3,11 +3,14 @@ import Link from 'next/link';
 
 import { LocaleParamProps, TranslationNamespace } from '../lib/internationalization/definitions';
 import initTranslations from '../lib/internationalization/i18n';
+import { generateMetadataFunctor } from '../lib/internationalization/utils';
+
+export const generateMetadata = generateMetadataFunctor('home_page');
 
 const Home = async ({ params }: LocaleParamProps) => {
   const { locale } = await params;
 
-  const { t } = await initTranslations(locale, [TranslationNamespace.Common]);
+  const { t } = await initTranslations(locale, [TranslationNamespace.COMMON]);
 
   return (
     <Box className="bg-left min-h-screen logoBackground flex justify-end items-start">

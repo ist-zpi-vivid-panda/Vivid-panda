@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 type CropTrayProps = { handleCrop: () => void };
 
 const CropTray = ({ handleCrop }: CropTrayProps) => {
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   return (
     <Button variant="contained" onClick={handleCrop}>

@@ -27,7 +27,7 @@ const COOKIE_DAYS = 30 as const;
 const createExpirationDateFori18nCookie = () => dayjs().add(COOKIE_DAYS, 'days').toDate();
 
 const LocaleChangerItem = ({ locale, onClick }: LocaleChangerItemProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   return <MenuItem onClick={onClick}>{t(locale)}</MenuItem>;
 };

@@ -1,12 +1,7 @@
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import LicenseList from '@/app/ui/licenses/LicenseList';
-import { Metadata } from 'next';
 
-// ------------------ begin :: metadata ------------------
-// can't use metadata and 'use client' in one file
-export const metadata: Metadata = Object.freeze({
-  title: 'Licenses',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('licenses');
 
 const LicenseListPage = () => <LicenseList />;
 

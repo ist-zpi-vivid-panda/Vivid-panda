@@ -14,7 +14,7 @@ import ResponsiveTypography from '../themed/ResponsiveTypography';
 const licenses = readLicenses();
 
 const LicenseList = () => {
-  const { t } = useStrings(TranslationNamespace.Licenses);
+  const { t } = useStrings(TranslationNamespace.LICENSES);
   const mode = useCurrentMode();
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);

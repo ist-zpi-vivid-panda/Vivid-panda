@@ -19,7 +19,7 @@ type FileEditProps = {
 };
 
 const FileEdit = ({ fileInfo, onClose }: FileEditProps) => {
-  const { t } = useStrings(TranslationNamespace.Files);
+  const { t } = useStrings(TranslationNamespace.FILES);
   const updateFile = useUpdateFileMutation();
 
   const {

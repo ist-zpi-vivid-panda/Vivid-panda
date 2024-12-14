@@ -42,7 +42,7 @@ const ActionsMenuPresentation = ({ name, onToolSelect, Icon }: ActionsMenuPresen
 );
 
 const ActionsMenu = ({ canvasCrudOperations, changeHistoryData }: ActionsMenuProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   return (
     <Card

@@ -1,12 +1,7 @@
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import Register from '@/app/ui/auth/Register';
-import { Metadata } from 'next';
 
-// ------------------ begin :: metadata ------------------
-// can't use metadata and 'use client' in one file
-export const metadata: Metadata = Object.freeze({
-  title: 'Register',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('register');
 
 const RegisterPage = () => <Register />;
 

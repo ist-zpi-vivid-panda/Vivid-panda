@@ -1,12 +1,7 @@
+import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
 import ChangePassword from '@/app/ui/auth/ChangePassword';
-import { Metadata } from 'next';
 
-// ------------------ begin :: metadata ------------------
-// can't use metadata and 'use client' in one file
-export const metadata: Metadata = Object.freeze({
-  title: 'Change password',
-} as const);
-// ------------------ end :: metadata ------------------
+export const generateMetadata = generateMetadataFunctor('change_password');
 
 const ChangePasswordPage = () => <ChangePassword />;
 

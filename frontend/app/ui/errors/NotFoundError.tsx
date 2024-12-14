@@ -10,7 +10,7 @@ import BaseError from './BaseError';
 
 const NotFoundError = () => {
   const router = useRouter();
-  const { t } = useStrings(TranslationNamespace.Error);
+  const { t } = useStrings(TranslationNamespace.ERROR);
 
   const handleBack = useCallback(() => router.back(), [router]);
 
