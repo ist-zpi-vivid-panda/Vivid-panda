@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { LocaleParamProps, TranslationNamespace } from '../lib/internationalization/definitions';
 import initTranslations from '../lib/internationalization/i18n';
-import { generateMetadataFunctor } from '../lib/internationalization/utils';
+import { generateMetadataFunctor } from '../lib/internationalization/metadata';
 
 export const generateMetadata = generateMetadataFunctor('home_page');
 

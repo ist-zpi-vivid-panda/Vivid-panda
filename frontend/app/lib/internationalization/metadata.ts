@@ -1,9 +1,7 @@
 import { Metadata } from 'next';
 
-import { LocaleParamProps, SupportedLocale, TranslationNamespace } from './definitions';
+import { LocaleParamProps, TranslationNamespace } from './definitions';
 import initTranslations from './i18n';
-
-export const DEFAULT_LOCALE = SupportedLocale.en as const;
 
 export const generateMetadataFunctor =
   (titleName: string) =>

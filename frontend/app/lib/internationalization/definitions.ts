@@ -19,3 +19,5 @@ export type LocaleParam = Promise<{ locale: SupportedLocale }>;
 export type LocaleParamProps = {
   params: LocaleParam;
 };
+
+export const DEFAULT_LOCALE = SupportedLocale.en as const;

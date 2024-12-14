@@ -1,5 +1,4 @@
-import { SupportedLocale } from './app/lib/internationalization/definitions';
-import { DEFAULT_LOCALE } from './app/lib/internationalization/utils';
+import { DEFAULT_LOCALE, SupportedLocale } from './app/lib/internationalization/definitions';
 import { getEnumValues } from './app/lib/utilities/enums';
 
 const i18Config = {

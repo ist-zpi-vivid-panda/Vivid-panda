@@ -1,4 +1,4 @@
-import { generateMetadataFunctor } from '@/app/lib/internationalization/utils';
+import { generateMetadataFunctor } from '@/app/lib/internationalization/metadata';
 import EditImageEditingScreen from '@/app/ui/canvas/EditImageEditingScreen';
 
 type EditCanvasPageProps = {

@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
 import { googleAuth } from '@/app/lib/api/authApi';
-import { TranslationNamespace } from '@/app/lib/internationalization/definitions';
+import { DEFAULT_LOCALE, TranslationNamespace } from '@/app/lib/internationalization/definitions';
 import useStrings from '@/app/lib/internationalization/useStrings';
-import { DEFAULT_LOCALE } from '@/app/lib/internationalization/utils';
 import useUserData from '@/app/lib/storage/useUserData';
 import ENV_VARS from '@/constants/envVars';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
