@@ -28,3 +28,7 @@ opencv-python~=4.10.0.84
 torch~=2.5.1
 torchvision~=0.20.1
 PyJWT~=2.10.0
+
+# translation
+sentencepiece
+sacremoses
