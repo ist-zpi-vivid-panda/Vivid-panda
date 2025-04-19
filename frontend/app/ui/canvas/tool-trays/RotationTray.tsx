@@ -16,7 +16,7 @@ type RotationTrayProps = {
 };
 
 const RotationTray = ({ rotationStep, setRotation, currentRotation, defaultRotation }: RotationTrayProps) => {
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   return (
     <>

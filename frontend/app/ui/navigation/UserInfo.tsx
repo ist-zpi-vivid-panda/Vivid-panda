@@ -17,7 +17,7 @@ const UserInfo = () => {
   const { email, username } = useUserInfo().data;
   const { data: profilePicture } = useUserProfilePicture().data;
   const router = useRouter();
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

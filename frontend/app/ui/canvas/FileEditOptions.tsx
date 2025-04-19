@@ -51,7 +51,7 @@ const EditingToolPresentation = ({ name, onToolSelect, Icon }: EditToolPresentat
 );
 
 const FileEditListOptions = ({ setEditingTool, setAiFunction }: FileEditListOptionsProps) => {
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   const toggleEditingTool = useCallback(
     (editingTool: EditingTool) => setEditingTool?.((prev) => (editingTool === prev ? undefined : editingTool)),

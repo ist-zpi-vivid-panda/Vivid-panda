@@ -27,7 +27,7 @@ const FilesListItem = ({
   onDownloadClick,
   onEditPhotoClick,
 }: FilesListItemProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   return (
     <Card

@@ -36,7 +36,7 @@ const useAIImageEditFlow = ({
   setResult,
   imageType,
 }: UseAIImageEditProps) => {
-  const { t } = useStrings(TranslationNamespace.Error);
+  const { t } = useStrings(TranslationNamespace.ERROR);
   const [maskFile, setMaskFile] = useState<File | undefined>(undefined);
   const [prompt, setPrompt] = useState<string>(START_PROMPT);
   const [isLoading, setLoading] = useState<boolean>(false);

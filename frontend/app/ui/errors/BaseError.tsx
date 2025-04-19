@@ -16,7 +16,7 @@ type BaseErrorProps = {
 };
 
 const BaseError = ({ errorText, buttonText, onButtonClick, children }: BaseErrorProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
   const router = useRouter();
 
   const [backgroundSize, setBackgroundSize] = useState<string>('20%');

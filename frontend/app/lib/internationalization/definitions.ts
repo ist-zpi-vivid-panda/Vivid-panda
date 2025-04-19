@@ -4,13 +4,14 @@ export enum SupportedLocale {
 }
 
 export enum TranslationNamespace {
-  Common = 'common',
-  Auth = 'auth',
-  Canvas = 'canvas',
-  Files = 'files',
-  Licenses = 'licenses',
-  Error = 'error',
-  Filters = 'filters',
+  COMMON = 'common',
+  AUTH = 'auth',
+  CANVAS = 'canvas',
+  FILES = 'files',
+  LICENSES = 'licenses',
+  ERROR = 'error',
+  FILTERS = 'filters',
+  METADATA = 'metadata',
 }
 
 export type LocaleParam = Promise<{ locale: SupportedLocale }>;
@@ -18,3 +19,5 @@ export type LocaleParam = Promise<{ locale: SupportedLocale }>;
 export type LocaleParamProps = {
   params: LocaleParam;
 };
+
+export const DEFAULT_LOCALE = SupportedLocale.en as const;

@@ -23,7 +23,7 @@ const Login = () => {
   const router = useRouter();
   const { login } = useUserData();
 
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const {
     control,

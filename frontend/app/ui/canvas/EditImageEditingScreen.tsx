@@ -28,7 +28,7 @@ type EditImageEditingScreenProps = {
 
 const EditImageEditingScreen = ({ id }: EditImageEditingScreenProps) => {
   const router = useRouter();
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   const canvasRef = useRef<CanvasConsumer | null>(null);
 

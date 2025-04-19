@@ -9,7 +9,7 @@ type LocaleChangeButtonProps = {
 };
 
 const LocaleChangeButton = ({ setAnchorEl }: LocaleChangeButtonProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   const handleOpenLangMenu = useCallback(
     (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget),

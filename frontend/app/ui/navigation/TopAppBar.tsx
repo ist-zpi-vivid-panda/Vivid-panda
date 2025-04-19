@@ -21,7 +21,7 @@ import LocaleChangeButton from '../locale/LocaleChangeButton';
 import LocaleChanger from '../locale/LocaleChanger';
 
 const TopAppBar = () => {
-  const { t } = useStrings(TranslationNamespace.Auth);
+  const { t } = useStrings(TranslationNamespace.AUTH);
 
   const router = useRouter();
 

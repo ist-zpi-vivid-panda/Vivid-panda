@@ -15,7 +15,7 @@ type ZoomTrayProps = {
 };
 
 const ZoomTray = ({ zoomStep, setZoom, defaultZoom }: ZoomTrayProps) => {
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   return (
     <>

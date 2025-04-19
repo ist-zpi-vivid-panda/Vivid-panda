@@ -7,7 +7,7 @@ import { FallbackProps } from 'react-error-boundary';
 import BaseError from './BaseError';
 
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   return (
     <BaseError

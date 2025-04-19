@@ -5,7 +5,7 @@ import useStrings from '@/app/lib/internationalization/useStrings';
 import { Button } from '@mui/material';
 
 const SubmitButton = () => {
-  const { t } = useStrings(TranslationNamespace.Common);
+  const { t } = useStrings(TranslationNamespace.COMMON);
 
   return (
     <Button

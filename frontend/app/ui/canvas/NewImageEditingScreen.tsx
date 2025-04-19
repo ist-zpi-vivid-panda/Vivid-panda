@@ -35,7 +35,7 @@ const MAX_IMAGE_MULT = MAX_IMAGE_SIZE * 1024 * 1024; // 16 MB
 const NewImageEditingScreen = () => {
   const router = useRouter();
   const postFile = usePostFileMutation();
-  const { t } = useStrings(TranslationNamespace.Canvas);
+  const { t } = useStrings(TranslationNamespace.CANVAS);
 
   const handleImageUpload = useCallback(
     async (image: File) => {
